@@ -1,0 +1,3254 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>台電擬真 3D 配電搶修模擬遊戲</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+
+html>body{padding:0}</style>
+</head>
+<body>
+<div id="taipower-realistic-3d-restored">
+  <style>
+    #taipower-realistic-3d-restored {
+      color: var(--foreground);
+      width: 100%;
+    }
+    #taipower-realistic-3d-restored .tp3-toolbar,
+    #taipower-realistic-3d-restored .tp3-actions,
+    #taipower-realistic-3d-restored .tp3-climb-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    #taipower-realistic-3d-restored .tp3-toolbar .form-label {
+      min-width: 136px;
+      flex: 1 1 150px;
+    }
+    #taipower-realistic-3d-restored .tp3-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    #taipower-realistic-3d-restored .tp3-hp-track {
+      height: 8px;
+      margin-top: 6px;
+      background: color-mix(in srgb, var(--muted) 74%, transparent);
+      overflow: hidden;
+      border-radius: 999px;
+    }
+    #taipower-realistic-3d-restored .tp3-hp-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--viz-series-2);
+      transition: width 240ms ease, background 240ms ease;
+    }
+    #taipower-realistic-3d-restored .tp3-stage {
+      position: relative;
+      width: 100%;
+      height: 620px;
+      min-height: 400px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--muted) 24%, transparent);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      touch-action: none;
+    }
+    #taipower-realistic-3d-restored canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    #taipower-realistic-3d-restored .tp3-webgl {
+      opacity: 0;
+    }
+    #taipower-realistic-3d-restored .tp3-webgl.is-ready {
+      opacity: 1;
+    }
+    #taipower-realistic-3d-restored .tp3-fallback.is-hidden {
+      display: none;
+    }
+    #taipower-realistic-3d-restored .tp3-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    #taipower-realistic-3d-restored .tp3-objective {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      max-width: min(420px, calc(100% - 24px));
+      padding: 8px 10px;
+      color: var(--popover-foreground);
+      background: color-mix(in srgb, var(--popover) 86%, transparent);
+      border-radius: 8px;
+    }
+    #taipower-realistic-3d-restored .tp3-reticle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      margin: -9px 0 0 -9px;
+      border: 1px solid color-mix(in srgb, var(--foreground) 72%, transparent);
+      border-radius: 50%;
+    }
+    #taipower-realistic-3d-restored .tp3-reticle::before,
+    #taipower-realistic-3d-restored .tp3-reticle::after {
+      content: "";
+      position: absolute;
+      background: color-mix(in srgb, var(--foreground) 72%, transparent);
+    }
+    #taipower-realistic-3d-restored .tp3-reticle::before {
+      width: 6px;
+      height: 1px;
+      left: 5px;
+      top: 8px;
+    }
+    #taipower-realistic-3d-restored .tp3-reticle::after {
+      width: 1px;
+      height: 6px;
+      left: 8px;
+      top: 5px;
+    }
+    #taipower-realistic-3d-restored .tp3-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: calc(100% - 24px);
+      padding: 8px 12px;
+      text-align: center;
+      color: var(--popover-foreground);
+      background: color-mix(in srgb, var(--popover) 88%, transparent);
+      border-radius: 8px;
+    }
+    #taipower-realistic-3d-restored .tp3-altimeter {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      width: 8px;
+      height: 180px;
+      background: color-mix(in srgb, var(--muted) 78%, transparent);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    #taipower-realistic-3d-restored .tp3-altimeter-fill {
+      position: absolute;
+      inset: auto 0 0;
+      height: 0%;
+      background: var(--viz-series-1);
+      transition: height 100ms linear;
+    }
+    #taipower-realistic-3d-restored .tp3-equipment-list {
+      position: absolute;
+      right: 32px;
+      top: 12px;
+      max-width: min(330px, calc(100% - 64px));
+      padding: 8px 10px;
+      color: var(--popover-foreground);
+      background: color-mix(in srgb, var(--popover) 86%, transparent);
+      border-radius: 8px;
+      line-height: 1.45;
+    }
+    #taipower-realistic-3d-restored .tp3-flash {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      background: color-mix(in srgb, var(--destructive) 70%, var(--background));
+      transition: opacity 150ms ease;
+    }
+    #taipower-realistic-3d-restored .tp3-flash.is-active {
+      opacity: .72;
+    }
+    #taipower-realistic-3d-restored .tp3-damage {
+      position: absolute;
+      left: 50%;
+      top: 32%;
+      transform: translate(-50%, -50%);
+      color: var(--destructive);
+      opacity: 0;
+      font-weight: 500;
+      transition: opacity 180ms ease, transform 400ms ease;
+    }
+    #taipower-realistic-3d-restored .tp3-damage.is-active {
+      opacity: 1;
+      transform: translate(-50%, -86%);
+    }
+    #taipower-realistic-3d-restored .tp3-log {
+      min-height: 44px;
+      margin-bottom: 10px;
+      padding-left: 12px;
+      border-left: 3px solid var(--viz-series-1);
+    }
+    #taipower-realistic-3d-restored .tp3-log.is-danger {
+      border-left-color: var(--destructive);
+    }
+    #taipower-realistic-3d-restored .tp3-actions .btn,
+    #taipower-realistic-3d-restored .tp3-climb-controls .btn {
+      flex: 1 1 130px;
+    }
+    #taipower-realistic-3d-restored .tp3-key {
+      display: inline-block;
+      min-width: 22px;
+      padding: 1px 5px;
+      text-align: center;
+      color: var(--foreground);
+      background: var(--muted);
+      border-radius: 4px;
+    }
+    #taipower-realistic-3d-restored .tp3-steps {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    #taipower-realistic-3d-restored .tp3-step {
+      padding: 4px 7px;
+      color: var(--muted-foreground);
+      background: color-mix(in srgb, var(--muted) 58%, transparent);
+      border-radius: 999px;
+    }
+    #taipower-realistic-3d-restored .tp3-step.is-done {
+      color: var(--foreground);
+      background: color-mix(in srgb, var(--viz-series-2) 28%, transparent);
+    }
+    #taipower-realistic-3d-restored .tp3-step.is-current {
+      color: var(--primary-foreground);
+      background: var(--primary);
+    }
+    @media (max-width: 620px) {
+      #taipower-realistic-3d-restored .tp3-stage {
+        height: 430px;
+      }
+      #taipower-realistic-3d-restored .tp3-stats {
+        grid-template-columns: 1fr;
+      }
+      #taipower-realistic-3d-restored .tp3-altimeter {
+        height: 120px;
+      }
+      #taipower-realistic-3d-restored .tp3-equipment-list {
+        display: none;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #taipower-realistic-3d-restored * {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+
+  <div class="tp3-toolbar viz-controls" aria-label="任務設定">
+    <label class="form-label" for="tp3-mode">作業模式
+      <select id="tp3-mode" class="form-select">
+        <option value="deenergized">停電搶修</option>
+        <option value="live">活線作業</option>
+      </select>
+    </label>
+    <label class="form-label" for="tp3-voltage">線路等級
+      <select id="tp3-voltage" class="form-select">
+        <option value="11.4">11.4 kV 配電線</option>
+        <option value="22.8">22.8 kV 配電線</option>
+      </select>
+    </label>
+    <label class="form-label" for="tp3-fault">故障設備
+      <select id="tp3-fault" class="form-select">
+        <option value="random">每局隨機</option>
+        <option value="insulator">裝腳礙子破損</option>
+        <option value="hardware">橫擔鐵件燒損</option>
+        <option value="transformer">桿上變壓器故障（停電）</option>
+      </select>
+    </label>
+    <button id="tp3-audio" class="btn btn-primary" type="button">啟動音樂</button>
+    <button id="tp3-view" class="btn" type="button" aria-pressed="false">設備近景</button>
+    <button id="tp3-reset" class="btn btn-ghost" type="button">重新開始</button>
+  </div>
+
+  <div class="tp3-stats" aria-label="即時狀態">
+    <div class="card viz-stat">
+      <span class="text-muted">生命值</span>
+      <span id="tp3-hp" class="viz-stat-value">100 HP</span>
+      <div class="tp3-hp-track" aria-hidden="true"><div id="tp3-hp-fill" class="tp3-hp-fill"></div></div>
+    </div>
+    <div class="card viz-stat">
+      <span class="text-muted">登桿高度</span>
+      <span id="tp3-height" class="viz-stat-value">0.6 m</span>
+      <span id="tp3-rope-status" class="text-small">輔助繩未掛</span>
+    </div>
+    <div class="card viz-stat">
+      <span class="text-muted">音樂／危險</span>
+      <span id="tp3-music-state" class="viz-stat-value">待命</span>
+      <span id="tp3-line-state" class="text-small">線路帶電</span>
+    </div>
+  </div>
+
+  <div id="tp3-stage" class="tp3-stage">
+    <canvas id="tp3-fallback" class="tp3-fallback" role="img" aria-label="台灣街頭配電電桿與作業員預覽，三維場景載入中"></canvas>
+    <canvas id="tp3-canvas" class="tp3-webgl" role="img" aria-label="可操作的台灣街頭三維配電電桿、變壓器與登桿作業員場景"></canvas>
+    <div class="tp3-overlay" aria-hidden="true">
+      <div id="tp3-objective" class="tp3-objective">先完成防護具穿戴，再掛輔助繩登桿。</div>
+      <div class="tp3-reticle"></div>
+      <div class="tp3-equipment-list">可見設備：11.4／22.8 kV 三相高壓線、低壓四線、通訊線、輕鋼橫擔、斜撐與抱箍、裝腳礙子、熔絲鏈開關、避雷器、桿上變壓器、永久接地銅線及接地銅棒。</div>
+      <div class="tp3-altimeter"><div id="tp3-altimeter-fill" class="tp3-altimeter-fill"></div></div>
+      <div id="tp3-hint" class="tp3-hint"><span class="tp3-key">W</span>／↑ 登桿　<span class="tp3-key">Q</span> 換掛輔助繩</div>
+      <div id="tp3-flash" class="tp3-flash"></div>
+      <div id="tp3-damage" class="tp3-damage">-0 HP</div>
+    </div>
+  </div>
+
+  <div id="tp3-log" class="tp3-log" role="status" aria-live="polite">
+    <div id="tp3-log-main">任務開始：先完成全身防護具與腰帶工具檢查。</div>
+    <div id="tp3-log-detail" class="text-small text-muted">拖曳場景可環視，滾輪可縮放。鍵盤與下方按鈕都能登桿。</div>
+  </div>
+
+  <div class="tp3-climb-controls" aria-label="登桿控制">
+    <button id="tp3-up" class="btn" type="button">W／↑ 向上攀登</button>
+    <button id="tp3-down" class="btn" type="button">S／↓ 向下攀登</button>
+    <button id="tp3-rope" class="btn btn-primary" type="button">Q 掛／換輔助繩</button>
+  </div>
+
+  <div class="tp3-actions" aria-label="作業工具">
+    <button class="btn btn-primary" type="button" data-action="ppe">穿戴防護具</button>
+    <button class="btn" type="button" data-action="isolate">隔離／上鎖掛牌</button>
+    <button class="btn" type="button" data-action="test">腰袋取檢電器</button>
+    <button class="btn" type="button" data-action="cover">腰袋取絕緣掩蔽具</button>
+    <button class="btn" type="button" data-action="ground">掛工作接地組</button>
+    <button class="btn" type="button" data-action="repair">絕緣工具維修</button>
+    <button class="btn" type="button" data-action="remove-ground">拆除工作接地</button>
+    <button class="btn" type="button" data-action="finish">復電／完工確認</button>
+  </div>
+
+  <div id="tp3-steps" class="tp3-steps" aria-label="工作程序"></div>
+</div>
+
+<script>
+(() => {
+  const initialRoot = document.getElementById('taipower-realistic-3d-restored');
+  let fallbackObserver = { disconnect() {} };
+  if (initialRoot) {
+    const fallbackCanvas = initialRoot.querySelector('#tp3-fallback');
+    const fallbackStage = initialRoot.querySelector('#tp3-stage');
+    const drawFallback = () => {
+      if (!fallbackCanvas || !fallbackStage) return;
+      const rect = fallbackStage.getBoundingClientRect();
+      const width = Math.max(320, Math.round(rect.width));
+      const height = Math.max(360, Math.round(rect.height));
+      fallbackCanvas.width = width;
+      fallbackCanvas.height = height;
+      const ctx = fallbackCanvas.getContext('2d');
+      if (!ctx) return;
+      const styles = getComputedStyle(initialRoot);
+      const fallbackColorProbe = document.createElement('span');
+      fallbackColorProbe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none';
+      initialRoot.appendChild(fallbackColorProbe);
+      const token = (name, fallback) => {
+        fallbackColorProbe.style.color = `var(${name}, ${fallback})`;
+        const resolved = getComputedStyle(fallbackColorProbe).color;
+        return resolved && !resolved.includes('light-dark') && !resolved.includes('color-mix') ? resolved : fallback;
+      };
+      const foreground = token('--foreground', styles.color || 'rgb(26,28,31)');
+      const background = token('--background', styles.backgroundColor || 'rgb(255,255,255)');
+      const muted = token('--muted', background);
+      const card = token('--card', muted);
+      const series1 = token('--viz-series-1', foreground);
+      const series2 = token('--viz-series-2', foreground);
+      const series3 = token('--viz-series-3', foreground);
+      const series4 = token('--viz-series-4', foreground);
+      fallbackColorProbe.remove();
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = muted;
+      ctx.beginPath();
+      ctx.moveTo(0, height * 0.72);
+      ctx.lineTo(width, height * 0.64);
+      ctx.lineTo(width, height);
+      ctx.lineTo(0, height);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = card;
+      [[0.04, 0.24, 0.2, 0.46], [0.78, 0.18, 0.18, 0.5], [0.25, 0.34, 0.12, 0.32]].forEach(([x, y, w, h]) => {
+        ctx.fillRect(width * x, height * y, width * w, height * h);
+      });
+      ctx.fillStyle = series1;
+      for (let row = 0; row < 4; row += 1) {
+        for (let col = 0; col < 3; col += 1) {
+          ctx.globalAlpha = 0.3;
+          ctx.fillRect(width * (0.81 + col * 0.045), height * (0.24 + row * 0.075), width * 0.022, height * 0.036);
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      const poleX = width * 0.52;
+      const poleTop = height * 0.08;
+      const poleBottom = height * 0.9;
+      const poleGradient = ctx.createLinearGradient(poleX - 22, 0, poleX + 22, 0);
+      poleGradient.addColorStop(0, muted);
+      poleGradient.addColorStop(0.52, card);
+      poleGradient.addColorStop(1, foreground);
+      ctx.fillStyle = poleGradient;
+      ctx.beginPath();
+      ctx.moveTo(poleX - 13, poleTop);
+      ctx.lineTo(poleX + 13, poleTop);
+      ctx.lineTo(poleX + 24, poleBottom);
+      ctx.lineTo(poleX - 24, poleBottom);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = foreground;
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      ctx.moveTo(poleX - width * 0.18, height * 0.2);
+      ctx.lineTo(poleX + width * 0.2, height * 0.2);
+      ctx.stroke();
+      [-0.13, 0, 0.13].forEach(offset => {
+        ctx.fillStyle = series1;
+        ctx.fillRect(poleX + width * offset - 5, height * 0.13, 10, height * 0.075);
+      });
+
+      const wire = (y, bend, color, lineWidth) => {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.beginPath();
+        ctx.moveTo(-20, y);
+        ctx.bezierCurveTo(width * 0.3, y + bend, width * 0.7, y - bend, width + 20, y + bend * 0.25);
+        ctx.stroke();
+      };
+      wire(height * 0.13, 24, foreground, 3);
+      wire(height * 0.19, -16, foreground, 3);
+      wire(height * 0.28, 18, series1, 4);
+      wire(height * 0.39, -12, foreground, 2);
+      wire(height * 0.44, 10, series4, 3);
+
+      ctx.fillStyle = series2;
+      ctx.fillRect(poleX + width * 0.05, height * 0.28, width * 0.1, height * 0.18);
+      ctx.fillStyle = series1;
+      ctx.fillRect(poleX + width * 0.065, height * 0.25, width * 0.016, height * 0.04);
+      ctx.fillRect(poleX + width * 0.12, height * 0.25, width * 0.016, height * 0.04);
+
+      const workerX = poleX - width * 0.035;
+      const workerY = height * 0.69;
+      ctx.strokeStyle = foreground;
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      ctx.moveTo(workerX - 4, workerY + 26);
+      ctx.lineTo(workerX - 12, workerY + 62);
+      ctx.moveTo(workerX + 4, workerY + 26);
+      ctx.lineTo(workerX + 16, workerY + 58);
+      ctx.moveTo(workerX - 8, workerY - 4);
+      ctx.lineTo(workerX - 22, workerY + 20);
+      ctx.moveTo(workerX + 8, workerY - 4);
+      ctx.lineTo(workerX + 18, workerY + 18);
+      ctx.stroke();
+      ctx.fillStyle = series3;
+      ctx.fillRect(workerX - 13, workerY - 10, 26, 42);
+      ctx.fillStyle = series2;
+      ctx.beginPath();
+      ctx.arc(workerX, workerY - 23, 13, Math.PI, Math.PI * 2);
+      ctx.lineTo(workerX + 13, workerY - 17);
+      ctx.lineTo(workerX - 13, workerY - 17);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = series3;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(poleX, workerY - 2, 38, 10, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = series1;
+      ctx.beginPath();
+      ctx.ellipse(poleX, workerY - 18, 42, 11, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    };
+    drawFallback();
+    fallbackObserver = window.ResizeObserver
+      ? new ResizeObserver(drawFallback)
+      : { disconnect() {} };
+    if (fallbackObserver.observe) fallbackObserver.observe(fallbackStage);
+  }
+
+  const startTaipowerSimulation = () => {
+  const root = document.getElementById('taipower-realistic-3d-restored');
+  if (!root) return;
+
+  const el = {
+    stage: root.querySelector('#tp3-stage'),
+    fallback: root.querySelector('#tp3-fallback'),
+    canvas: root.querySelector('#tp3-canvas'),
+    mode: root.querySelector('#tp3-mode'),
+    voltage: root.querySelector('#tp3-voltage'),
+    fault: root.querySelector('#tp3-fault'),
+    audio: root.querySelector('#tp3-audio'),
+    view: root.querySelector('#tp3-view'),
+    reset: root.querySelector('#tp3-reset'),
+    hp: root.querySelector('#tp3-hp'),
+    hpFill: root.querySelector('#tp3-hp-fill'),
+    height: root.querySelector('#tp3-height'),
+    ropeStatus: root.querySelector('#tp3-rope-status'),
+    musicState: root.querySelector('#tp3-music-state'),
+    lineState: root.querySelector('#tp3-line-state'),
+    objective: root.querySelector('#tp3-objective'),
+    hint: root.querySelector('#tp3-hint'),
+    altimeter: root.querySelector('#tp3-altimeter-fill'),
+    flash: root.querySelector('#tp3-flash'),
+    damage: root.querySelector('#tp3-damage'),
+    log: root.querySelector('#tp3-log'),
+    logMain: root.querySelector('#tp3-log-main'),
+    logDetail: root.querySelector('#tp3-log-detail'),
+    up: root.querySelector('#tp3-up'),
+    down: root.querySelector('#tp3-down'),
+    rope: root.querySelector('#tp3-rope'),
+    steps: root.querySelector('#tp3-steps'),
+    actions: [...root.querySelectorAll('[data-action]')]
+  };
+
+  if (!window.THREE) {
+    el.log.classList.add('is-danger');
+    el.logMain.textContent = '3D 引擎載入失敗，請重新載入這個畫面。';
+    return;
+  }
+
+  const THREE = window.THREE;
+  const colorProbe = document.createElement('span');
+  colorProbe.style.position = 'absolute';
+  colorProbe.style.visibility = 'hidden';
+  root.appendChild(colorProbe);
+  const themeColor = (token, fallback) => {
+    colorProbe.style.color = `var(${token}, ${fallback})`;
+    return new THREE.Color(getComputedStyle(colorProbe).color);
+  };
+
+  const palette = {
+    bg: themeColor('--background', 'rgb(24,24,27)'),
+    fg: themeColor('--foreground', 'rgb(244,244,245)'),
+    card: themeColor('--card', 'rgb(39,39,42)'),
+    muted: themeColor('--muted', 'rgb(82,82,91)'),
+    primary: themeColor('--primary', 'rgb(250,250,250)'),
+    accent: themeColor('--accent', 'rgb(63,63,70)'),
+    danger: themeColor('--destructive', 'rgb(220,38,38)'),
+    s1: themeColor('--viz-series-1', 'rgb(59,130,246)'),
+    s2: themeColor('--viz-series-2', 'rgb(34,197,94)'),
+    s3: themeColor('--viz-series-3', 'rgb(234,179,8)'),
+    s4: themeColor('--viz-series-4', 'rgb(168,85,247)'),
+    s5: themeColor('--viz-series-5', 'rgb(249,115,22)'),
+    s6: themeColor('--viz-series-6', 'rgb(6,182,212)')
+  };
+  colorProbe.remove();
+
+  const renderer = new THREE.WebGLRenderer({ canvas: el.canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.8));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  let webglReady = false;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.08;
+  renderer.physicallyCorrectLights = true;
+
+  const scene = new THREE.Scene();
+  const skyColor = new THREE.Color(0xa9cee3);
+  scene.background = skyColor;
+  scene.fog = new THREE.Fog(skyColor, 24, 58);
+  const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 90);
+
+  const hemi = new THREE.HemisphereLight(new THREE.Color(0xeaf6ff), new THREE.Color(0x46524a), 1.65);
+  scene.add(hemi);
+  const sun = new THREE.DirectionalLight(new THREE.Color(0xfff4dc), 2.75);
+  sun.position.set(9, 16, 8);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  sun.shadow.camera.left = -15;
+  sun.shadow.camera.right = 15;
+  sun.shadow.camera.top = 18;
+  sun.shadow.camera.bottom = -5;
+  scene.add(sun);
+
+  const mat = (color, roughness = 0.75, metalness = 0.05) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
+  const mats = {
+    concrete: mat(new THREE.Color(0x8b8d8e), 0.96, 0.02),
+    metal: mat(new THREE.Color(0xa9b0b3), 0.28, 0.78),
+    dark: mat(new THREE.Color(0x202429), 0.84, 0.12),
+    road: mat(new THREE.Color(0x343a3e), 0.98, 0.02),
+    sidewalk: mat(new THREE.Color(0xb7b3aa), 0.94, 0.02),
+    building: mat(new THREE.Color(0x7f8d93), 0.86, 0.05),
+    wire: mat(new THREE.Color(0x171b1e), 0.54, 0.42),
+    insulator: new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xe1e6e3), roughness: 0.14, metalness: 0.02, clearcoat: 0.82, clearcoatRoughness: 0.16 }),
+    transformer: mat(new THREE.Color(0x56685f), 0.4, 0.48),
+    yellow: mat(new THREE.Color(0xe9b61d), 0.5, 0.12),
+    orange: mat(new THREE.Color(0xe96f22), 0.46, 0.1),
+    blue: mat(new THREE.Color(0x225fa5), 0.56, 0.12),
+    green: mat(new THREE.Color(0x42795b), 0.6, 0.08),
+    skin: mat(new THREE.Color(0xd5a17e), 0.8, 0.01),
+    skinShade: mat(new THREE.Color(0xaf765b), 0.86, 0.01),
+    uniform: mat(new THREE.Color(0x1f4f79), 0.7, 0.04),
+    uniformLight: mat(new THREE.Color(0x5687aa), 0.66, 0.04),
+    eye: mat(new THREE.Color(0x271b15), 0.24, 0.02),
+    eyeWhite: new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xf2eee7), roughness: 0.2, clearcoat: 0.55 }),
+    lip: mat(new THREE.Color(0x9f5149), 0.72, 0.01),
+    copper: mat(new THREE.Color(0xb87333), 0.34, 0.68),
+    rubber: mat(new THREE.Color(0x17191c), 0.9, 0.02),
+    sole: mat(new THREE.Color(0x15181a), 0.92, 0.02),
+    helmet: mat(new THREE.Color(0xf0c72f), 0.32, 0.1),
+    danger: new THREE.MeshBasicMaterial({ color: palette.danger }),
+    cover: new THREE.MeshStandardMaterial({ color: palette.s5, roughness: 0.48, transparent: true, opacity: 0.92 }),
+    glass: new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0x77b4c8), roughness: 0.08, metalness: 0.05, transparent: true, opacity: 0.42, clearcoat: 0.65 })
+  };
+
+  const box = (w, h, d, material, x, y, z, parent = scene) => {
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    parent.add(mesh);
+    return mesh;
+  };
+
+  const cylinder = (rt, rb, h, material, x, y, z, segments = 18, parent = scene) => {
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, segments), material);
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    parent.add(mesh);
+    return mesh;
+  };
+
+  const ellipsoid = (rx, ry, rz, material, x, y, z, parent = scene, segments = 24) => {
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, segments, Math.max(12, Math.floor(segments * 0.7))), material);
+    mesh.scale.set(rx, ry, rz);
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    parent.add(mesh);
+    return mesh;
+  };
+
+  const beamBetween = (a, b, radius, material, parent = scene) => {
+    const delta = new THREE.Vector3().subVectors(b, a);
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, delta.length(), 10), material);
+    mesh.position.copy(a).add(b).multiplyScalar(0.5);
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.clone().normalize());
+    mesh.castShadow = true;
+    parent.add(mesh);
+    return mesh;
+  };
+
+  const curveTube = (points, radius, material, parent = scene) => {
+    const curve = new THREE.CatmullRomCurve3(points);
+    const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, Math.max(12, points.length * 6), radius, 8, false), material);
+    mesh.castShadow = true;
+    parent.add(mesh);
+    return mesh;
+  };
+
+  const addBolt = (x, y, z, parent, radius = 0.055, length = 0.22) => {
+    const shaft = cylinder(radius * 0.46, radius * 0.46, length, mats.metal, x, y, z, 12, parent);
+    shaft.rotation.x = Math.PI / 2;
+    const head = cylinder(radius, radius, 0.045, mats.metal, x, y, z + length * 0.52, 6, parent);
+    head.rotation.x = Math.PI / 2;
+    return shaft;
+  };
+
+  const addPoleBand = (y, parent, radius = 0.34) => {
+    const band = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.035, 10, 36), mats.metal);
+    band.position.set(0, y, 0);
+    band.rotation.x = Math.PI / 2;
+    band.castShadow = true;
+    parent.add(band);
+    addBolt(0.34, y, 0, parent, 0.045, 0.18);
+    return band;
+  };
+
+  const addSteelCrossarm = (width, y, z, parent, braceDrop = 0.92) => {
+    const arm = new THREE.Group();
+    arm.position.set(0, y, z);
+    parent.add(arm);
+    box(width, 0.12, 0.38, mats.metal, 0, 0, 0, arm);
+    box(width, 0.07, 0.42, mats.metal, 0, 0.13, 0, arm);
+    box(width, 0.07, 0.42, mats.metal, 0, -0.13, 0, arm);
+    [-0.22, 0.22].forEach(x => addBolt(x, 0, 0, arm, 0.055, 0.48));
+    [-1, 1].forEach(side => {
+      beamBetween(
+        new THREE.Vector3(side * width * 0.43, -0.14, 0.02),
+        new THREE.Vector3(side * 0.3, -braceDrop, 0.1),
+        0.045,
+        mats.metal,
+        arm
+      );
+      addBolt(side * width * 0.43, -0.08, 0.01, arm, 0.048, 0.38);
+    });
+    return arm;
+  };
+
+  const addSaggingConductor = (x, y, zMin, zMax, radius, material, parent = scene, sag = 0.16) => curveTube([
+    new THREE.Vector3(x, y, zMin),
+    new THREE.Vector3(x, y - sag * 0.72, zMin * 0.5),
+    new THREE.Vector3(x, y - sag, 0),
+    new THREE.Vector3(x, y - sag * 0.72, zMax * 0.5),
+    new THREE.Vector3(x, y, zMax)
+  ], radius, material, parent);
+
+  const world = new THREE.Group();
+  scene.add(world);
+
+  box(36, 0.22, 11, mats.road, 0, -0.12, 0, world);
+  box(36, 0.3, 3.6, mats.sidewalk, 0, 0, -7.1, world);
+  box(36, 0.3, 3.6, mats.sidewalk, 0, 0, 7.1, world);
+  for (let i = -3; i <= 3; i += 1) box(2.4, 0.04, 0.14, mats.fg || mats.concrete, i * 5, 0.03, 0, world);
+
+  const buildings = new THREE.Group();
+  world.add(buildings);
+  [-13, -7, 8, 14].forEach((x, i) => {
+    const h = 5.6 + (i % 3) * 1.5;
+    box(5.2, h, 4.2, mats.building, x, h / 2, -10.2, buildings);
+    for (let fy = 1.4; fy < h - 0.5; fy += 1.55) {
+      for (let fx = -1.5; fx <= 1.5; fx += 1.5) box(0.65, 0.74, 0.08, mats.glass, x + fx, fy, -8.05, buildings);
+    }
+  });
+
+  const truck = new THREE.Group();
+  truck.position.set(-7.5, 0.5, 2.3);
+  world.add(truck);
+  box(4.5, 0.85, 1.9, mats.yellow, 0, 0.55, 0, truck);
+  box(1.5, 1.25, 1.85, mats.yellow, 1.15, 1.45, 0, truck);
+  box(0.65, 0.55, 0.05, mats.glass, 1.85, 1.55, 0, truck);
+  [-1.45, 1.25].forEach(x => [-0.95, 0.95].forEach(z => {
+    const wheel = cylinder(0.39, 0.39, 0.22, mats.dark, x, 0.2, z, 18, truck);
+    wheel.rotation.x = Math.PI / 2;
+  }));
+  const boom1 = beamBetween(new THREE.Vector3(-1.1, 1.15, 0), new THREE.Vector3(-2.6, 4.5, -0.4), 0.14, mats.metal, truck);
+  const boom2 = beamBetween(new THREE.Vector3(-2.6, 4.5, -0.4), new THREE.Vector3(-1.5, 7.4, -0.5), 0.12, mats.yellow, truck);
+  box(0.9, 0.65, 0.8, mats.yellow, -1.5, 7.65, -0.5, truck);
+  boom1.castShadow = boom2.castShadow = true;
+
+  const poleGroup = new THREE.Group();
+  world.add(poleGroup);
+  const pole = cylinder(0.28, 0.48, 11.8, mats.concrete, 0, 5.8, 0, 28, poleGroup);
+  const poleCap = cylinder(0.26, 0.28, 0.15, mats.concrete, 0, 11.73, 0, 28, poleGroup);
+  box(0.5, 0.92, 0.08, mats.metal, 0, 2.5, 0.43, poleGroup);
+  for (let y = 0.75; y < 8; y += 0.48) {
+    const side = Math.round(y * 10) % 2 === 0 ? -1 : 1;
+    const peg = beamBetween(new THREE.Vector3(side * 0.25, y, 0.05), new THREE.Vector3(side * 0.68, y, 0.05), 0.035, mats.metal, poleGroup);
+    peg.rotation.z += 0.04;
+  }
+
+  const primaryCrossarm = addSteelCrossarm(5.9, 9.15, 0, poleGroup, 1.02);
+  const equipmentCrossarm = addSteelCrossarm(3.7, 7.75, -0.02, poleGroup, 0.78);
+  [9.0, 8.08, 7.42, 6.35, 5.52].forEach(y => addPoleBand(y, poleGroup));
+  box(0.62, 0.4, 0.045, mats.metal, 0, 3.45, 0.455, poleGroup);
+  box(0.48, 0.28, 0.052, mats.dark, 0, 3.45, 0.486, poleGroup);
+  [-2.52, -1.28, 0, 1.28, 2.52].forEach(x => addBolt(x, 0, 0, primaryCrossarm, 0.048, 0.45));
+  [-1.52, -0.52, 0.52, 1.52].forEach(x => addBolt(x, 0, 0, equipmentCrossarm, 0.045, 0.38));
+
+  const phaseXs = [-2.15, 0, 2.15];
+  const phaseWires = [];
+  const phaseInsulatorGroups = [];
+  const covers = [];
+  phaseXs.forEach((x, i) => {
+    const ins = new THREE.Group();
+    ins.position.set(x, 9.52, 0);
+    poleGroup.add(ins);
+    phaseInsulatorGroups.push(ins);
+    cylinder(0.055, 0.055, 0.5, mats.metal, 0, -0.03, 0, 12, ins);
+    for (let k = 0; k < 5; k += 1) {
+      cylinder(0.19 - k * 0.006, 0.19 - k * 0.006, 0.055, mats.insulator, 0, k * 0.13, 0, 22, ins);
+      cylinder(0.11, 0.13, 0.07, mats.insulator, 0, k * 0.13 + 0.035, 0, 18, ins);
+    }
+    cylinder(0.11, 0.11, 0.08, mats.metal, 0, 0.67, 0, 14, ins);
+    const tie = new THREE.Mesh(new THREE.TorusGeometry(0.135, 0.018, 8, 24), mats.metal);
+    tie.position.set(0, 0.58, 0);
+    tie.rotation.x = Math.PI / 2;
+    ins.add(tie);
+    addSaggingConductor(x, 9.98, -16, 16, 0.052, mats.wire, world, 0.19);
+    const blanket = new THREE.Group();
+    blanket.position.set(x, 9.98, 0);
+    poleGroup.add(blanket);
+    beamBetween(new THREE.Vector3(0, 0, -2.6), new THREE.Vector3(0, 0, 2.8), 0.12, mats.cover, blanket);
+    box(0.96, 0.08, 4.6, mats.cover, 0, 0.04, 0.1, blanket);
+    box(0.08, 1.05, 4.6, mats.cover, -0.44, -0.5, 0.1, blanket).rotation.z = -0.08;
+    box(0.08, 1.05, 4.6, mats.cover, 0.44, -0.5, 0.1, blanket).rotation.z = 0.08;
+    blanket.visible = false;
+    covers.push(blanket);
+    phaseWires.push(i);
+  });
+
+  const lowVoltageXs = [-1.35, -0.45, 0.45, 1.35];
+  const secondaryRack = addSteelCrossarm(3.8, 5.72, 0.08, poleGroup, 0.64);
+  lowVoltageXs.forEach((x, i) => {
+    cylinder(0.035, 0.035, 0.26, mats.metal, x, 5.81, 0.08, 10, poleGroup);
+    const secondaryInsulator = cylinder(0.09, 0.11, 0.28, mats.insulator, x, 5.9, 0.08, 18, poleGroup);
+    secondaryInsulator.position.y = 5.91;
+    cylinder(0.12, 0.12, 0.045, mats.insulator, x, 6.02, 0.08, 18, poleGroup);
+    addSaggingConductor(x, 6.12, -16, 16, i === 1 ? 0.045 : 0.038, i === 1 ? mats.blue : mats.wire, world, 0.27);
+  });
+  curveTube([
+    new THREE.Vector3(-1.35, 6.08, 1.4),
+    new THREE.Vector3(2.6, 5.55, 2.8),
+    new THREE.Vector3(7.4, 3.8, 5.6)
+  ], 0.035, mats.wire, world);
+  curveTube([
+    new THREE.Vector3(0.45, 6.08, -1.1),
+    new THREE.Vector3(3.8, 5.25, -4.2),
+    new THREE.Vector3(7.7, 3.55, -7.8)
+  ], 0.035, mats.wire, world);
+  curveTube([
+    new THREE.Vector3(-0.38, 7.7, -0.72),
+    new THREE.Vector3(-0.5, 6.75, -0.5),
+    new THREE.Vector3(-0.45, 6.12, 0)
+  ], 0.045, mats.blue, poleGroup);
+
+  const telecomYs = [4.75, 4.35, 3.95];
+  telecomYs.forEach((y, i) => addSaggingConductor(0.55 + i * 0.07, y, -16, 16, 0.035 + i * 0.008, i === 2 ? mats.blue : mats.dark, world, 0.34));
+
+  const riserConduit = beamBetween(new THREE.Vector3(-0.42, 0.35, -0.38), new THREE.Vector3(-0.42, 5.15, -0.38), 0.075, mats.metal, poleGroup);
+  [0.75, 1.65, 2.55, 3.45, 4.35].forEach(y => {
+    const clamp = new THREE.Mesh(new THREE.TorusGeometry(0.105, 0.018, 8, 20), mats.metal);
+    clamp.position.set(-0.42, y, -0.38);
+    clamp.rotation.x = Math.PI / 2;
+    poleGroup.add(clamp);
+  });
+
+  const transformerGroup = new THREE.Group();
+  transformerGroup.position.set(0, 6.7, -0.82);
+  poleGroup.add(transformerGroup);
+  box(2.25, 0.16, 0.34, mats.metal, 0, -0.34, 0.28, transformerGroup);
+  box(1.9, 0.14, 0.3, mats.metal, 0, 0.42, 0.28, transformerGroup);
+  const transformerTankAssembly = new THREE.Group();
+  transformerGroup.add(transformerTankAssembly);
+  const tank = cylinder(0.69, 0.73, 1.5, mats.transformer, 0, 0, 0, 36, transformerTankAssembly);
+  cylinder(0.74, 0.74, 0.1, mats.metal, 0, 0.79, 0, 32, transformerTankAssembly);
+  cylinder(0.72, 0.72, 0.08, mats.metal, 0, -0.79, 0, 32, transformerTankAssembly);
+  for (let a = 0; a < 10; a += 1) {
+    const angle = a / 10 * Math.PI * 2;
+    const rib = box(0.055, 1.12, 0.09, mats.metal, Math.cos(angle) * 0.7, -0.05, Math.sin(angle) * 0.7, transformerTankAssembly);
+    rib.rotation.y = -angle;
+  }
+  const namePlate = box(0.5, 0.31, 0.028, mats.metal, 0.08, -0.08, 0.735, transformerTankAssembly);
+  box(0.36, 0.022, 0.008, mats.dark, 0.08, -0.12, 0.753, transformerTankAssembly);
+  box(0.3, 0.018, 0.008, mats.dark, 0.08, -0.04, 0.753, transformerTankAssembly);
+  [-0.48, 0.48].forEach(x => {
+    const lug = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.027, 9, 22, Math.PI * 1.55), mats.metal);
+    lug.position.set(x, 0.82, 0);
+    lug.rotation.z = x < 0 ? 0.24 : -0.24;
+    lug.castShadow = true;
+    transformerTankAssembly.add(lug);
+  });
+  [-0.27, 0.27].forEach(x => {
+    const bushing = cylinder(0.075, 0.12, 0.45, mats.insulator, x, 1.04, 0, 18, transformerTankAssembly);
+    cylinder(0.035, 0.035, 0.2, mats.metal, x, 1.35, 0, 10, transformerTankAssembly);
+  });
+  [-0.32, 0, 0.32].forEach(x => cylinder(0.055, 0.08, 0.32, mats.insulator, x, 0.34, 0.68, 14, transformerTankAssembly));
+  [-0.32, 0, 0.32].forEach(x => {
+    const terminal = cylinder(0.035, 0.035, 0.17, mats.copper, x, 0.34, 0.88, 12, transformerTankAssembly);
+    terminal.rotation.x = Math.PI / 2;
+  });
+  box(0.34, 0.82, 0.2, mats.orange, -1.12, 0.58, 0.08, transformerGroup).rotation.z = -0.35;
+  cylinder(0.12, 0.14, 0.65, mats.insulator, 1.08, 0.6, 0.04, 18, transformerGroup).rotation.z = 0.16;
+  const transformerScorch = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.065, 10, 30), mats.danger);
+  transformerScorch.position.set(0.2, 0.15, 0.7);
+  transformerScorch.rotation.x = Math.PI / 2;
+  transformerScorch.visible = false;
+  transformerTankAssembly.add(transformerScorch);
+
+  phaseXs.forEach((x, i) => {
+    const rackX = -1.25 + i * 1.25;
+    const cutout = new THREE.Group();
+    cutout.position.set(rackX, 8.25, -0.38);
+    poleGroup.add(cutout);
+    const fuseBody = cylinder(0.09, 0.11, 0.78, mats.insulator, 0, 0, 0, 14, cutout);
+    fuseBody.rotation.z = i === 1 ? 0.08 : (i - 1) * 0.16;
+    cylinder(0.075, 0.075, 0.32, mats.orange, 0, 0.48, 0, 12, cutout);
+    curveTube([
+      new THREE.Vector3(x, 9.94, -0.08),
+      new THREE.Vector3(x * 0.82, 9.12, -0.2),
+      new THREE.Vector3(rackX, 8.72, -0.38)
+    ], 0.035, mats.wire, poleGroup);
+    curveTube([
+      new THREE.Vector3(rackX, 7.8, -0.38),
+      new THREE.Vector3(rackX * 0.56, 7.5, -0.62),
+      new THREE.Vector3(-0.38 + i * 0.38, 7.7, -0.7)
+    ], 0.035, mats.wire, poleGroup);
+    cylinder(0.095, 0.095, 0.3, mats.orange, rackX, 8.78, -0.38, 12, poleGroup);
+  });
+
+  [-1.25, 0, 1.25].forEach((x, i) => {
+    const arrester = new THREE.Group();
+    arrester.position.set(x, 8.18, 0.42);
+    poleGroup.add(arrester);
+    cylinder(0.055, 0.055, 0.72, mats.metal, 0, 0, 0, 10, arrester);
+    for (let k = -2; k <= 2; k += 1) cylinder(0.115, 0.115, 0.045, mats.insulator, 0, k * 0.105, 0, 18, arrester);
+    cylinder(0.07, 0.07, 0.15, mats.copper, 0, 0.45, 0, 10, arrester);
+    curveTube([
+      new THREE.Vector3(x, 8.66, 0.42),
+      new THREE.Vector3(x + (i - 1) * 0.2, 9.2, 0.28),
+      new THREE.Vector3(phaseXs[i], 9.93, 0.18)
+    ], 0.024, mats.wire, poleGroup);
+  });
+
+  [-0.32, 0, 0.32].forEach((x, i) => curveTube([
+    new THREE.Vector3(x, 7.04, -0.12),
+    new THREE.Vector3(x + (i - 1) * 0.2, 6.56, -0.02),
+    new THREE.Vector3(lowVoltageXs[i + 1], 6.12, 0.04)
+  ], 0.035, i === 0 ? mats.blue : mats.wire, poleGroup));
+
+  curveTube([
+    new THREE.Vector3(1.25, 7.72, 0.42),
+    new THREE.Vector3(0.42, 5.25, 0.4),
+    new THREE.Vector3(0.42, 0.24, 0.36)
+  ], 0.027, mats.copper, poleGroup);
+
+  const hardwareTarget = new THREE.Group();
+  hardwareTarget.position.set(1.25, 8.05, 0.32);
+  poleGroup.add(hardwareTarget);
+  const hardwarePlate = box(0.58, 0.34, 0.11, mats.metal, 0, 0, 0, hardwareTarget);
+  const hardwareBrace = box(0.12, 0.78, 0.12, mats.metal, 0, -0.24, -0.06, hardwareTarget);
+  hardwareBrace.rotation.z = -0.58;
+  [-0.18, 0.18].forEach(x => {
+    const bolt = cylinder(0.045, 0.045, 0.18, mats.metal, x, 0.04, 0.07, 12, hardwareTarget);
+    bolt.rotation.x = Math.PI / 2;
+  });
+  const hardwareScorch = box(0.22, 0.22, 0.025, mats.danger, 0.12, 0.02, 0.075, hardwareTarget);
+  hardwareScorch.visible = false;
+
+  const hoistGroup = new THREE.Group();
+  scene.add(hoistGroup);
+  const hoistLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: palette.s3 }));
+  const hoistHook = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.035, 10, 20, Math.PI * 1.55), mats.metal);
+  hoistHook.rotation.z = -0.4;
+  hoistGroup.add(hoistLine, hoistHook);
+  hoistGroup.visible = false;
+
+  const streetLampArm = curveTube([
+    new THREE.Vector3(0.1, 7.2, 0.25),
+    new THREE.Vector3(1.3, 7.7, 0.25),
+    new THREE.Vector3(2.8, 7.7, 0.25)
+  ], 0.055, mats.metal, poleGroup);
+  box(1.0, 0.16, 0.42, mats.metal, 3.1, 7.65, 0.25, poleGroup);
+
+  const guy = beamBetween(new THREE.Vector3(-0.18, 8.3, -0.08), new THREE.Vector3(-4.8, 0.12, -2.7), 0.035, mats.metal, world);
+  const guyAnchor = cylinder(0.12, 0.14, 1.05, mats.metal, -4.8, 0.32, -2.7, 12, world);
+  guyAnchor.rotation.z = 0.52;
+
+  const switchPole = new THREE.Group();
+  switchPole.position.set(7.1, 0, -1.8);
+  world.add(switchPole);
+  cylinder(0.19, 0.34, 9.5, mats.concrete, 0, 4.65, 0, 20, switchPole);
+  box(4.8, 0.17, 0.32, mats.metal, 0, 8.55, 0, switchPole);
+  box(4.1, 0.17, 0.32, mats.metal, 0, 7.55, 0, switchPole);
+  const switchCabinet = box(3.25, 1.15, 0.9, mats.transformer, 0, 6.55, 0, switchPole);
+  switchCabinet.rotation.x = -0.03;
+  [-1.22, 0, 1.22].forEach((x, i) => {
+    const topIns = new THREE.Group();
+    topIns.position.set(x, 8.72, 0);
+    switchPole.add(topIns);
+    for (let k = 0; k < 5; k += 1) cylinder(0.17, 0.17, 0.08, mats.insulator, 0, k * 0.13, 0, 14, topIns);
+    cylinder(0.15, 0.19, 0.78, mats.insulator, x, 7.25, 0, 16, switchPole);
+    cylinder(0.09, 0.09, 0.42, mats.dark, x, 7.83, 0, 12, switchPole);
+    curveTube([
+      new THREE.Vector3(x, 9.25, 0),
+      new THREE.Vector3(x + (i - 1) * 0.18, 8.35, 0.18),
+      new THREE.Vector3(x, 7.92, 0.06)
+    ], 0.045, mats.wire, switchPole);
+  });
+  box(3.45, 0.18, 0.38, mats.metal, 0, 6.55, 0.36, switchPole);
+  [-0.86, 0.86].forEach((x, bankIndex) => {
+    const bank = new THREE.Group();
+    bank.position.set(x, 5.82, 0.48);
+    switchPole.add(bank);
+    cylinder(0.5, 0.55, 1.3, mats.transformer, 0, 0, 0, 30, bank);
+    cylinder(0.56, 0.56, 0.09, mats.metal, 0, 0.69, 0, 28, bank);
+    cylinder(0.53, 0.53, 0.07, mats.metal, 0, -0.68, 0, 28, bank);
+    [-0.19, 0.19].forEach(bx => {
+      cylinder(0.065, 0.1, 0.36, mats.insulator, bx, 0.93, 0, 16, bank);
+      cylinder(0.03, 0.03, 0.15, mats.metal, bx, 1.18, 0, 10, bank);
+    });
+    for (let a = 0; a < 8; a += 1) {
+      const angle = a / 8 * Math.PI * 2;
+      const rib = box(0.04, 0.92, 0.07, mats.metal, Math.cos(angle) * 0.52, -0.06, Math.sin(angle) * 0.52, bank);
+      rib.rotation.y = -angle;
+    }
+    curveTube([
+      new THREE.Vector3(0, 1.22, 0),
+      new THREE.Vector3(bankIndex ? 0.55 : -0.55, 1.62, -0.2),
+      new THREE.Vector3(bankIndex ? 0.36 : -0.36, 2.08, -0.15)
+    ], 0.035, mats.wire, bank);
+  });
+  box(3.7, 0.15, 0.28, mats.metal, 0, 4.5, 0.08, switchPole);
+  [-1.25, -0.42, 0.42, 1.25].forEach((x, i) => {
+    cylinder(0.075, 0.095, 0.25, mats.insulator, x, 4.68, 0.08, 12, switchPole);
+    beamBetween(new THREE.Vector3(x, 4.86, -8), new THREE.Vector3(x, 4.86, 8), i === 1 ? 0.04 : 0.032, i === 1 ? mats.blue : mats.wire, switchPole);
+  });
+  curveTube([
+    new THREE.Vector3(0.08, 6.2, 0.64),
+    new THREE.Vector3(0.24, 4.95, 0.4),
+    new THREE.Vector3(0.3, 0.38, 0.26)
+  ], 0.035, mats.orange, switchPole);
+  box(0.22, 0.55, 0.12, mats.danger, -1.25, 6.5, 0.5, switchPole);
+
+  const damagedJumperMaterial = new THREE.MeshStandardMaterial({ color: palette.danger, roughness: 0.45, metalness: 0.35 });
+  const repairedJumperMaterial = new THREE.MeshStandardMaterial({ color: palette.s2, roughness: 0.45, metalness: 0.35 });
+  const jumperA = curveTube([
+    new THREE.Vector3(-2.15, 9.98, 0.2),
+    new THREE.Vector3(-1.7, 8.95, -0.3),
+    new THREE.Vector3(-1.35, 8.2, -0.55)
+  ], 0.05, damagedJumperMaterial, poleGroup);
+  const jumperB = curveTube([
+    new THREE.Vector3(-1.18, 7.95, -0.6),
+    new THREE.Vector3(-0.85, 7.55, -0.68),
+    new THREE.Vector3(-0.6, 7.42, -0.72)
+  ], 0.05, damagedJumperMaterial, poleGroup);
+
+  const faultLabels = {
+    insulator: '裝腳礙子破損',
+    hardware: '橫擔鐵件燒損',
+    transformer: '桿上變壓器故障'
+  };
+  const damagedCeramicMaterial = new THREE.MeshStandardMaterial({ color: palette.danger, roughness: 0.35, metalness: 0.02 });
+  const damagedMetalMaterial = new THREE.MeshStandardMaterial({ color: palette.danger, roughness: 0.48, metalness: 0.68 });
+  const targetInsulator = phaseInsulatorGroups[0];
+  const targetInsulatorHome = targetInsulator.position.clone();
+  const hardwareHome = hardwareTarget.position.clone();
+  const transformerTankHome = transformerTankAssembly.position.clone();
+  const tankNormalMaterial = tank.material;
+
+  const applyFaultVisuals = repaired => {
+    targetInsulator.position.copy(targetInsulatorHome);
+    targetInsulator.rotation.set(0, 0, 0);
+    hardwareTarget.position.copy(hardwareHome);
+    hardwareTarget.rotation.set(0, 0, 0);
+    transformerTankAssembly.position.copy(transformerTankHome);
+    transformerTankAssembly.rotation.set(0, 0, 0);
+    targetInsulator.traverse(node => {
+      if (node.isMesh) node.material = !repaired && state.fault === 'insulator' ? damagedCeramicMaterial : mats.insulator;
+    });
+    hardwareTarget.traverse(node => {
+      if (node.isMesh && node !== hardwareScorch) node.material = !repaired && state.fault === 'hardware' ? damagedMetalMaterial : mats.metal;
+    });
+    hardwareScorch.visible = !repaired && state.fault === 'hardware';
+    tank.material = !repaired && state.fault === 'transformer' ? damagedMetalMaterial : tankNormalMaterial;
+    transformerScorch.visible = !repaired && state.fault === 'transformer';
+    jumperA.material = !repaired && state.fault === 'hardware' ? damagedJumperMaterial : repairedJumperMaterial;
+    jumperB.material = !repaired && state.fault === 'hardware' ? damagedJumperMaterial : repairedJumperMaterial;
+  };
+
+  const groundingElectrode = new THREE.Group();
+  world.add(groundingElectrode);
+  cylinder(0.055, 0.055, 1.9, mats.copper, 1.55, -0.62, 0.8, 14, groundingElectrode);
+  const electrodeCollar = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.035, 8, 20), mats.metal);
+  electrodeCollar.position.set(1.55, 0.08, 0.8);
+  electrodeCollar.rotation.x = Math.PI / 2;
+  electrodeCollar.castShadow = true;
+  groundingElectrode.add(electrodeCollar);
+  box(0.28, 0.12, 0.22, mats.copper, 1.55, 0.22, 0.8, groundingElectrode);
+  curveTube([
+    new THREE.Vector3(-0.45, 6.12, 0.12),
+    new THREE.Vector3(0.5, 5.55, 0.4),
+    new THREE.Vector3(0.58, 0.72, 0.5),
+    new THREE.Vector3(1.55, 0.27, 0.8)
+  ], 0.03, mats.orange, groundingElectrode);
+
+  const groundSet = new THREE.Group();
+  poleGroup.add(groundSet);
+  phaseXs.forEach(x => {
+    curveTube([
+      new THREE.Vector3(x, 9.8, 0.22),
+      new THREE.Vector3(x * 0.62, 8.85, 0.45),
+      new THREE.Vector3(0.45, 8.1, 0.45)
+    ], 0.055, mats.orange, groundSet);
+  });
+  curveTube([
+    new THREE.Vector3(0.45, 8.1, 0.45),
+    new THREE.Vector3(0.58, 4.2, 0.5),
+    new THREE.Vector3(1.55, 0.28, 0.8)
+  ], 0.06, mats.orange, groundSet);
+  box(0.34, 0.15, 0.26, mats.orange, 1.55, 0.28, 0.8, groundSet);
+  groundSet.visible = false;
+
+  const worker = new THREE.Group();
+  scene.add(worker);
+  const body = new THREE.Group();
+  worker.add(body);
+
+  const fallbackCore = new THREE.Group();
+  body.add(fallbackCore);
+  cylinder(0.235, 0.32, 0.72, mats.uniform, 0, 0.5, 0, 28, fallbackCore);
+  ellipsoid(0.29, 0.19, 0.21, mats.uniform, 0, 0.12, 0, fallbackCore, 28);
+  cylinder(0.095, 0.11, 0.15, mats.skinShade, 0, 0.94, 0, 20, fallbackCore);
+  ellipsoid(0.19, 0.235, 0.19, mats.skin, 0, 1.17, 0, fallbackCore, 32);
+  ellipsoid(0.16, 0.13, 0.17, mats.skinShade, 0, 1.06, 0.018, fallbackCore, 28);
+  ellipsoid(0.145, 0.09, 0.14, mats.skin, 0, 1.025, 0.012, fallbackCore, 26);
+  ellipsoid(0.04, 0.058, 0.04, mats.skin, -0.19, 1.17, 0, fallbackCore, 18);
+  ellipsoid(0.04, 0.058, 0.04, mats.skin, 0.19, 1.17, 0, fallbackCore, 18);
+  [-0.067, 0.067].forEach(x => {
+    ellipsoid(0.052, 0.026, 0.014, mats.eyeWhite, x, 1.2, 0.178, fallbackCore, 18);
+    ellipsoid(0.019, 0.021, 0.012, mats.eye, x, 1.2, 0.195, fallbackCore, 14);
+    const brow = box(0.095, 0.014, 0.016, mats.dark, x, 1.255, 0.186, fallbackCore);
+    brow.rotation.z = x < 0 ? 0.09 : -0.09;
+  });
+  const nose = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.095, 18), mats.skinShade);
+  nose.position.set(0, 1.15, 0.205);
+  nose.rotation.x = Math.PI / 2;
+  nose.castShadow = true;
+  fallbackCore.add(nose);
+  ellipsoid(0.011, 0.008, 0.009, mats.dark, -0.018, 1.12, 0.21, fallbackCore, 12);
+  ellipsoid(0.011, 0.008, 0.009, mats.dark, 0.018, 1.12, 0.21, fallbackCore, 12);
+  const mouth = box(0.082, 0.015, 0.014, mats.lip, 0, 1.075, 0.183, fallbackCore);
+  mouth.rotation.z = 0.012;
+  ellipsoid(0.035, 0.018, 0.013, mats.lip, 0, 1.064, 0.184, fallbackCore, 16);
+  [-0.13, 0.13].forEach(x => ellipsoid(0.052, 0.04, 0.022, mats.skinShade, x, 1.11, 0.16, fallbackCore, 16));
+
+  const ppeParts = [];
+  const addPpePart = mesh => {
+    ppeParts.push(mesh);
+    return mesh;
+  };
+
+  const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.245, 28, 16, 0, Math.PI * 2, 0, Math.PI / 2), mats.helmet);
+  helmet.scale.set(1, 0.82, 1.06);
+  helmet.position.set(0, 1.31, 0);
+  helmet.castShadow = true;
+  body.add(helmet);
+  const helmetBrim = cylinder(0.275, 0.275, 0.035, mats.helmet, 0, 1.255, 0.025, 30, body);
+  addPpePart(helmetBrim);
+  const helmetBand = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.018, 10, 30), mats.dark);
+  helmetBand.position.set(0, 1.285, 0);
+  helmetBand.rotation.x = Math.PI / 2;
+  body.add(helmetBand);
+  addPpePart(helmetBand);
+  const chinStrapL = addPpePart(beamBetween(new THREE.Vector3(-0.19, 1.25, 0.02), new THREE.Vector3(-0.07, 1.02, 0.13), 0.012, mats.dark, body));
+  const chinStrapR = addPpePart(beamBetween(new THREE.Vector3(0.19, 1.25, 0.02), new THREE.Vector3(0.07, 1.02, 0.13), 0.012, mats.dark, body));
+
+  const faceShield = addPpePart(box(0.43, 0.37, 0.025, mats.glass, 0, 1.12, 0.235, body));
+  faceShield.rotation.x = -0.1;
+  const shieldHingeL = addPpePart(cylinder(0.035, 0.035, 0.05, mats.metal, -0.22, 1.29, 0.08, 12, body));
+  shieldHingeL.rotation.z = Math.PI / 2;
+  const shieldHingeR = addPpePart(shieldHingeL.clone());
+  shieldHingeR.position.x = 0.22;
+  body.add(shieldHingeR);
+
+  const leftArm = new THREE.Group();
+  const rightArm = new THREE.Group();
+  leftArm.position.set(-0.34, 0.79, 0);
+  rightArm.position.set(0.34, 0.79, 0);
+  body.add(leftArm, rightArm);
+  const leftArmCore = new THREE.Group();
+  const rightArmCore = new THREE.Group();
+  leftArm.add(leftArmCore);
+  rightArm.add(rightArmCore);
+  [leftArmCore, rightArmCore].forEach(armCore => {
+    ellipsoid(0.13, 0.16, 0.13, mats.uniformLight, 0, -0.05, 0, armCore, 22);
+    cylinder(0.085, 0.105, 0.36, mats.uniform, 0, -0.24, 0, 20, armCore);
+    ellipsoid(0.09, 0.095, 0.085, mats.uniform, 0, -0.43, 0, armCore, 20);
+    cylinder(0.07, 0.085, 0.32, mats.skin, 0, -0.59, 0, 20, armCore);
+    ellipsoid(0.082, 0.105, 0.055, mats.skinShade, 0, -0.79, 0.035, armCore, 22);
+    for (let finger = 0; finger < 4; finger += 1) {
+      const digit = cylinder(0.012, 0.014, 0.11, mats.skin, -0.045 + finger * 0.03, -0.88, 0.05, 10, armCore);
+      digit.rotation.x = -0.18;
+    }
+  });
+  [leftArm, rightArm].forEach(arm => {
+    addPpePart(cylinder(0.135, 0.155, 0.48, mats.orange, 0, -0.29, 0, 20, arm));
+    addPpePart(ellipsoid(0.105, 0.145, 0.085, mats.concrete, 0, -0.74, 0.035, arm, 22));
+    addPpePart(cylinder(0.142, 0.142, 0.055, mats.helmet, 0, -0.42, 0, 20, arm));
+  });
+  leftArm.rotation.z = -0.3;
+  rightArm.rotation.z = 0.3;
+
+  const leftShoulderPad = addPpePart(ellipsoid(0.23, 0.27, 0.22, mats.dark, -0.29, 0.75, 0, body, 22));
+  leftShoulderPad.rotation.z = -0.2;
+  const rightShoulderPad = addPpePart(leftShoulderPad.clone());
+  rightShoulderPad.position.x = 0.29;
+  rightShoulderPad.rotation.z = 0.2;
+  body.add(rightShoulderPad);
+
+  const leftLeg = new THREE.Group();
+  const rightLeg = new THREE.Group();
+  leftLeg.position.set(-0.17, 0.12, 0);
+  rightLeg.position.set(0.17, 0.12, 0);
+  body.add(leftLeg, rightLeg);
+  const leftLegCore = new THREE.Group();
+  const rightLegCore = new THREE.Group();
+  leftLeg.add(leftLegCore);
+  rightLeg.add(rightLegCore);
+  const buildClimberLeg = (leg, legCore) => {
+    cylinder(0.115, 0.14, 0.42, mats.uniform, 0, -0.2, 0, 22, legCore);
+    const knee = new THREE.Group();
+    knee.position.set(0, -0.42, 0);
+    leg.add(knee);
+    ellipsoid(0.12, 0.1, 0.115, mats.uniform, 0, 0, 0, knee, 20);
+    cylinder(0.08, 0.105, 0.38, mats.uniform, 0, -0.19, 0, 22, knee);
+    ellipsoid(0.13, 0.08, 0.24, mats.sole, 0, -0.44, 0.09, knee, 22);
+    addPpePart(ellipsoid(0.145, 0.105, 0.255, mats.metal, 0, -0.44, 0.1, knee, 22));
+    addPpePart(cylinder(0.11, 0.12, 0.25, mats.metal, 0, -0.29, 0, 18, knee));
+    return knee;
+  };
+  const leftKnee = buildClimberLeg(leftLeg, leftLegCore);
+  const rightKnee = buildClimberLeg(rightLeg, rightLegCore);
+  const leftThighStrap = new THREE.Mesh(new THREE.TorusGeometry(0.145, 0.022, 10, 24), mats.orange);
+  leftThighStrap.position.set(0, -0.23, 0);
+  leftThighStrap.rotation.x = Math.PI / 2;
+  leftLeg.add(leftThighStrap);
+  addPpePart(leftThighStrap);
+  const rightThighStrap = leftThighStrap.clone();
+  rightLeg.add(rightThighStrap);
+  addPpePart(rightThighStrap);
+
+  addPpePart(box(0.72, 0.09, 0.35, mats.orange, 0, 0.34, 0, body));
+  addPpePart(box(0.58, 0.055, 0.355, mats.helmet, 0, 0.65, 0, body));
+  addPpePart(box(0.5, 0.055, 0.36, mats.helmet, 0, 0.48, 0, body));
+  const chestStrapL = addPpePart(box(0.055, 0.7, 0.055, mats.orange, -0.18, 0.62, 0.2, body));
+  chestStrapL.rotation.z = -0.27;
+  const chestStrapR = addPpePart(chestStrapL.clone());
+  chestStrapR.position.x = 0.18;
+  chestStrapR.rotation.z = 0.27;
+  body.add(chestStrapR);
+  const chestRing = new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.022, 10, 22), mats.metal);
+  chestRing.position.set(0, 0.52, 0.235);
+  chestRing.rotation.x = Math.PI / 2;
+  chestRing.castShadow = true;
+  body.add(chestRing);
+  addPpePart(chestRing);
+
+  ppeParts.forEach(part => { part.visible = false; });
+  helmet.visible = false;
+
+  const beltTools = new THREE.Group();
+  beltTools.position.set(0, 0.32, 0);
+  body.add(beltTools);
+  box(0.25, 0.4, 0.19, mats.dark, -0.44, -0.08, 0.01, beltTools);
+  box(0.22, 0.34, 0.18, mats.dark, 0.44, -0.05, 0.01, beltTools);
+  box(0.18, 0.1, 0.025, mats.metal, -0.44, -0.03, 0.115, beltTools);
+  box(0.15, 0.08, 0.025, mats.metal, 0.44, -0.02, 0.11, beltTools);
+  cylinder(0.04, 0.04, 0.52, mats.orange, -0.5, 0.01, 0.12, 12, beltTools).rotation.z = -0.18;
+  cylinder(0.035, 0.035, 0.56, mats.metal, 0.48, 0.04, 0.12, 12, beltTools).rotation.z = 0.25;
+  const blanketRoll = cylinder(0.11, 0.11, 0.4, mats.cover, 0.27, -0.08, -0.13, 16, beltTools);
+  blanketRoll.rotation.x = Math.PI / 2;
+
+  const handTool = new THREE.Group();
+  handTool.position.set(0.19, -0.66, 0.13);
+  rightArm.add(handTool);
+  const testerTool = cylinder(0.032, 0.045, 0.75, mats.orange, 0, -0.3, 0, 12, handTool);
+  testerTool.visible = false;
+  const wrenchTool = box(0.075, 0.62, 0.085, mats.metal, 0, -0.28, 0, handTool);
+  wrenchTool.visible = false;
+
+  const probeShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.052, 1, 12), mats.orange);
+  probeShaft.castShadow = true;
+  probeShaft.visible = false;
+  scene.add(probeShaft);
+  const probeTip = new THREE.Mesh(new THREE.SphereGeometry(0.095, 14, 10), mats.metal);
+  probeTip.visible = false;
+  scene.add(probeTip);
+  const probeLamp = new THREE.PointLight(palette.s2, 0, 2.6);
+  scene.add(probeLamp);
+
+  const movingBlanket = new THREE.Group();
+  scene.add(movingBlanket);
+  box(1.08, 0.08, 3.1, mats.cover, 0, 0, 0, movingBlanket);
+  box(0.08, 1.18, 3.1, mats.cover, -0.5, -0.56, 0, movingBlanket).rotation.z = -0.08;
+  box(0.08, 1.18, 3.1, mats.cover, 0.5, -0.56, 0, movingBlanket).rotation.z = 0.08;
+  movingBlanket.visible = false;
+
+  const ropeGroup = new THREE.Group();
+  scene.add(ropeGroup);
+  const ropeLineA = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: palette.s5 }));
+  const ropeLineB = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: palette.s3 }));
+  ropeGroup.add(ropeLineA, ropeLineB);
+  ropeGroup.visible = false;
+
+  const arcGroup = new THREE.Group();
+  scene.add(arcGroup);
+  const arcMat = new THREE.LineBasicMaterial({ color: palette.danger, transparent: true, opacity: 1 });
+  const arcLight = new THREE.PointLight(palette.danger, 0, 8);
+  arcGroup.add(arcLight);
+  arcGroup.visible = false;
+  let arcUntil = 0;
+
+  let audioCtx = null;
+  let musicTimer = null;
+  let musicEnabled = false;
+  let nextBeat = 0;
+  let beat = 0;
+  let tensionUntil = 0;
+
+  const playTone = (frequency, duration, gain, type = 'triangle') => {
+    if (!audioCtx || !musicEnabled) return;
+    const osc = audioCtx.createOscillator();
+    const amp = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = frequency;
+    amp.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    amp.gain.exponentialRampToValueAtTime(gain, audioCtx.currentTime + 0.012);
+    amp.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+    osc.connect(amp).connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration + 0.03);
+  };
+
+  const scheduleMusic = () => {
+    if (!audioCtx || !musicEnabled || audioCtx.currentTime < nextBeat) return;
+    const tense = Date.now() < tensionUntil || state.hp <= 35;
+    const tempo = state.hp <= 35 ? 166 : tense ? 148 : 108;
+    const scale = tense ? [110, 116.54, 138.59, 155.56] : [110, 130.81, 146.83, 164.81];
+    const note = scale[beat % scale.length] * (beat % 8 === 6 ? 2 : 1);
+    playTone(note, tense ? 0.16 : 0.24, tense ? 0.035 : 0.022, beat % 4 === 0 ? 'sawtooth' : 'triangle');
+    if (beat % 4 === 0) playTone(55, 0.18, 0.04, 'sine');
+    if (tense && beat % 2 === 1) playTone(note * 1.414, 0.08, 0.012, 'square');
+    beat += 1;
+    nextBeat = audioCtx.currentTime + 60 / tempo / 2;
+  };
+
+  const toggleAudio = () => {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) {
+        log('這個瀏覽器不支援程序音樂。', '可繼續遊玩，不影響任務流程。', true);
+        return;
+      }
+      audioCtx = new AudioContext();
+      musicTimer = setInterval(scheduleMusic, 45);
+    }
+    musicEnabled = !musicEnabled;
+    if (musicEnabled) {
+      audioCtx.resume();
+      nextBeat = audioCtx.currentTime;
+    }
+    el.audio.textContent = musicEnabled ? '音樂：開' : '啟動音樂';
+    el.audio.classList.toggle('btn-primary', !musicEnabled);
+    updateUI();
+  };
+
+  const ensureAudio = () => {
+    if (!musicEnabled) return;
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  };
+
+  const state = {
+    mode: 'deenergized',
+    voltage: 11.4,
+    hp: 100,
+    height: 0.6,
+    ppe: false,
+    rope: false,
+    ropeAnchor: 0.9,
+    ropeAnchors: [0.9, 0.9],
+    activeRope: 0,
+    rehookIndex: 0,
+    fault: 'insulator',
+    isolated: false,
+    tested: false,
+    covered: 0,
+    grounded: false,
+    repaired: false,
+    finished: false,
+    failed: false,
+    moving: 0,
+    moveBlocked: false,
+    mistakes: 0,
+    busy: null
+  };
+  let actionAnim = null;
+  let climbPhase = 0;
+  const rehookHeights = [2.5, 4.7, 6.55, 8.15];
+
+  const lineEnergized = () => state.mode === 'live' || !state.isolated;
+  const atWorkZone = () => state.height >= 7.15;
+
+  const log = (main, detail = '', danger = false) => {
+    el.logMain.textContent = main;
+    el.logDetail.textContent = detail;
+    el.log.classList.toggle('is-danger', danger);
+  };
+
+  const getSteps = () => state.mode === 'live'
+    ? [
+        ['ppe', 'PPE'], ['rope', '輔助繩'], ['climb', '登桿'], ['test', '檢電'],
+        ['cover', '三相掩蔽'], ['repair', '活線維修'], ['finish', '完工']
+      ]
+    : [
+        ['ppe', 'PPE'], ['isolate', '隔離掛牌'], ['rope', '輔助繩'], ['climb', '登桿'],
+        ['test', '檢電無電'], ['ground', '工作接地'], ['cover', '設備掩蔽'],
+        ['repair', '維修'], ['remove-ground', '拆接地'], ['finish', '復電']
+      ];
+
+  const isDone = key => ({
+    ppe: state.ppe,
+    isolate: state.isolated,
+    rope: state.rope,
+    climb: atWorkZone(),
+    test: state.tested,
+    ground: state.grounded || (key === 'ground' && state.repaired),
+    cover: state.covered >= (state.mode === 'live' ? 3 : 1),
+    repair: state.repaired,
+    'remove-ground': state.repaired && !state.grounded,
+    finish: state.finished
+  })[key];
+
+  const currentStep = () => {
+    const steps = getSteps();
+    const next = steps.find(([key]) => !isDone(key));
+    return next ? next[0] : 'finish';
+  };
+
+  const updateSteps = () => {
+    el.steps.textContent = '';
+    const current = currentStep();
+    getSteps().forEach(([key, label]) => {
+      const span = document.createElement('span');
+      span.className = 'tp3-step text-small';
+      if (isDone(key)) span.classList.add('is-done');
+      else if (key === current) span.classList.add('is-current');
+      span.textContent = label;
+      el.steps.appendChild(span);
+    });
+  };
+
+  const setTool = name => {
+    testerTool.visible = name === 'tester';
+    wrenchTool.visible = name === 'wrench';
+    window.setTimeout(() => {
+      testerTool.visible = false;
+      wrenchTool.visible = false;
+    }, 1400);
+  };
+
+  const buildArc = () => {
+    while (arcGroup.children.length > 1) arcGroup.remove(arcGroup.children[1]);
+    arcLight.intensity = 4;
+    arcLight.position.set(0, state.height + 0.6, 0.6);
+    for (let i = 0; i < 8; i += 1) {
+      const pts = [];
+      const start = new THREE.Vector3((Math.random() - 0.5) * 0.5, state.height + 0.8, 0.3);
+      const end = new THREE.Vector3((Math.random() - 0.5) * 2.5, state.height - 0.4 + Math.random(), 1.2 + Math.random());
+      for (let k = 0; k <= 6; k += 1) {
+        const t = k / 6;
+        pts.push(start.clone().lerp(end, t).add(new THREE.Vector3((Math.random() - 0.5) * 0.28, (Math.random() - 0.5) * 0.22, (Math.random() - 0.5) * 0.25)));
+      }
+      arcGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), arcMat.clone()));
+    }
+    arcGroup.visible = true;
+    arcUntil = performance.now() + 720;
+  };
+
+  const mistake = (damage, main, detail, severe = false) => {
+    if (state.failed || state.finished) return;
+    state.mistakes += 1;
+    state.hp = Math.max(0, state.hp - damage);
+    tensionUntil = Date.now() + (severe ? 16000 : 9000);
+    playTone(severe ? 58 : 82, 0.7, 0.08, 'sawtooth');
+    el.damage.textContent = `-${damage} HP`;
+    el.damage.classList.remove('is-active');
+    void el.damage.offsetWidth;
+    el.damage.classList.add('is-active');
+    window.setTimeout(() => el.damage.classList.remove('is-active'), 650);
+    el.flash.classList.add('is-active');
+    window.setTimeout(() => el.flash.classList.remove('is-active'), severe ? 420 : 180);
+    if (severe || damage >= 35) buildArc();
+    log(main, detail, true);
+    if (state.hp <= 0) {
+      state.failed = true;
+      state.moving = 0;
+      log('生命值歸零，任務失敗。', '重新開始後再依程序完成防護、檢電與作業。', true);
+    }
+    updateUI();
+  };
+
+  const updateRopeGeometry = () => {
+    if (!state.rope) {
+      ropeGroup.visible = false;
+      return;
+    }
+    [ropeLineA, ropeLineB].forEach((line, index) => {
+      let y = state.ropeAnchors[index] + 0.34;
+      let radius = 0.54;
+      let wrapFraction = 1;
+      let outward = 0;
+      const switching = actionAnim && actionAnim.type === 'rope' && actionAnim.movingIndex === index;
+      if (switching) {
+        const progress = THREE.MathUtils.clamp((performance.now() - actionAnim.start) / actionAnim.duration, 0, 1);
+        const eased = smoothStep(progress);
+        y = THREE.MathUtils.lerp(actionAnim.fromAnchor, actionAnim.toAnchor, eased) + 0.34;
+        y += Math.sin(progress * Math.PI) * 0.18;
+        radius += Math.sin(progress * Math.PI) * 0.28;
+        outward = Math.sin(progress * Math.PI) * (index === 0 ? 0.28 : -0.28);
+        wrapFraction = progress < 0.28
+          ? THREE.MathUtils.lerp(1, 0.58, smoothStep(progress / 0.28))
+          : progress > 0.72
+            ? THREE.MathUtils.lerp(0.58, 1, smoothStep((progress - 0.72) / 0.28))
+            : 0.58;
+      }
+      const points = [];
+      const arc = Math.PI * 2 * wrapFraction;
+      const startAngle = Math.PI / 2 - arc / 2;
+      for (let i = 0; i <= 30; i += 1) {
+        const a = startAngle + i / 30 * arc;
+        points.push(new THREE.Vector3(Math.sin(a) * radius + outward, y, Math.cos(a) * radius));
+      }
+      const end = points[points.length - 1];
+      points.push(new THREE.Vector3(end.x, y - 0.08, end.z + 0.08));
+      points.push(new THREE.Vector3(index === 0 ? -0.2 : 0.2, state.height + 0.43, 0.94));
+      line.geometry.dispose();
+      line.geometry = new THREE.BufferGeometry().setFromPoints(points);
+    });
+    ropeGroup.visible = true;
+  };
+
+  const smoothStep = value => value * value * (3 - 2 * value);
+
+  const setProbeBetween = (start, end) => {
+    const delta = new THREE.Vector3().subVectors(end, start);
+    const length = Math.max(0.02, delta.length());
+    probeShaft.position.copy(start).add(end).multiplyScalar(0.5);
+    probeShaft.scale.set(1, length, 1);
+    probeShaft.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.normalize());
+    probeTip.position.copy(end);
+    probeLamp.position.copy(end);
+  };
+
+  const beginVoltageTest = () => {
+    state.busy = 'test';
+    state.moving = 0;
+    actionAnim = {
+      type: 'test',
+      start: performance.now(),
+      duration: 4800,
+      beeped: [false, false, false]
+    };
+    testerTool.visible = false;
+    log('作業員從腰袋抽出高壓檢電器。', '依序接近左、中、右三相導線，檢查指示後再收回。');
+    updateUI();
+  };
+
+  const beginBlanketCover = index => {
+    state.busy = 'cover';
+    state.moving = 0;
+    actionAnim = {
+      type: 'cover',
+      start: performance.now(),
+      duration: 2600,
+      index,
+      beeped: false
+    };
+    blanketRoll.visible = false;
+    movingBlanket.visible = true;
+    log('作業員從腰帶取出折疊絕緣毯。', `展開並包覆第 ${index + 1} 相導線，固定前保持雙手控制。`);
+    updateUI();
+  };
+
+  const beginRopeSwitch = initial => {
+    const movingIndex = initial ? 0 : 1 - state.activeRope;
+    if (initial) {
+      state.rope = true;
+      state.ropeAnchors = [state.height + 0.36, state.height + 0.3];
+      state.activeRope = 1;
+    }
+    const highest = Math.max(...state.ropeAnchors);
+    const target = Math.min(8.9, Math.max(state.height + 1.28, highest + 0.52));
+    state.busy = 'rope';
+    state.moving = 0;
+    actionAnim = {
+      type: 'rope',
+      start: performance.now(),
+      duration: 1750,
+      movingIndex,
+      fromAnchor: state.ropeAnchors[movingIndex],
+      toAnchor: target,
+      initial
+    };
+    log(
+      initial ? '先以一條輔助繩保持連結，另一條開始上套。' : `輔助繩 ${movingIndex === 0 ? 'A' : 'B'} 開始交替換掛。`,
+      '一條持續掛在桿上承載；另一條放鬆、繞過電桿、向上套至新位置，再收緊承載。'
+    );
+    updateUI();
+  };
+
+  const beginEquipmentRepair = () => {
+    state.busy = 'repair';
+    state.moving = 0;
+    wrenchTool.visible = true;
+    const duration = state.fault === 'transformer' ? 7600 : state.fault === 'hardware' ? 5600 : 5200;
+    actionAnim = {
+      type: 'repair',
+      start: performance.now(),
+      duration,
+      fault: state.fault,
+      swapped: false
+    };
+    hoistGroup.visible = state.fault === 'transformer';
+    const details = {
+      insulator: '先以工具解除導線與裝腳礙子的連結及固定，移下破損礙子，再把新礙子送上原孔位鎖固。',
+      hardware: '先卸除燒損鐵件的螺栓與支撐，托住舊件移出，再送入新鍍鋅鐵件並逐點鎖固。',
+      transformer: '吊臂吊索先承受變壓器重量，拆離一次、二次側接線與托架固定後吊下舊機，再吊裝新機復位。'
+    };
+    log(`開始處理：${faultLabels[state.fault]}。`, details[state.fault]);
+    updateUI();
+  };
+
+  const setHoistCable = end => {
+    const top = new THREE.Vector3(-2.4, 11.25, 1.15);
+    const mid = top.clone().lerp(end, 0.52);
+    mid.y += 0.18;
+    hoistLine.geometry.dispose();
+    hoistLine.geometry = new THREE.BufferGeometry().setFromPoints([top, mid, end]);
+    hoistHook.position.copy(end);
+  };
+
+  const finishActionAnimation = () => {
+    if (!actionAnim) return;
+    const completed = actionAnim;
+    actionAnim = null;
+    probeShaft.visible = false;
+    probeTip.visible = false;
+    probeLamp.intensity = 0;
+    movingBlanket.visible = false;
+    blanketRoll.visible = true;
+    wrenchTool.visible = false;
+    state.busy = null;
+    if (completed.type === 'test') {
+      state.tested = true;
+      log(
+        lineEnergized() ? '三相逐相檢電完成：線路帶電。' : '三相逐相檢電完成：確認無電。',
+        lineEnergized() ? `檢電器顯示 ${state.voltage.toFixed(1)} kV 帶電狀態，下一步逐相裝設絕緣毯。` : '確認隔離後仍須依程序掛設工作接地。'
+      );
+    }
+    if (completed.type === 'cover') {
+      state.covered += 1;
+      covers[completed.index].visible = true;
+      log(
+        '絕緣毯已完成展開、包覆與固定。',
+        state.mode === 'live' ? `已完成 ${state.covered}/3 相；每一相都需形成連續保護區。` : '鄰近可能接觸區域已形成絕緣防護。'
+      );
+    }
+    if (completed.type === 'rope') {
+      state.ropeAnchors[completed.movingIndex] = completed.toAnchor;
+      state.activeRope = completed.movingIndex;
+      state.ropeAnchor = completed.toAnchor;
+      state.moveBlocked = false;
+      while (state.rehookIndex < rehookHeights.length && state.ropeAnchor >= rehookHeights[state.rehookIndex]) state.rehookIndex += 1;
+      log(
+        `輔助繩 ${completed.movingIndex === 0 ? 'A' : 'B'} 已向上套妥並轉為承載。`,
+        `另一條繩仍保留在較低掛點，形成連續防墜；目前最高掛點 ${state.ropeAnchor.toFixed(1)} m。`
+      );
+    }
+    if (completed.type === 'repair') {
+      state.repaired = true;
+      applyFaultVisuals(true);
+      hoistGroup.visible = false;
+      const next = state.mode === 'deenergized' ? '下一步拆除工作接地，再依程序復電。' : '維持掩蔽與安全位置，進行工具清點及完工確認。';
+      log(`${faultLabels[completed.fault]}已完成舊件移出、新件送入、復位與固定。`, next);
+    }
+    updateUI();
+  };
+
+  const updateActionAnimation = time => {
+    if (!actionAnim) return;
+    const progress = THREE.MathUtils.clamp((time - actionAnim.start) / actionAnim.duration, 0, 1);
+    if (actionAnim.type === 'test') {
+      const phasePosition = Math.min(2.999, progress * 3);
+      const phase = Math.min(2, Math.floor(phasePosition));
+      const local = phasePosition - phase;
+      let reach = 1;
+      if (local < 0.28) reach = smoothStep(local / 0.28);
+      else if (local > 0.74) reach = smoothStep((1 - local) / 0.26);
+      const hand = new THREE.Vector3(0.34, state.height + 0.88, 1.02);
+      const target = new THREE.Vector3(phaseXs[phase], 9.92, 0.42);
+      const end = hand.clone().lerp(target, reach);
+      end.y += Math.sin(Math.PI * reach) * 0.12;
+      setProbeBetween(hand, end);
+      probeShaft.visible = true;
+      probeTip.visible = true;
+      probeLamp.intensity = reach > 0.92 ? 1.8 : 0;
+      if (reach > 0.92 && !actionAnim.beeped[phase]) {
+        actionAnim.beeped[phase] = true;
+        playTone(lineEnergized() ? 880 : 440, 0.13, 0.05, lineEnergized() ? 'square' : 'sine');
+        log(`第 ${phase + 1} 相檢電：${lineEnergized() ? '有電指示' : '無電指示'}。`, `檢電器接近導線後停留確認，再移往下一相。`);
+      }
+    }
+    if (actionAnim.type === 'cover') {
+      const eased = smoothStep(progress);
+      const start = new THREE.Vector3(0.38, state.height + 0.36, 1.08);
+      const target = new THREE.Vector3(phaseXs[actionAnim.index], 9.98, 0.18);
+      movingBlanket.position.copy(start).lerp(target, eased);
+      movingBlanket.position.y += Math.sin(progress * Math.PI) * 0.62;
+      movingBlanket.scale.set(0.16 + eased * 0.84, 0.35 + eased * 0.65, 0.3 + eased * 0.7);
+      movingBlanket.rotation.set(Math.sin(progress * Math.PI) * 0.18, (1 - eased) * 1.6, (1 - eased) * 1.25);
+      if (progress > 0.42 && !actionAnim.beeped) {
+        actionAnim.beeped = true;
+        playTone(220, 0.08, 0.018, 'triangle');
+      }
+    }
+    if (actionAnim.type === 'rope') {
+      updateRopeGeometry();
+      const local = Math.sin(progress * Math.PI);
+      body.rotation.x = -local * 0.08;
+    }
+    if (actionAnim.type === 'repair') {
+      const fault = actionAnim.fault;
+      const travel = progress < 0.5 ? smoothStep(progress / 0.5) : smoothStep((1 - progress) / 0.5);
+      if (fault === 'insulator') {
+        const handoff = new THREE.Vector3(-0.58, state.height + 0.92, 0.62);
+        targetInsulator.position.copy(targetInsulatorHome).lerp(handoff, travel);
+        targetInsulator.rotation.z = travel * 0.72;
+        targetInsulator.rotation.x = travel * 0.28;
+      }
+      if (fault === 'hardware') {
+        const handoff = new THREE.Vector3(0.55, state.height + 0.72, 0.58);
+        hardwareTarget.position.copy(hardwareHome).lerp(handoff, travel);
+        hardwareTarget.rotation.z = -travel * 0.62;
+        hardwareTarget.rotation.y = travel * 0.35;
+      }
+      if (fault === 'transformer') {
+        const liftTravel = progress < 0.55 ? smoothStep(progress / 0.55) : smoothStep((1 - progress) / 0.45);
+        const releasePoint = new THREE.Vector3(-1.55, 0.52, 0.88);
+        const truckPoint = new THREE.Vector3(-5.2, -4.62, 2.18);
+        if (liftTravel < 0.34) {
+          transformerTankAssembly.position.copy(transformerTankHome).lerp(releasePoint, smoothStep(liftTravel / 0.34));
+        } else {
+          transformerTankAssembly.position.copy(releasePoint).lerp(truckPoint, smoothStep((liftTravel - 0.34) / 0.66));
+        }
+        transformerTankAssembly.rotation.z = -Math.sin(liftTravel * Math.PI) * 0.08;
+        transformerTankAssembly.updateMatrixWorld(true);
+        const hookEnd = transformerTankAssembly.getWorldPosition(new THREE.Vector3());
+        hookEnd.y += 0.86;
+        setHoistCable(hookEnd);
+      }
+      if (progress > 0.5 && !actionAnim.swapped) {
+        actionAnim.swapped = true;
+        if (fault === 'insulator') {
+          targetInsulator.traverse(node => { if (node.isMesh) node.material = mats.insulator; });
+        }
+        if (fault === 'hardware') {
+          hardwareTarget.traverse(node => { if (node.isMesh && node !== hardwareScorch) node.material = mats.metal; });
+          hardwareScorch.visible = false;
+          jumperA.material = repairedJumperMaterial;
+          jumperB.material = repairedJumperMaterial;
+        }
+        if (fault === 'transformer') {
+          tank.material = tankNormalMaterial;
+          transformerScorch.visible = false;
+        }
+        playTone(196, 0.16, 0.025, 'triangle');
+        log(`舊${fault === 'insulator' ? '礙子' : fault === 'hardware' ? '鐵件' : '變壓器'}已移出。`, '新設備由通繩／吊索送入，對準原安裝位置後進行復位與固定。');
+      }
+    }
+    if (progress >= 1) finishActionAnimation();
+  };
+
+  const updateWorker = (time) => {
+    const climbing = state.moving !== 0 && !state.moveBlocked && !state.failed && !state.finished && !state.busy;
+    const stride = climbing ? Math.sin(climbPhase) : 0;
+    const leftLift = climbing ? Math.max(0, stride) : 0;
+    const rightLift = climbing ? Math.max(0, -stride) : 0;
+    const poseEase = climbing ? 0.28 : 0.16;
+    worker.position.set(0, state.height, 0.88);
+    worker.rotation.y = Math.PI;
+    leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, climbing ? -stride * 0.58 : 0, poseEase);
+    rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, climbing ? stride * 0.58 : 0, poseEase);
+    leftLeg.rotation.x = THREE.MathUtils.lerp(leftLeg.rotation.x, climbing ? -0.12 - leftLift * 0.54 + rightLift * 0.12 : 0, poseEase);
+    rightLeg.rotation.x = THREE.MathUtils.lerp(rightLeg.rotation.x, climbing ? -0.12 - rightLift * 0.54 + leftLift * 0.12 : 0, poseEase);
+    leftKnee.rotation.x = THREE.MathUtils.lerp(leftKnee.rotation.x, climbing ? leftLift * 0.88 : 0, poseEase);
+    rightKnee.rotation.x = THREE.MathUtils.lerp(rightKnee.rotation.x, climbing ? rightLift * 0.88 : 0, poseEase);
+    leftLeg.position.y = THREE.MathUtils.lerp(leftLeg.position.y, 0.12 + leftLift * 0.17, poseEase);
+    rightLeg.position.y = THREE.MathUtils.lerp(rightLeg.position.y, 0.12 + rightLift * 0.17, poseEase);
+    leftLeg.position.z = THREE.MathUtils.lerp(leftLeg.position.z, climbing ? leftLift * 0.12 : 0, poseEase);
+    rightLeg.position.z = THREE.MathUtils.lerp(rightLeg.position.z, climbing ? rightLift * 0.12 : 0, poseEase);
+    body.position.y = THREE.MathUtils.lerp(body.position.y, climbing ? Math.abs(stride) * 0.035 : 0, 0.2);
+    body.position.z = THREE.MathUtils.lerp(body.position.z, climbing ? 0.055 : 0, 0.18);
+    if (state.busy !== 'rope') body.rotation.x = THREE.MathUtils.lerp(body.rotation.x, 0, 0.14);
+    if (climbing) body.rotation.z = THREE.MathUtils.lerp(body.rotation.z, stride * 0.035, 0.2);
+    if (state.busy === 'test') {
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.12, 0.22);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.46, 0.22);
+    }
+    if (state.busy === 'cover') {
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.02, 0.22);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.96, 0.22);
+    }
+    if (state.busy === 'rope' && actionAnim) {
+      const progress = THREE.MathUtils.clamp((time - actionAnim.start) / actionAnim.duration, 0, 1);
+      const reach = Math.sin(progress * Math.PI);
+      const movingLeft = actionAnim.movingIndex === 0;
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, movingLeft ? -1.42 * reach : -0.5 * reach, 0.34);
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, movingLeft ? -0.5 * reach : -1.42 * reach, 0.34);
+      leftArm.rotation.z = -0.3 - (movingLeft ? reach * 0.32 : 0);
+      rightArm.rotation.z = 0.3 + (!movingLeft ? reach * 0.32 : 0);
+    } else {
+      leftArm.rotation.z = THREE.MathUtils.lerp(leftArm.rotation.z, -0.3, 0.18);
+      rightArm.rotation.z = THREE.MathUtils.lerp(rightArm.rotation.z, 0.3, 0.18);
+    }
+    if (state.busy === 'repair' && actionAnim) {
+      const progress = THREE.MathUtils.clamp((time - actionAnim.start) / actionAnim.duration, 0, 1);
+      const reach = Math.sin(progress * Math.PI);
+      const tighten = Math.sin(progress * Math.PI * 6) * 0.14 * reach;
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.18 + tighten, 0.28);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.98 - tighten * 0.4, 0.28);
+      body.rotation.y = THREE.MathUtils.lerp(body.rotation.y, actionAnim.fault === 'insulator' ? 0.18 : -0.12, 0.16);
+    } else {
+      body.rotation.y = THREE.MathUtils.lerp(body.rotation.y, 0, 0.12);
+    }
+    if (performance.now() < arcUntil) {
+      worker.position.x += (Math.random() - 0.5) * 0.11;
+      body.rotation.z = (Math.random() - 0.5) * 0.16;
+    } else if (!climbing) {
+      body.rotation.z *= 0.82;
+    }
+  };
+
+  const objectiveText = () => {
+    if (state.failed) return '任務失敗：生命值歸零。';
+    if (state.finished) return `任務完成：剩餘 ${state.hp} HP，失誤 ${state.mistakes} 次。`;
+    if (state.busy === 'test') return '檢電動作中：抽出檢電器，逐相接近、停留確認、收回。';
+    if (state.busy === 'cover') return `絕緣毯裝設中：展開並包覆第 ${state.covered + 1} 相導線。`;
+    if (state.busy === 'rope') return '雙輔助繩交替換掛：一條保持承載，另一條放鬆後向上套妥。';
+    if (state.busy === 'repair') return `${faultLabels[state.fault]}更換中：舊件移出、新件送入並復位固定。`;
+    const step = currentStep();
+    const messages = {
+      ppe: '穿戴安全帽、護目／面罩、絕緣手套與袖套、安全帶及安全鞋。',
+      isolate: '先在地面完成停電隔離、上鎖掛牌與工作許可。',
+      rope: '掛妥輔助繩，再開始登桿。',
+      climb: '按住 W／↑，左右腳依序踏上腳踏釘、屈膝抬升與重心轉移；接近繩長上限時按 Q 交替換掛。',
+      test: '到變壓器工作區，從腰袋取檢電器確認線路狀態。',
+      ground: '確認隔離且檢電無電後，掛設工作接地組。',
+      cover: state.mode === 'live' ? `逐相掩蔽高壓導線：${state.covered}/3` : '掩蔽鄰近設備與導線。',
+      repair: `依情境更換${faultLabels[state.fault]}。`,
+      'remove-ground': '維修完成後拆除工作接地組。',
+      finish: state.mode === 'live' ? '完成工具清點與完工確認。' : '下桿或確認安全後執行復電。'
+    };
+    return messages[step] || '依程序完成任務。';
+  };
+
+  const updateActionButtons = () => {
+    const expected = currentStep();
+    el.actions.forEach(button => {
+      const action = button.dataset.action;
+      button.classList.toggle('btn-primary', action === expected);
+      if (action === 'cover') button.textContent = state.mode === 'live' ? `逐相高壓掩蔽 ${state.covered}/3` : '腰袋取絕緣掩蔽具';
+      if (action === 'repair') button.textContent = state.fault === 'insulator' ? '更換破損礙子' : state.fault === 'hardware' ? '更換燒損鐵件' : '吊換桿上變壓器';
+      if (action === 'finish') button.textContent = state.mode === 'live' ? '完工確認' : '復電／完工確認';
+      button.disabled = state.failed || state.finished || Boolean(state.busy);
+    });
+    el.rope.classList.toggle('btn-primary', expected === 'rope' || (expected === 'climb' && state.ropeAnchor - state.height < 0.45));
+    el.up.classList.toggle('btn-primary', expected === 'climb');
+  };
+
+  const updateUI = () => {
+    el.hp.textContent = `${state.hp} HP`;
+    el.hpFill.style.width = `${state.hp}%`;
+    el.hpFill.style.background = state.hp <= 35 ? 'var(--destructive)' : state.hp <= 65 ? 'var(--viz-series-3)' : 'var(--viz-series-2)';
+    el.height.textContent = `${state.height.toFixed(1)} m`;
+    el.altimeter.style.height = `${Math.min(100, state.height / 9.2 * 100)}%`;
+    el.ropeStatus.textContent = state.rope
+      ? `A ${state.ropeAnchors[0].toFixed(1)} m／B ${state.ropeAnchors[1].toFixed(1)} m，${state.activeRope === 0 ? 'A' : 'B'} 承載`
+      : '雙輔助繩未掛';
+    const tense = Date.now() < tensionUntil || state.hp <= 35;
+    el.musicState.textContent = !musicEnabled ? '音樂關閉' : tense ? '高張力節奏' : '搶修節奏';
+    el.lineState.textContent = lineEnergized() ? `線路帶電 ${state.voltage.toFixed(1)} kV` : '已隔離、線路停電';
+    el.objective.textContent = objectiveText();
+    el.hint.textContent = state.finished ? '任務完成' : state.failed ? '請重新開始' : state.busy ? '連續動作進行中' : state.rope && state.ropeAnchor - state.height < 0.45 ? '上方承載繩即將到限，按 Q 交替上套' : 'W／↑ 左右腳交替登桿　S／↓ 下桿　Q 雙繩換掛';
+    el.up.disabled = state.failed || state.finished || Boolean(state.busy);
+    el.down.disabled = state.failed || state.finished || Boolean(state.busy);
+    el.rope.disabled = state.failed || state.finished || Boolean(state.busy) || !state.ppe;
+    el.mode.disabled = state.height > 0.75 || state.ppe;
+    el.voltage.disabled = state.height > 0.75;
+    el.fault.disabled = state.height > 0.75 || state.ppe;
+    updateSteps();
+    updateActionButtons();
+    updateRopeGeometry();
+  };
+
+  const attachRope = () => {
+    ensureAudio();
+    if (state.failed || state.finished || state.busy) return;
+    if (!state.ppe) {
+      mistake(8, '未完成防護具就操作安全繩。', '先穿戴安全帶、絕緣防護具與安全鞋。');
+      return;
+    }
+    if (!state.rope) {
+      beginRopeSwitch(true);
+      return;
+    }
+    if (!state.moveBlocked && state.ropeAnchor - state.height > 0.78) {
+      log('目前上方承載繩仍有足夠高度。', '先以左右腳交替方式繼續登桿；接近繩長上限後，再讓較低的另一條繩向上套。');
+      return;
+    }
+    beginRopeSwitch(false);
+  };
+
+  const performAction = action => {
+    ensureAudio();
+    if (state.failed || state.finished || state.busy) return;
+    if (action === 'ppe') {
+      if (state.ppe) {
+        log('防護具已完成檢查。', '安全帽、面罩、絕緣手套與袖套、安全帶、安全鞋及腰掛工具均就位。');
+        return;
+      }
+      state.ppe = true;
+      helmet.visible = true;
+      ppeParts.forEach(part => { part.visible = true; });
+      log('防護具穿戴完成。', '安全帽與面罩、高壓絕緣手套和袖套、皮革保護手套、肩部防護、全身式安全帶、絕緣安全鞋及腰掛工具均已呈現。');
+    }
+    if (action === 'isolate') {
+      if (state.mode === 'live') {
+        mistake(6, '活線模式不執行停電隔離。', '若要練習上鎖掛牌與工作接地，請重新開始並選擇停電搶修。');
+      } else if (state.height > 1.15) {
+        mistake(6, '人在桿上時才想到隔離電源。', '先下桿回到地面，依工作許可完成隔離與上鎖掛牌。');
+      } else if (!state.ppe) {
+        mistake(8, '未完成防護具與工作前檢查。', '先完成 PPE，再執行隔離。');
+      } else {
+        state.isolated = true;
+        log('饋線已隔離並完成上鎖掛牌。', '線路仍須在工作位置檢電，確認無電後才能掛工作接地。');
+      }
+    }
+    if (action === 'test') {
+      if (!atWorkZone()) {
+        mistake(4, '尚未到達變壓器工作區。', '繼續登桿至約 7.2 m，並保持輔助繩掛妥。');
+      } else if (!state.ppe || !state.rope) {
+        mistake(18, '在高處未具完整墜落與絕緣防護。', '先處理輔助繩與 PPE。');
+      } else {
+        beginVoltageTest();
+      }
+    }
+    if (action === 'cover') {
+      if (!atWorkZone()) {
+        mistake(4, '距離工作區太遠，無法裝設掩蔽。', '先手動登桿到變壓器附近。');
+      } else if (!state.tested) {
+        mistake(12, '未先檢電就接近高壓導線。', '先從腰袋取檢電器確認線路狀態。');
+      } else {
+        const required = state.mode === 'live' ? 3 : 1;
+        if (state.covered < required) {
+          beginBlanketCover(Math.min(covers.length - 1, state.covered));
+        } else {
+          log('必要掩蔽已完成。', '保持覆蓋位置與工作姿勢，避免跨越未防護區。');
+        }
+      }
+    }
+    if (action === 'ground') {
+      if (!atWorkZone()) {
+        mistake(4, '不在工作位置，無法掛設工作接地組。', '先登桿到工作區。');
+      } else if (lineEnergized()) {
+        mistake(100, '工作接地誤掛在帶電高壓導體上！', '形成相間／對地短路與強烈弧光，屬致命程序錯誤。', true);
+      } else if (!state.tested) {
+        mistake(35, '未檢電確認無電就嘗試掛接地。', '停電不等於無電，必須先在工作位置檢電。', true);
+      } else {
+        state.grounded = true;
+        groundSet.visible = true;
+        log('工作接地組已掛設。', '三相臨時接地線已連至桿下系統接地引線、接地夾及地下接地銅棒；先接接地端，再接導線端。');
+      }
+    }
+    if (action === 'repair') {
+      if (!atWorkZone()) {
+        mistake(5, '尚未到達故障跳線。', '繼續登桿至變壓器工作區。');
+      } else if (!state.tested) {
+        mistake(state.voltage > 20 ? 70 : 48, '未檢電就接觸設備。', '發生電擊與電弧風險，音樂進入高張力狀態。', true);
+      } else if (state.mode === 'live' && state.covered < 3) {
+        mistake(state.voltage > 20 ? 64 : 42, '活線導線掩蔽不完整。', `目前僅完成 ${state.covered}/3 相，手臂進入未防護區。`, true);
+      } else if (state.mode === 'deenergized' && !state.grounded) {
+        mistake(32, '停電作業尚未完成工作接地。', '可能遭受誤送電或感應／逆送電危害。', true);
+      } else if (state.fault === 'transformer' && state.mode === 'live') {
+        mistake(12, '桿上變壓器整機吊換不能在本活線情境直接進行。', '請重新開始並選擇停電搶修，完成隔離、檢電與工作接地後再吊換。');
+      } else {
+        beginEquipmentRepair();
+      }
+    }
+    if (action === 'remove-ground') {
+      if (state.mode === 'live') {
+        mistake(6, '活線流程沒有正常工作接地步驟。', '正常活線流程依靠絕緣防護、專用器具及安全距離。');
+      } else if (!state.grounded) {
+        mistake(4, '目前沒有已掛設的工作接地。', '檢查工具與流程狀態。');
+      } else if (!state.repaired) {
+        mistake(14, '維修尚未完成就提前拆除工作接地。', '工作區失去誤送電防護。');
+        state.grounded = false;
+        groundSet.visible = false;
+      } else {
+        state.grounded = false;
+        groundSet.visible = false;
+        log('工作接地組已拆除。', '確認人員、工具與掩蔽物狀態後，才可進入復電程序。');
+      }
+    }
+    if (action === 'finish') {
+      if (!state.repaired) {
+        mistake(18, '故障尚未修復就要求完工。', '依序完成檢電、防護與維修。');
+      } else if (state.mode === 'deenergized' && state.grounded) {
+        mistake(100, '帶著工作接地組執行復電！', '造成直接短路與嚴重弧光事故。', true);
+      } else {
+        state.finished = true;
+        state.moving = 0;
+        log('搶修任務完成。', `剩餘 ${state.hp} HP，程序失誤 ${state.mistakes} 次。`);
+        playTone(220, 0.3, 0.04, 'sine');
+        window.setTimeout(() => playTone(329.63, 0.42, 0.04, 'sine'), 180);
+      }
+    }
+    updateUI();
+  };
+
+  const reset = () => {
+    const randomFaults = el.mode.value === 'live' ? ['insulator', 'hardware'] : ['insulator', 'hardware', 'transformer'];
+    const selectedFault = el.fault.value === 'random'
+      ? randomFaults[Math.floor(Math.random() * randomFaults.length)]
+      : el.fault.value;
+    Object.assign(state, {
+      mode: el.mode.value,
+      voltage: Number(el.voltage.value),
+      hp: 100,
+      height: 0.6,
+      ppe: false,
+      rope: false,
+      ropeAnchor: 0.9,
+      ropeAnchors: [0.9, 0.9],
+      activeRope: 0,
+      rehookIndex: 0,
+      fault: selectedFault,
+      isolated: false,
+      tested: false,
+      covered: 0,
+      grounded: false,
+      repaired: false,
+      finished: false,
+      failed: false,
+      moving: 0,
+      moveBlocked: false,
+      mistakes: 0,
+      busy: null
+    });
+    actionAnim = null;
+    climbPhase = 0;
+    helmet.visible = false;
+    ppeParts.forEach(part => { part.visible = false; });
+    probeShaft.visible = false;
+    probeTip.visible = false;
+    probeLamp.intensity = 0;
+    movingBlanket.visible = false;
+    blanketRoll.visible = true;
+    covers.forEach(cover => { cover.visible = false; });
+    groundSet.visible = false;
+    hoistGroup.visible = false;
+    applyFaultVisuals(false);
+    leftKnee.rotation.set(0, 0, 0);
+    rightKnee.rotation.set(0, 0, 0);
+    leftLeg.position.set(-0.17, 0.12, 0);
+    rightLeg.position.set(0.17, 0.12, 0);
+    body.position.set(0, 0, 0);
+    body.rotation.set(0, 0, 0);
+    tensionUntil = 0;
+    log(
+      `本局故障：${faultLabels[state.fault]}。先完成全身防護具與腰帶工具檢查。`,
+      state.mode === 'live' ? '活線模式：工作接地是致命錯誤；檢電後必須完成三相絕緣掩蔽。' : '停電模式：隔離掛牌、工作位置檢電、確認無電後掛工作接地。'
+    );
+    updateUI();
+  };
+
+  const setMoving = value => {
+    ensureAudio();
+    if (state.failed || state.finished || state.busy) return;
+    if (value < 0) state.moveBlocked = false;
+    state.moving = value;
+  };
+
+  const onMoveFrame = delta => {
+    if (!state.moving || state.failed || state.finished || state.busy) return;
+    if (!state.ppe) {
+      state.moving = 0;
+      mistake(12, '未穿戴完整防護具就嘗試登桿。', '先完成 PPE 與安全帶檢查。');
+      return;
+    }
+    if (!state.rope && state.moving > 0) {
+      state.moving = 0;
+      mistake(18, '未掛輔助繩就開始登桿。', '發生滑落，請先按 Q 掛繩。');
+      return;
+    }
+    if (state.moving > 0 && state.height >= state.ropeAnchor - 0.22) {
+      state.moving = 0;
+      state.moveBlocked = true;
+      mistake(9, '輔助繩已到換掛極限。', '按 Q 將輔助繩移到更高掛點後再繼續。');
+      return;
+    }
+    climbPhase += state.moving * delta * 6.2;
+    const stepTransfer = 0.72 + Math.abs(Math.sin(climbPhase)) * 0.28;
+    state.height = THREE.MathUtils.clamp(state.height + state.moving * delta * 0.88 * stepTransfer, 0.6, 8.65);
+    if (state.moving < 0 && state.height < state.ropeAnchor - 1.35) {
+      state.ropeAnchors = [Math.max(0.9, state.height + 0.72), Math.max(1.0, state.height + 1.08)];
+      state.activeRope = 1;
+      state.ropeAnchor = state.ropeAnchors[1];
+    }
+    updateRopeGeometry();
+  };
+
+  let camYaw = 0.72;
+  let camPitch = 0.22;
+  let camDistance = 14.8;
+  let viewMode = 'overview';
+  let dragging = false;
+  let lastPointer = { x: 0, y: 0 };
+  el.canvas.addEventListener('pointerdown', event => {
+    dragging = true;
+    lastPointer = { x: event.clientX, y: event.clientY };
+    el.canvas.setPointerCapture(event.pointerId);
+  });
+  el.canvas.addEventListener('pointermove', event => {
+    if (!dragging) return;
+    camYaw -= (event.clientX - lastPointer.x) * 0.007;
+    camPitch = THREE.MathUtils.clamp(camPitch + (event.clientY - lastPointer.y) * 0.005, -0.1, 0.72);
+    lastPointer = { x: event.clientX, y: event.clientY };
+  });
+  el.canvas.addEventListener('pointerup', () => { dragging = false; });
+  el.canvas.addEventListener('pointercancel', () => { dragging = false; });
+  el.canvas.addEventListener('wheel', event => {
+    event.preventDefault();
+    camDistance = THREE.MathUtils.clamp(camDistance + event.deltaY * 0.012, 4.2, 23);
+  }, { passive: false });
+
+  const bindHold = (button, value) => {
+    button.addEventListener('pointerdown', event => {
+      event.preventDefault();
+      button.setPointerCapture(event.pointerId);
+      setMoving(value);
+    });
+    button.addEventListener('pointerup', () => setMoving(0));
+    button.addEventListener('pointercancel', () => setMoving(0));
+    button.addEventListener('pointerleave', event => {
+      if (event.buttons === 0) setMoving(0);
+    });
+  };
+  bindHold(el.up, 1);
+  bindHold(el.down, -1);
+  el.rope.addEventListener('click', attachRope);
+  el.audio.addEventListener('click', toggleAudio);
+  el.view.addEventListener('click', () => {
+    viewMode = viewMode === 'overview' ? 'equipment' : viewMode === 'equipment' ? 'worker' : 'overview';
+    if (viewMode === 'equipment') {
+      camDistance = 7.1;
+      camPitch = 0.08;
+      camYaw = 0.92;
+      el.view.textContent = '人物近景';
+    } else if (viewMode === 'worker') {
+      camDistance = 5.2;
+      camPitch = 0.06;
+      camYaw = 2.2;
+      el.view.textContent = '返回設備全景';
+    } else {
+      camDistance = 14.8;
+      camPitch = 0.22;
+      camYaw = 0.72;
+      el.view.textContent = '設備近景';
+    }
+    el.view.setAttribute('aria-pressed', String(viewMode !== 'overview'));
+  });
+  el.reset.addEventListener('click', reset);
+  el.mode.addEventListener('change', reset);
+  el.voltage.addEventListener('change', reset);
+  el.fault.addEventListener('change', reset);
+  el.actions.forEach(button => button.addEventListener('click', () => performAction(button.dataset.action)));
+
+  const movementKeys = new Set(['w', 's', 'arrowup', 'arrowdown']);
+  window.addEventListener('keydown', event => {
+    if (!root.isConnected || ['SELECT', 'INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+    const key = event.key.toLowerCase();
+    if (movementKeys.has(key)) {
+      event.preventDefault();
+      setMoving(key === 'w' || key === 'arrowup' ? 1 : -1);
+    }
+    if (key === 'q' && !event.repeat) {
+      event.preventDefault();
+      attachRope();
+    }
+  });
+  window.addEventListener('keyup', event => {
+    if (movementKeys.has(event.key.toLowerCase())) setMoving(0);
+  });
+
+  const resize = () => {
+    const rect = el.stage.getBoundingClientRect();
+    const width = Math.max(320, rect.width);
+    const height = Math.max(360, rect.height);
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  };
+  const resizeObserver = new ResizeObserver(resize);
+  resizeObserver.observe(el.stage);
+  resize();
+
+  let lastTime = performance.now();
+  let lastRenderTime = 0;
+  let sceneVisible = true;
+  const visibilityObserver = window.IntersectionObserver
+    ? new IntersectionObserver(entries => {
+        sceneVisible = entries[0]?.isIntersecting !== false;
+      })
+    : { observe() {}, disconnect() {} };
+  visibilityObserver.observe(root);
+  const animate = time => {
+    if (!root.isConnected) {
+      if (musicTimer) clearInterval(musicTimer);
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      renderer.dispose();
+      return;
+    }
+    requestAnimationFrame(animate);
+    if (!sceneVisible || document.hidden || time - lastRenderTime < 30) return;
+    lastRenderTime = time;
+    const delta = Math.min(0.05, (time - lastTime) / 1000);
+    lastTime = time;
+    onMoveFrame(delta);
+    updateWorker(time);
+    updateActionAnimation(time);
+    const workerView = viewMode === 'worker';
+    const equipmentView = viewMode === 'equipment';
+    const targetY = workerView ? state.height + 0.28 : equipmentView ? 7.85 : Math.max(4.7, state.height + 1.15);
+    const targetZ = workerView ? 0.72 : equipmentView ? -0.1 : 0;
+    const cosPitch = Math.cos(camPitch);
+    camera.position.set(
+      Math.sin(camYaw) * camDistance * cosPitch + (workerView ? 1.55 : 0),
+      targetY + Math.sin(camPitch) * camDistance,
+      targetZ + Math.cos(camYaw) * camDistance * cosPitch
+    );
+    camera.lookAt(0, targetY, targetZ);
+    if (time < arcUntil) {
+      arcLight.intensity = 3.5 * Math.max(0, (arcUntil - time) / 720);
+      arcGroup.children.forEach((child, index) => {
+        if (index > 0 && child.material) child.material.opacity = Math.max(0, (arcUntil - time) / 720);
+      });
+    } else if (arcGroup.visible) {
+      arcGroup.visible = false;
+      arcLight.intensity = 0;
+    }
+    if (musicEnabled && Math.floor(time / 400) !== Math.floor((time - delta * 1000) / 400)) updateUI();
+    renderer.render(scene, camera);
+    if (!webglReady) {
+      webglReady = true;
+      el.canvas.classList.add('is-ready');
+      if (el.fallback) el.fallback.classList.add('is-hidden');
+      fallbackObserver.disconnect();
+    }
+  };
+
+  reset();
+  requestAnimationFrame(animate);
+  };
+
+  const showLoadError = () => {
+    const root = document.getElementById('taipower-realistic-3d-restored');
+    if (!root) return;
+    const log = root.querySelector('#tp3-log');
+    const main = root.querySelector('#tp3-log-main');
+    const detail = root.querySelector('#tp3-log-detail');
+    if (log) log.classList.add('is-danger');
+    if (main) main.textContent = '3D 引擎連線較慢，操作介面仍可使用。';
+    if (detail) detail.textContent = '引擎載入後場景會自動出現；也可重新開啟此畫面。';
+  };
+
+  const launch = () => window.setTimeout(() => {
+    try {
+      startTaipowerSimulation();
+    } catch {
+      showLoadError();
+    }
+  }, 600);
+  if (window.THREE) {
+    launch();
+    return;
+  }
+
+  window.setTimeout(() => {
+    if (window.THREE) {
+      launch();
+      return;
+    }
+    const threeLoader = document.createElement('script');
+    threeLoader.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    threeLoader.async = true;
+    threeLoader.crossOrigin = 'anonymous';
+    const slowTimer = window.setTimeout(showLoadError, 12000);
+    threeLoader.onload = () => {
+      window.clearTimeout(slowTimer);
+      launch();
+    };
+    threeLoader.onerror = () => {
+      window.clearTimeout(slowTimer);
+      showLoadError();
+    };
+    document.head.appendChild(threeLoader);
+  }, 600);
+})();
+</script>
+
+
+<script src="https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js"></script>
+<script src="https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js"></script>
+<script>
+(() => {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set(["top", "right", "bottom", "left"]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =>
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest("[data-tooltip]")
+      : null;
+  const containsTarget = (trigger, target) =>
+    target?.nodeType != null && trigger.contains(target);
+  const getContent = (trigger) =>
+    trigger.getAttribute("data-tooltip")?.trim() ?? "";
+  const getPlacement = (trigger) => {
+    const placement = trigger.getAttribute("data-tooltip-placement");
+    return tooltipPlacements.has(placement) ? placement : "top";
+  };
+  const getTooltip = () => {
+    if (tooltip == null) {
+      tooltip = document.createElement("div");
+      tooltip.id = tooltipId;
+      tooltip.className = "tooltip";
+      tooltip.setAttribute("role", "tooltip");
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) => {
+    const ids = new Set(
+      (trigger.getAttribute("aria-describedby") ?? "")
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute("aria-describedby");
+    } else {
+      trigger.setAttribute("aria-describedby", [...ids].join(" "));
+    }
+  };
+  const clearOpenTimeout = () => {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) => {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) => {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              "--tooltip-available-width",
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              "--tooltip-available-height",
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: "fixed",
+    })
+      .then(({ x, y }) => {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = "visible";
+      })
+      .catch(() => {
+        if (activeTrigger === trigger && request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) => {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = "hidden";
+    floating.style.transform = "translate(0, 0)";
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () => {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) => {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() < skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() => {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(":focus-visible")) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) => {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () => {
+    closeTooltip(false);
+    document.removeEventListener("pointerover", handlePointerOpen);
+    document.removeEventListener("pointerout", handleLeave);
+    document.removeEventListener("focusin", handleFocusIn);
+    document.removeEventListener("focusout", handleLeave);
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener("pointerover", handlePointerOpen);
+  document.addEventListener("pointerout", handleLeave);
+  document.addEventListener("focusin", handleFocusIn);
+  document.addEventListener("focusout", handleLeave);
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("contextmenu", handleContextMenu);
+  window.addEventListener("pagehide", destroy, { once: true });
+})();
+</script>
+<script id="codex-visualization-lucide" async src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"></script>
+<script>
+(() => {
+  const initialize = () => {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById("codex-visualization-lucide")
+    ?.addEventListener("load", initialize, { once: true });
+})();
+</script>
+
+
+</body>
+</html>
