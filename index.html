@@ -738,45 +738,45 @@ svg {
 html>body{padding:0}</style>
 </head>
 <body>
-<div id="taipower-realistic-3d-restored">
+<div id="taipower-cross-limb-climbing-sim">
   <style>
-    #taipower-realistic-3d-restored {
+    #taipower-cross-limb-climbing-sim {
       color: var(--foreground);
       width: 100%;
     }
-    #taipower-realistic-3d-restored .tp3-toolbar,
-    #taipower-realistic-3d-restored .tp3-actions,
-    #taipower-realistic-3d-restored .tp3-climb-controls {
+    #taipower-cross-limb-climbing-sim .tp3-toolbar,
+    #taipower-cross-limb-climbing-sim .tp3-actions,
+    #taipower-cross-limb-climbing-sim .tp3-climb-controls {
       display: flex;
       flex-wrap: wrap;
       align-items: end;
       gap: 8px;
       margin-bottom: 10px;
     }
-    #taipower-realistic-3d-restored .tp3-toolbar .form-label {
+    #taipower-cross-limb-climbing-sim .tp3-toolbar .form-label {
       min-width: 136px;
       flex: 1 1 150px;
     }
-    #taipower-realistic-3d-restored .tp3-stats {
+    #taipower-cross-limb-climbing-sim .tp3-stats {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 10px;
     }
-    #taipower-realistic-3d-restored .tp3-hp-track {
+    #taipower-cross-limb-climbing-sim .tp3-hp-track {
       height: 8px;
       margin-top: 6px;
       background: color-mix(in srgb, var(--muted) 74%, transparent);
       overflow: hidden;
       border-radius: 999px;
     }
-    #taipower-realistic-3d-restored .tp3-hp-fill {
+    #taipower-cross-limb-climbing-sim .tp3-hp-fill {
       width: 100%;
       height: 100%;
       background: var(--viz-series-2);
       transition: width 240ms ease, background 240ms ease;
     }
-    #taipower-realistic-3d-restored .tp3-stage {
+    #taipower-cross-limb-climbing-sim .tp3-stage {
       position: relative;
       width: 100%;
       height: 620px;
@@ -787,28 +787,28 @@ html>body{padding:0}</style>
       margin-bottom: 10px;
       touch-action: none;
     }
-    #taipower-realistic-3d-restored canvas {
+    #taipower-cross-limb-climbing-sim canvas {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       display: block;
     }
-    #taipower-realistic-3d-restored .tp3-webgl {
+    #taipower-cross-limb-climbing-sim .tp3-webgl {
       opacity: 0;
     }
-    #taipower-realistic-3d-restored .tp3-webgl.is-ready {
+    #taipower-cross-limb-climbing-sim .tp3-webgl.is-ready {
       opacity: 1;
     }
-    #taipower-realistic-3d-restored .tp3-fallback.is-hidden {
+    #taipower-cross-limb-climbing-sim .tp3-fallback.is-hidden {
       display: none;
     }
-    #taipower-realistic-3d-restored .tp3-overlay {
+    #taipower-cross-limb-climbing-sim .tp3-overlay {
       position: absolute;
       inset: 0;
       pointer-events: none;
     }
-    #taipower-realistic-3d-restored .tp3-objective {
+    #taipower-cross-limb-climbing-sim .tp3-objective {
       position: absolute;
       left: 12px;
       top: 12px;
@@ -818,7 +818,7 @@ html>body{padding:0}</style>
       background: color-mix(in srgb, var(--popover) 86%, transparent);
       border-radius: 8px;
     }
-    #taipower-realistic-3d-restored .tp3-reticle {
+    #taipower-cross-limb-climbing-sim .tp3-reticle {
       position: absolute;
       left: 50%;
       top: 50%;
@@ -828,25 +828,25 @@ html>body{padding:0}</style>
       border: 1px solid color-mix(in srgb, var(--foreground) 72%, transparent);
       border-radius: 50%;
     }
-    #taipower-realistic-3d-restored .tp3-reticle::before,
-    #taipower-realistic-3d-restored .tp3-reticle::after {
+    #taipower-cross-limb-climbing-sim .tp3-reticle::before,
+    #taipower-cross-limb-climbing-sim .tp3-reticle::after {
       content: "";
       position: absolute;
       background: color-mix(in srgb, var(--foreground) 72%, transparent);
     }
-    #taipower-realistic-3d-restored .tp3-reticle::before {
+    #taipower-cross-limb-climbing-sim .tp3-reticle::before {
       width: 6px;
       height: 1px;
       left: 5px;
       top: 8px;
     }
-    #taipower-realistic-3d-restored .tp3-reticle::after {
+    #taipower-cross-limb-climbing-sim .tp3-reticle::after {
       width: 1px;
       height: 6px;
       left: 8px;
       top: 5px;
     }
-    #taipower-realistic-3d-restored .tp3-hint {
+    #taipower-cross-limb-climbing-sim .tp3-hint {
       position: absolute;
       left: 50%;
       bottom: 14px;
@@ -859,7 +859,7 @@ html>body{padding:0}</style>
       background: color-mix(in srgb, var(--popover) 88%, transparent);
       border-radius: 8px;
     }
-    #taipower-realistic-3d-restored .tp3-altimeter {
+    #taipower-cross-limb-climbing-sim .tp3-altimeter {
       position: absolute;
       right: 12px;
       top: 12px;
@@ -869,14 +869,14 @@ html>body{padding:0}</style>
       border-radius: 999px;
       overflow: hidden;
     }
-    #taipower-realistic-3d-restored .tp3-altimeter-fill {
+    #taipower-cross-limb-climbing-sim .tp3-altimeter-fill {
       position: absolute;
       inset: auto 0 0;
       height: 0%;
       background: var(--viz-series-1);
       transition: height 100ms linear;
     }
-    #taipower-realistic-3d-restored .tp3-equipment-list {
+    #taipower-cross-limb-climbing-sim .tp3-equipment-list {
       position: absolute;
       right: 32px;
       top: 12px;
@@ -887,17 +887,17 @@ html>body{padding:0}</style>
       border-radius: 8px;
       line-height: 1.45;
     }
-    #taipower-realistic-3d-restored .tp3-flash {
+    #taipower-cross-limb-climbing-sim .tp3-flash {
       position: absolute;
       inset: 0;
       opacity: 0;
       background: color-mix(in srgb, var(--destructive) 70%, var(--background));
       transition: opacity 150ms ease;
     }
-    #taipower-realistic-3d-restored .tp3-flash.is-active {
+    #taipower-cross-limb-climbing-sim .tp3-flash.is-active {
       opacity: .72;
     }
-    #taipower-realistic-3d-restored .tp3-damage {
+    #taipower-cross-limb-climbing-sim .tp3-damage {
       position: absolute;
       left: 50%;
       top: 32%;
@@ -907,24 +907,27 @@ html>body{padding:0}</style>
       font-weight: 500;
       transition: opacity 180ms ease, transform 400ms ease;
     }
-    #taipower-realistic-3d-restored .tp3-damage.is-active {
+    #taipower-cross-limb-climbing-sim .tp3-damage.is-active {
       opacity: 1;
       transform: translate(-50%, -86%);
     }
-    #taipower-realistic-3d-restored .tp3-log {
+    #taipower-cross-limb-climbing-sim .tp3-log {
       min-height: 44px;
       margin-bottom: 10px;
       padding-left: 12px;
       border-left: 3px solid var(--viz-series-1);
     }
-    #taipower-realistic-3d-restored .tp3-log.is-danger {
+    #taipower-cross-limb-climbing-sim .tp3-log.is-danger {
       border-left-color: var(--destructive);
     }
-    #taipower-realistic-3d-restored .tp3-actions .btn,
-    #taipower-realistic-3d-restored .tp3-climb-controls .btn {
+    #taipower-cross-limb-climbing-sim .tp3-actions .btn,
+    #taipower-cross-limb-climbing-sim .tp3-climb-controls .btn {
       flex: 1 1 130px;
     }
-    #taipower-realistic-3d-restored .tp3-key {
+    #taipower-cross-limb-climbing-sim .tp3-actions .btn[hidden] {
+      display: none !important;
+    }
+    #taipower-cross-limb-climbing-sim .tp3-key {
       display: inline-block;
       min-width: 22px;
       padding: 1px 5px;
@@ -933,42 +936,42 @@ html>body{padding:0}</style>
       background: var(--muted);
       border-radius: 4px;
     }
-    #taipower-realistic-3d-restored .tp3-steps {
+    #taipower-cross-limb-climbing-sim .tp3-steps {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
       margin-top: 8px;
     }
-    #taipower-realistic-3d-restored .tp3-step {
+    #taipower-cross-limb-climbing-sim .tp3-step {
       padding: 4px 7px;
       color: var(--muted-foreground);
       background: color-mix(in srgb, var(--muted) 58%, transparent);
       border-radius: 999px;
     }
-    #taipower-realistic-3d-restored .tp3-step.is-done {
+    #taipower-cross-limb-climbing-sim .tp3-step.is-done {
       color: var(--foreground);
       background: color-mix(in srgb, var(--viz-series-2) 28%, transparent);
     }
-    #taipower-realistic-3d-restored .tp3-step.is-current {
+    #taipower-cross-limb-climbing-sim .tp3-step.is-current {
       color: var(--primary-foreground);
       background: var(--primary);
     }
     @media (max-width: 620px) {
-      #taipower-realistic-3d-restored .tp3-stage {
+      #taipower-cross-limb-climbing-sim .tp3-stage {
         height: 430px;
       }
-      #taipower-realistic-3d-restored .tp3-stats {
+      #taipower-cross-limb-climbing-sim .tp3-stats {
         grid-template-columns: 1fr;
       }
-      #taipower-realistic-3d-restored .tp3-altimeter {
+      #taipower-cross-limb-climbing-sim .tp3-altimeter {
         height: 120px;
       }
-      #taipower-realistic-3d-restored .tp3-equipment-list {
+      #taipower-cross-limb-climbing-sim .tp3-equipment-list {
         display: none;
       }
     }
     @media (prefers-reduced-motion: reduce) {
-      #taipower-realistic-3d-restored * {
+      #taipower-cross-limb-climbing-sim * {
         transition-duration: 0.01ms !important;
       }
     }
@@ -977,7 +980,7 @@ html>body{padding:0}</style>
   <div class="tp3-toolbar viz-controls" aria-label="任務設定">
     <label class="form-label" for="tp3-mode">作業模式
       <select id="tp3-mode" class="form-select">
-        <option value="deenergized">停電搶修</option>
+        <option value="deenergized">停電配電設備更換</option>
         <option value="live">活線作業</option>
       </select>
     </label>
@@ -1045,13 +1048,13 @@ html>body{padding:0}</style>
 
   <div class="tp3-actions" aria-label="作業工具">
     <button class="btn btn-primary" type="button" data-action="ppe">穿戴防護具</button>
-    <button class="btn" type="button" data-action="isolate">隔離／上鎖掛牌</button>
+    <button class="btn" type="button" data-action="isolate">停電聯絡／隔離掛牌</button>
     <button class="btn" type="button" data-action="test">腰袋取檢電器</button>
     <button class="btn" type="button" data-action="cover">腰袋取絕緣掩蔽具</button>
     <button class="btn" type="button" data-action="ground">掛工作接地組</button>
     <button class="btn" type="button" data-action="repair">絕緣工具維修</button>
     <button class="btn" type="button" data-action="remove-ground">拆除工作接地</button>
-    <button class="btn" type="button" data-action="finish">復電／完工確認</button>
+    <button class="btn" type="button" data-action="finish">清點／復電確認</button>
   </div>
 
   <div id="tp3-steps" class="tp3-steps" aria-label="工作程序"></div>
@@ -1059,7 +1062,7 @@ html>body{padding:0}</style>
 
 <script>
 (() => {
-  const initialRoot = document.getElementById('taipower-realistic-3d-restored');
+  const initialRoot = document.getElementById('taipower-cross-limb-climbing-sim');
   let fallbackObserver = { disconnect() {} };
   if (initialRoot) {
     const fallbackCanvas = initialRoot.querySelector('#tp3-fallback');
@@ -1205,7 +1208,7 @@ html>body{padding:0}</style>
   }
 
   const startTaipowerSimulation = () => {
-  const root = document.getElementById('taipower-realistic-3d-restored');
+  const root = document.getElementById('taipower-cross-limb-climbing-sim');
   if (!root) return;
 
   const el = {
@@ -1462,11 +1465,17 @@ html>body{padding:0}</style>
   const pole = cylinder(0.28, 0.48, 11.8, mats.concrete, 0, 5.8, 0, 28, poleGroup);
   const poleCap = cylinder(0.26, 0.28, 0.15, mats.concrete, 0, 11.73, 0, 28, poleGroup);
   box(0.5, 0.92, 0.08, mats.metal, 0, 2.5, 0.43, poleGroup);
-  for (let y = 0.75; y < 8; y += 0.48) {
-    const side = Math.round(y * 10) % 2 === 0 ? -1 : 1;
+  const polePegs = [];
+  for (let pegIndex = 0, y = 0.75; y < 8; y += 0.48, pegIndex += 1) {
+    const side = pegIndex % 2 === 0 ? -1 : 1;
     const peg = beamBetween(new THREE.Vector3(side * 0.25, y, 0.05), new THREE.Vector3(side * 0.68, y, 0.05), 0.035, mats.metal, poleGroup);
     peg.rotation.z += 0.04;
+    const pegCap = cylinder(0.065, 0.065, 0.06, mats.metal, side * 0.68, y, 0.05, 14, poleGroup);
+    pegCap.rotation.z = Math.PI / 2;
+    polePegs.push({ index: pegIndex, side, x: side * 0.58, y, z: 0.08 });
   }
+  const ropeAttachPegIndex = 2;
+  const ropeAttachHeight = polePegs[ropeAttachPegIndex].y + 0.82;
 
   const primaryCrossarm = addSteelCrossarm(5.9, 9.15, 0, poleGroup, 1.02);
   const equipmentCrossarm = addSteelCrossarm(3.7, 7.75, -0.02, poleGroup, 0.78);
@@ -1480,6 +1489,18 @@ html>body{padding:0}</style>
   const phaseWires = [];
   const phaseInsulatorGroups = [];
   const covers = [];
+  const addBlanketClamp = (z, parent) => {
+    const clamp = new THREE.Group();
+    clamp.position.set(0.48, -0.18, z);
+    parent.add(clamp);
+    box(0.24, 0.5, 0.3, mats.helmet, 0, 0, 0, clamp).rotation.z = -0.12;
+    box(0.38, 0.1, 0.36, mats.helmet, -0.12, 0.2, 0, clamp).rotation.z = 0.18;
+    box(0.38, 0.1, 0.36, mats.helmet, -0.08, -0.22, 0, clamp).rotation.z = -0.18;
+    const spring = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.024, 10, 24), mats.metal);
+    spring.rotation.y = Math.PI / 2;
+    clamp.add(spring);
+    return clamp;
+  };
   phaseXs.forEach((x, i) => {
     const ins = new THREE.Group();
     ins.position.set(x, 9.52, 0);
@@ -1503,6 +1524,8 @@ html>body{padding:0}</style>
     box(0.96, 0.08, 4.6, mats.cover, 0, 0.04, 0.1, blanket);
     box(0.08, 1.05, 4.6, mats.cover, -0.44, -0.5, 0.1, blanket).rotation.z = -0.08;
     box(0.08, 1.05, 4.6, mats.cover, 0.44, -0.5, 0.1, blanket).rotation.z = 0.08;
+    addBlanketClamp(-1.45, blanket);
+    addBlanketClamp(1.55, blanket);
     blanket.visible = false;
     covers.push(blanket);
     phaseWires.push(i);
@@ -1628,9 +1651,9 @@ html>body{padding:0}</style>
   ], 0.035, i === 0 ? mats.blue : mats.wire, poleGroup));
 
   curveTube([
-    new THREE.Vector3(1.25, 7.72, 0.42),
-    new THREE.Vector3(0.42, 5.25, 0.4),
-    new THREE.Vector3(0.42, 0.24, 0.36)
+    new THREE.Vector3(1.25, 7.72, -0.46),
+    new THREE.Vector3(0.42, 5.25, -0.48),
+    new THREE.Vector3(0.42, 0.24, -0.5)
   ], 0.027, mats.copper, poleGroup);
 
   const hardwareTarget = new THREE.Group();
@@ -1768,6 +1791,7 @@ html>body{padding:0}</style>
   };
 
   const groundingElectrode = new THREE.Group();
+  groundingElectrode.position.z = -1.58;
   world.add(groundingElectrode);
   cylinder(0.055, 0.055, 1.9, mats.copper, 1.55, -0.62, 0.8, 14, groundingElectrode);
   const electrodeCollar = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.035, 8, 20), mats.metal);
@@ -1784,6 +1808,7 @@ html>body{padding:0}</style>
   ], 0.03, mats.orange, groundingElectrode);
 
   const groundSet = new THREE.Group();
+  groundSet.position.z = -1.28;
   poleGroup.add(groundSet);
   phaseXs.forEach(x => {
     curveTube([
@@ -1889,6 +1914,8 @@ html>body{padding:0}</style>
   });
   leftArm.rotation.z = -0.3;
   rightArm.rotation.z = 0.3;
+  const leftArmRestQuaternion = leftArm.quaternion.clone();
+  const rightArmRestQuaternion = rightArm.quaternion.clone();
 
   const leftShoulderPad = addPpePart(ellipsoid(0.23, 0.27, 0.22, mats.dark, -0.29, 0.75, 0, body, 22));
   leftShoulderPad.rotation.z = -0.2;
@@ -1983,13 +2010,24 @@ html>body{padding:0}</style>
   box(1.08, 0.08, 3.1, mats.cover, 0, 0, 0, movingBlanket);
   box(0.08, 1.18, 3.1, mats.cover, -0.5, -0.56, 0, movingBlanket).rotation.z = -0.08;
   box(0.08, 1.18, 3.1, mats.cover, 0.5, -0.56, 0, movingBlanket).rotation.z = 0.08;
+  const movingBlanketClamps = [addBlanketClamp(-0.92, movingBlanket), addBlanketClamp(0.98, movingBlanket)];
+  movingBlanketClamps.forEach(clamp => { clamp.visible = false; });
   movingBlanket.visible = false;
 
   const ropeGroup = new THREE.Group();
   scene.add(ropeGroup);
   const ropeLineA = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: palette.s5 }));
   const ropeLineB = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: palette.s3 }));
-  ropeGroup.add(ropeLineA, ropeLineB);
+  const motherRopeLine = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0.43, ropeAttachHeight - 0.18, -0.5),
+      new THREE.Vector3(0.43, 9.28, -0.5)
+    ]),
+    new THREE.LineBasicMaterial({ color: palette.s1 })
+  );
+  const ropeSlider = cylinder(0.09, 0.09, 0.24, mats.metal, 0.43, ropeAttachHeight, -0.5, 14, ropeGroup);
+  const sliderTether = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: palette.s1 }));
+  ropeGroup.add(ropeLineA, ropeLineB, motherRopeLine, sliderTether);
   ropeGroup.visible = false;
 
   const arcGroup = new THREE.Group();
@@ -2074,18 +2112,22 @@ html>body{padding:0}</style>
     isolated: false,
     tested: false,
     covered: 0,
+    clipped: 0,
     grounded: false,
     repaired: false,
     finished: false,
     failed: false,
     moving: 0,
     moveBlocked: false,
+    initialRopePrompted: false,
+    lastMoveDirection: 0,
+    lastMoveAt: 0,
     mistakes: 0,
     busy: null
   };
   let actionAnim = null;
   let climbPhase = 0;
-  const rehookHeights = [2.5, 4.7, 6.55, 8.15];
+  const rehookHeights = [4.05, 5.7, 7.15, 8.35];
 
   const lineEnergized = () => state.mode === 'live' || !state.isolated;
   const atWorkZone = () => state.height >= 7.15;
@@ -2098,25 +2140,27 @@ html>body{padding:0}</style>
 
   const getSteps = () => state.mode === 'live'
     ? [
-        ['ppe', 'PPE'], ['rope', '輔助繩'], ['climb', '登桿'], ['test', '檢電'],
-        ['cover', '三相掩蔽'], ['repair', '活線維修'], ['finish', '完工']
+        ['ppe', 'PPE'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'], ['test', '檢電'],
+        ['cover', '三相掩蔽夾固'], ['repair', '活線維修'], ['finish', '完工']
       ]
     : [
-        ['ppe', 'PPE'], ['isolate', '隔離掛牌'], ['rope', '輔助繩'], ['climb', '登桿'],
-        ['test', '檢電無電'], ['ground', '工作接地'], ['cover', '設備掩蔽'],
-        ['repair', '維修'], ['remove-ground', '拆接地'], ['finish', '復電']
+        ['ppe', 'PPE'], ['isolate', '停電隔離掛牌'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'],
+        ['test', '工作點檢電'], ['ground', '工作接地'], ['repair', '停電維修'],
+        ['remove-ground', '拆接地'], ['descend', '下桿清點'], ['finish', '復電']
       ];
 
   const isDone = key => ({
     ppe: state.ppe,
     isolate: state.isolated,
+    'climb-start': state.height >= ropeAttachHeight - 0.04,
     rope: state.rope,
     climb: atWorkZone(),
     test: state.tested,
     ground: state.grounded || (key === 'ground' && state.repaired),
-    cover: state.covered >= (state.mode === 'live' ? 3 : 1),
+    cover: state.mode === 'deenergized' || (state.covered >= 3 && state.clipped >= 3),
     repair: state.repaired,
     'remove-ground': state.repaired && !state.grounded,
+    descend: state.repaired && !state.grounded && state.height <= 0.9,
     finish: state.finished
   })[key];
 
@@ -2226,6 +2270,12 @@ html>body{padding:0}</style>
       line.geometry.dispose();
       line.geometry = new THREE.BufferGeometry().setFromPoints(points);
     });
+    ropeSlider.position.y = THREE.MathUtils.clamp(state.height + 0.46, ropeAttachHeight, 9.05);
+    sliderTether.geometry.dispose();
+    sliderTether.geometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0.43, ropeSlider.position.y, -0.5),
+      new THREE.Vector3(0.2, state.height + 0.43, 0.48)
+    ]);
     ropeGroup.visible = true;
   };
 
@@ -2261,13 +2311,15 @@ html>body{padding:0}</style>
     actionAnim = {
       type: 'cover',
       start: performance.now(),
-      duration: 2600,
+      duration: 3600,
       index,
-      beeped: false
+      beeped: false,
+      clipBeeped: [false, false]
     };
     blanketRoll.visible = false;
     movingBlanket.visible = true;
-    log('作業員從腰帶取出折疊絕緣毯。', `展開並包覆第 ${index + 1} 相導線，固定前保持雙手控制。`);
+    movingBlanketClamps.forEach(clamp => { clamp.visible = false; });
+    log('作業員從腰帶取出折疊絕緣毯。', `展開並包覆第 ${index + 1} 相導線，最後以兩只大型絕緣夾夾固。`);
     updateUI();
   };
 
@@ -2275,7 +2327,7 @@ html>body{padding:0}</style>
     const movingIndex = initial ? 0 : 1 - state.activeRope;
     if (initial) {
       state.rope = true;
-      state.ropeAnchors = [state.height + 0.36, state.height + 0.3];
+      state.ropeAnchors = [state.height + 0.32, state.height + 0.26];
       state.activeRope = 1;
     }
     const highest = Math.max(...state.ropeAnchors);
@@ -2292,8 +2344,8 @@ html>body{padding:0}</style>
       initial
     };
     log(
-      initial ? '先以一條輔助繩保持連結，另一條開始上套。' : `輔助繩 ${movingIndex === 0 ? 'A' : 'B'} 開始交替換掛。`,
-      '一條持續掛在桿上承載；另一條放鬆、繞過電桿、向上套至新位置，再收緊承載。'
+      initial ? '通過第三個腳踏釘後，固定母繩並接上隨身制動器。' : `輔助繩 ${movingIndex === 0 ? 'A' : 'B'} 開始交替換掛。`,
+      initial ? '母繩保持固定不隨人員上移；制動器沿母繩移動，雙輔助繩再交替向上套。' : '一條持續承載；另一條放鬆、繞過電桿、向上套至新位置，再收緊承載。'
     );
     updateUI();
   };
@@ -2337,7 +2389,7 @@ html>body{padding:0}</style>
     probeTip.visible = false;
     probeLamp.intensity = 0;
     movingBlanket.visible = false;
-    blanketRoll.visible = true;
+    blanketRoll.visible = state.mode === 'live';
     wrenchTool.visible = false;
     state.busy = null;
     if (completed.type === 'test') {
@@ -2349,10 +2401,11 @@ html>body{padding:0}</style>
     }
     if (completed.type === 'cover') {
       state.covered += 1;
+      state.clipped += 1;
       covers[completed.index].visible = true;
       log(
-        '絕緣毯已完成展開、包覆與固定。',
-        state.mode === 'live' ? `已完成 ${state.covered}/3 相；每一相都需形成連續保護區。` : '鄰近可能接觸區域已形成絕緣防護。'
+        '絕緣毯已完成展開、包覆，兩只大型絕緣夾均已扣合。',
+        `已完成 ${state.covered}/3 相、夾固 ${state.clipped}/3 組；每一相都需形成不鬆脫的連續保護區。`
       );
     }
     if (completed.type === 'rope') {
@@ -2370,7 +2423,7 @@ html>body{padding:0}</style>
       state.repaired = true;
       applyFaultVisuals(true);
       hoistGroup.visible = false;
-      const next = state.mode === 'deenergized' ? '下一步拆除工作接地，再依程序復電。' : '維持掩蔽與安全位置，進行工具清點及完工確認。';
+      const next = state.mode === 'deenergized' ? '下一步拆除工作接地，再保持繩索防護下桿、集合清點後復電。' : '維持掩蔽與安全位置，進行工具清點及完工確認。';
       log(`${faultLabels[completed.fault]}已完成舊件移出、新件送入、復位與固定。`, next);
     }
     updateUI();
@@ -2412,6 +2465,17 @@ html>body{padding:0}</style>
         actionAnim.beeped = true;
         playTone(220, 0.08, 0.018, 'triangle');
       }
+      movingBlanketClamps.forEach((clamp, index) => {
+        const threshold = index === 0 ? 0.72 : 0.86;
+        clamp.visible = progress >= threshold;
+        const latch = THREE.MathUtils.clamp((progress - threshold) / 0.12, 0, 1);
+        const scale = 0.72 + smoothStep(latch) * 0.28;
+        clamp.scale.setScalar(scale);
+        if (progress >= threshold && !actionAnim.clipBeeped[index]) {
+          actionAnim.clipBeeped[index] = true;
+          playTone(index === 0 ? 310 : 350, 0.07, 0.025, 'square');
+        }
+      });
     }
     if (actionAnim.type === 'rope') {
       updateRopeGeometry();
@@ -2470,28 +2534,70 @@ html>body{padding:0}</style>
     if (progress >= 1) finishActionAnimation();
   };
 
+  const nearestPegForSide = (side, desiredY) => polePegs
+    .filter(peg => peg.side === side)
+    .reduce((best, peg) => Math.abs(peg.y - desiredY) < Math.abs(best.y - desiredY) ? peg : best);
+
+  const gripArmToPeg = (arm, peg, blend) => {
+    const targetWorld = poleGroup.localToWorld(new THREE.Vector3(peg.x, peg.y + 0.035, peg.z + 0.08));
+    const targetLocal = body.worldToLocal(targetWorld.clone());
+    const direction = targetLocal.sub(arm.position).normalize();
+    const desired = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, -1, 0), direction);
+    arm.quaternion.slerp(desired, blend);
+  };
+
   const updateWorker = (time) => {
     const climbing = state.moving !== 0 && !state.moveBlocked && !state.failed && !state.finished && !state.busy;
-    const stride = climbing ? Math.sin(climbPhase) : 0;
-    const leftLift = climbing ? Math.max(0, stride) : 0;
-    const rightLift = climbing ? Math.max(0, -stride) : 0;
-    const poseEase = climbing ? 0.28 : 0.16;
-    worker.position.set(0, state.height, 0.88);
+    const crossWave = climbing ? Math.sin(climbPhase) : 0;
+    const rightHandReach = climbing ? Math.max(0, crossWave) : 0;
+    const leftFootLift = rightHandReach;
+    const leftHandReach = climbing ? Math.max(0, -crossWave) : 0;
+    const rightFootLift = leftHandReach;
+    const poseEase = climbing ? 0.34 : 0.2;
+    const standingOnPegs = state.height >= 1.42;
+
+    worker.position.set(0, state.height, 0.44);
     worker.rotation.y = Math.PI;
-    leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, climbing ? -stride * 0.58 : 0, poseEase);
-    rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, climbing ? stride * 0.58 : 0, poseEase);
-    leftLeg.rotation.x = THREE.MathUtils.lerp(leftLeg.rotation.x, climbing ? -0.12 - leftLift * 0.54 + rightLift * 0.12 : 0, poseEase);
-    rightLeg.rotation.x = THREE.MathUtils.lerp(rightLeg.rotation.x, climbing ? -0.12 - rightLift * 0.54 + leftLift * 0.12 : 0, poseEase);
-    leftKnee.rotation.x = THREE.MathUtils.lerp(leftKnee.rotation.x, climbing ? leftLift * 0.88 : 0, poseEase);
-    rightKnee.rotation.x = THREE.MathUtils.lerp(rightKnee.rotation.x, climbing ? rightLift * 0.88 : 0, poseEase);
-    leftLeg.position.y = THREE.MathUtils.lerp(leftLeg.position.y, 0.12 + leftLift * 0.17, poseEase);
-    rightLeg.position.y = THREE.MathUtils.lerp(rightLeg.position.y, 0.12 + rightLift * 0.17, poseEase);
-    leftLeg.position.z = THREE.MathUtils.lerp(leftLeg.position.z, climbing ? leftLift * 0.12 : 0, poseEase);
-    rightLeg.position.z = THREE.MathUtils.lerp(rightLeg.position.z, climbing ? rightLift * 0.12 : 0, poseEase);
-    body.position.y = THREE.MathUtils.lerp(body.position.y, climbing ? Math.abs(stride) * 0.035 : 0, 0.2);
-    body.position.z = THREE.MathUtils.lerp(body.position.z, climbing ? 0.055 : 0, 0.18);
-    if (state.busy !== 'rope') body.rotation.x = THREE.MathUtils.lerp(body.rotation.x, 0, 0.14);
-    if (climbing) body.rotation.z = THREE.MathUtils.lerp(body.rotation.z, stride * 0.035, 0.2);
+    body.position.y = THREE.MathUtils.lerp(body.position.y, climbing ? Math.abs(crossWave) * 0.025 : 0, 0.24);
+    body.position.z = THREE.MathUtils.lerp(body.position.z, climbing ? -0.018 : 0, 0.2);
+    if (state.busy !== 'rope') body.rotation.x = THREE.MathUtils.lerp(body.rotation.x, 0, 0.16);
+    if (climbing) body.rotation.z = THREE.MathUtils.lerp(body.rotation.z, crossWave * 0.025, 0.24);
+
+    if (standingOnPegs) {
+      const leftFootPeg = nearestPegForSide(1, state.height - 0.76 + leftFootLift * 0.42);
+      const rightFootPeg = nearestPegForSide(-1, state.height - 0.76 + rightFootLift * 0.42);
+      leftLeg.position.x = THREE.MathUtils.lerp(leftLeg.position.x, -leftFootPeg.x, poseEase);
+      rightLeg.position.x = THREE.MathUtils.lerp(rightLeg.position.x, -rightFootPeg.x, poseEase);
+      // The boot sole is 0.86 m below the hip pivot and about 0.08 m thick.
+      // +0.94 therefore puts the visible sole directly on the steel peg surface.
+      leftLeg.position.y = THREE.MathUtils.lerp(leftLeg.position.y, leftFootPeg.y - state.height + 0.94, poseEase);
+      rightLeg.position.y = THREE.MathUtils.lerp(rightLeg.position.y, rightFootPeg.y - state.height + 0.94, poseEase);
+      leftLeg.position.z = THREE.MathUtils.lerp(leftLeg.position.z, leftFootLift * 0.18, poseEase);
+      rightLeg.position.z = THREE.MathUtils.lerp(rightLeg.position.z, rightFootLift * 0.18, poseEase);
+      leftLeg.rotation.x = THREE.MathUtils.lerp(leftLeg.rotation.x, -leftFootLift * 0.34, poseEase);
+      rightLeg.rotation.x = THREE.MathUtils.lerp(rightLeg.rotation.x, -rightFootLift * 0.34, poseEase);
+      leftKnee.rotation.x = THREE.MathUtils.lerp(leftKnee.rotation.x, leftFootLift * 1.08, poseEase);
+      rightKnee.rotation.x = THREE.MathUtils.lerp(rightKnee.rotation.x, rightFootLift * 1.08, poseEase);
+    } else {
+      leftLeg.position.x = THREE.MathUtils.lerp(leftLeg.position.x, -0.17, poseEase);
+      rightLeg.position.x = THREE.MathUtils.lerp(rightLeg.position.x, 0.17, poseEase);
+      leftLeg.position.y = THREE.MathUtils.lerp(leftLeg.position.y, 0.12 + leftFootLift * 0.17, poseEase);
+      rightLeg.position.y = THREE.MathUtils.lerp(rightLeg.position.y, 0.12 + rightFootLift * 0.17, poseEase);
+      leftKnee.rotation.x = THREE.MathUtils.lerp(leftKnee.rotation.x, leftFootLift * 0.9, poseEase);
+      rightKnee.rotation.x = THREE.MathUtils.lerp(rightKnee.rotation.x, rightFootLift * 0.9, poseEase);
+    }
+
+    worker.updateMatrixWorld(true);
+    body.updateMatrixWorld(true);
+    if ((climbing || (standingOnPegs && !state.busy)) && !state.finished) {
+      const rightHandPeg = nearestPegForSide(-1, state.height + 0.54 + rightHandReach * 0.46);
+      const leftHandPeg = nearestPegForSide(1, state.height + 0.31 + leftHandReach * 0.46);
+      gripArmToPeg(rightArm, rightHandPeg, poseEase);
+      gripArmToPeg(leftArm, leftHandPeg, poseEase);
+    } else {
+      leftArm.quaternion.slerp(leftArmRestQuaternion, 0.24);
+      rightArm.quaternion.slerp(rightArmRestQuaternion, 0.24);
+    }
     if (state.busy === 'test') {
       rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.12, 0.22);
       leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.46, 0.22);
@@ -2508,7 +2614,7 @@ html>body{padding:0}</style>
       rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, movingLeft ? -0.5 * reach : -1.42 * reach, 0.34);
       leftArm.rotation.z = -0.3 - (movingLeft ? reach * 0.32 : 0);
       rightArm.rotation.z = 0.3 + (!movingLeft ? reach * 0.32 : 0);
-    } else {
+    } else if (!climbing) {
       leftArm.rotation.z = THREE.MathUtils.lerp(leftArm.rotation.z, -0.3, 0.18);
       rightArm.rotation.z = THREE.MathUtils.lerp(rightArm.rotation.z, 0.3, 0.18);
     }
@@ -2534,20 +2640,22 @@ html>body{padding:0}</style>
     if (state.failed) return '任務失敗：生命值歸零。';
     if (state.finished) return `任務完成：剩餘 ${state.hp} HP，失誤 ${state.mistakes} 次。`;
     if (state.busy === 'test') return '檢電動作中：抽出檢電器，逐相接近、停留確認、收回。';
-    if (state.busy === 'cover') return `絕緣毯裝設中：展開並包覆第 ${state.covered + 1} 相導線。`;
+    if (state.busy === 'cover') return `絕緣毯裝設中：包覆第 ${state.covered + 1} 相，並逐一扣合兩只大型絕緣夾。`;
     if (state.busy === 'rope') return '雙輔助繩交替換掛：一條保持承載，另一條放鬆後向上套妥。';
     if (state.busy === 'repair') return `${faultLabels[state.fault]}更換中：舊件移出、新件送入並復位固定。`;
     const step = currentStep();
     const messages = {
       ppe: '穿戴安全帽、護目／面罩、絕緣手套與袖套、安全帶及安全鞋。',
       isolate: '先在地面完成停電隔離、上鎖掛牌與工作許可。',
-      rope: '掛妥輔助繩，再開始登桿。',
-      climb: '按住 W／↑，左右腳依序踏上腳踏釘、屈膝抬升與重心轉移；接近繩長上限時按 Q 交替換掛。',
+      'climb-start': '先以右手／左腳、左手／右腳交叉順序攀過前三個腳踏釘；腳底必須落在釘面。',
+      rope: '通過第三個腳踏釘後按 Q：固定母繩、接上制動器，再開始雙輔助繩交替上套。',
+      climb: '按住 W／↑，右手配左腳、左手配右腳交叉上移；母繩保持固定，接近承載繩上限時按 Q 換掛。',
       test: '到變壓器工作區，從腰袋取檢電器確認線路狀態。',
       ground: '確認隔離且檢電無電後，掛設工作接地組。',
-      cover: state.mode === 'live' ? `逐相掩蔽高壓導線：${state.covered}/3` : '掩蔽鄰近設備與導線。',
+      cover: `逐相掩蔽並以大型絕緣夾夾固：${state.covered}/3 相、${state.clipped}/3 組`,
       repair: `依情境更換${faultLabels[state.fault]}。`,
       'remove-ground': '維修完成後拆除工作接地組。',
+      descend: '保持交叉握踏與繩索防護下桿；回到地面後集合清點人員與工具。',
       finish: state.mode === 'live' ? '完成工具清點與完工確認。' : '下桿或確認安全後執行復電。'
     };
     return messages[step] || '依程序完成任務。';
@@ -2557,8 +2665,9 @@ html>body{padding:0}</style>
     const expected = currentStep();
     el.actions.forEach(button => {
       const action = button.dataset.action;
+      button.hidden = action === 'cover' && state.mode === 'deenergized';
       button.classList.toggle('btn-primary', action === expected);
-      if (action === 'cover') button.textContent = state.mode === 'live' ? `逐相高壓掩蔽 ${state.covered}/3` : '腰袋取絕緣掩蔽具';
+      if (action === 'cover') button.textContent = `絕緣毯包覆夾固 ${state.covered}/3`;
       if (action === 'repair') button.textContent = state.fault === 'insulator' ? '更換破損礙子' : state.fault === 'hardware' ? '更換燒損鐵件' : '吊換桿上變壓器';
       if (action === 'finish') button.textContent = state.mode === 'live' ? '完工確認' : '復電／完工確認';
       button.disabled = state.failed || state.finished || Boolean(state.busy);
@@ -2574,13 +2683,13 @@ html>body{padding:0}</style>
     el.height.textContent = `${state.height.toFixed(1)} m`;
     el.altimeter.style.height = `${Math.min(100, state.height / 9.2 * 100)}%`;
     el.ropeStatus.textContent = state.rope
-      ? `A ${state.ropeAnchors[0].toFixed(1)} m／B ${state.ropeAnchors[1].toFixed(1)} m，${state.activeRope === 0 ? 'A' : 'B'} 承載`
-      : '雙輔助繩未掛';
+      ? `母繩固定；A ${state.ropeAnchors[0].toFixed(1)} m／B ${state.ropeAnchors[1].toFixed(1)} m，${state.activeRope === 0 ? 'A' : 'B'} 承載`
+      : state.height < ropeAttachHeight - 0.04 ? '前三釘交叉攀登；尚未掛繩' : '第三釘到位：按 Q 固定母繩';
     const tense = Date.now() < tensionUntil || state.hp <= 35;
     el.musicState.textContent = !musicEnabled ? '音樂關閉' : tense ? '高張力節奏' : '搶修節奏';
     el.lineState.textContent = lineEnergized() ? `線路帶電 ${state.voltage.toFixed(1)} kV` : '已隔離、線路停電';
     el.objective.textContent = objectiveText();
-    el.hint.textContent = state.finished ? '任務完成' : state.failed ? '請重新開始' : state.busy ? '連續動作進行中' : state.rope && state.ropeAnchor - state.height < 0.45 ? '上方承載繩即將到限，按 Q 交替上套' : 'W／↑ 左右腳交替登桿　S／↓ 下桿　Q 雙繩換掛';
+    el.hint.textContent = state.finished ? '任務完成' : state.failed ? '請重新開始' : state.busy ? '連續動作進行中' : !state.rope && state.height >= ropeAttachHeight - 0.04 ? '第三個腳踏釘到位，按 Q 固定母繩' : state.rope && state.ropeAnchor - state.height < 0.45 ? '承載繩即將到限，按 Q 交替上套' : 'W／↑ 右手配左腳、左手配右腳　S／↓ 下桿　Q 換掛';
     el.up.disabled = state.failed || state.finished || Boolean(state.busy);
     el.down.disabled = state.failed || state.finished || Boolean(state.busy);
     el.rope.disabled = state.failed || state.finished || Boolean(state.busy) || !state.ppe;
@@ -2600,6 +2709,10 @@ html>body{padding:0}</style>
       return;
     }
     if (!state.rope) {
+      if (state.height < ropeAttachHeight - 0.04) {
+        mistake(5, '尚未通過第三個腳踏釘就提前甩掛繩索。', `先以交叉握踏攀登至第三釘位置（約 ${ropeAttachHeight.toFixed(1)} m 身體高度），再固定母繩。`);
+        return;
+      }
       beginRopeSwitch(true);
       return;
     }
@@ -2645,12 +2758,14 @@ html>body{padding:0}</style>
       }
     }
     if (action === 'cover') {
-      if (!atWorkZone()) {
+      if (state.mode === 'deenergized') {
+        log('停電作業分支不裝設絕緣毯。', '本任務改依隔離掛牌、工作位置檢電、工作接地、維修、拆接地、下桿清點與復電確認進行。');
+      } else if (!atWorkZone()) {
         mistake(4, '距離工作區太遠，無法裝設掩蔽。', '先手動登桿到變壓器附近。');
       } else if (!state.tested) {
         mistake(12, '未先檢電就接近高壓導線。', '先從腰袋取檢電器確認線路狀態。');
       } else {
-        const required = state.mode === 'live' ? 3 : 1;
+        const required = 3;
         if (state.covered < required) {
           beginBlanketCover(Math.min(covers.length - 1, state.covered));
         } else {
@@ -2668,7 +2783,7 @@ html>body{padding:0}</style>
       } else {
         state.grounded = true;
         groundSet.visible = true;
-        log('工作接地組已掛設。', '三相臨時接地線已連至桿下系統接地引線、接地夾及地下接地銅棒；先接接地端，再接導線端。');
+        log('工作接地組已掛設。', '三相臨時接地線、桿後接地引線、接地夾與地下接地銅棒均已呈現並確認連續。');
       }
     }
     if (action === 'repair') {
@@ -2676,8 +2791,8 @@ html>body{padding:0}</style>
         mistake(5, '尚未到達故障跳線。', '繼續登桿至變壓器工作區。');
       } else if (!state.tested) {
         mistake(state.voltage > 20 ? 70 : 48, '未檢電就接觸設備。', '發生電擊與電弧風險，音樂進入高張力狀態。', true);
-      } else if (state.mode === 'live' && state.covered < 3) {
-        mistake(state.voltage > 20 ? 64 : 42, '活線導線掩蔽不完整。', `目前僅完成 ${state.covered}/3 相，手臂進入未防護區。`, true);
+      } else if (state.mode === 'live' && (state.covered < 3 || state.clipped < 3)) {
+        mistake(state.voltage > 20 ? 64 : 42, '活線導線掩蔽或夾固不完整。', `目前完成 ${state.covered}/3 相、夾固 ${state.clipped}/3 組，絕緣毯可能鬆脫。`, true);
       } else if (state.mode === 'deenergized' && !state.grounded) {
         mistake(32, '停電作業尚未完成工作接地。', '可能遭受誤送電或感應／逆送電危害。', true);
       } else if (state.fault === 'transformer' && state.mode === 'live') {
@@ -2706,6 +2821,8 @@ html>body{padding:0}</style>
         mistake(18, '故障尚未修復就要求完工。', '依序完成檢電、防護與維修。');
       } else if (state.mode === 'deenergized' && state.grounded) {
         mistake(100, '帶著工作接地組執行復電！', '造成直接短路與嚴重弧光事故。', true);
+      } else if (state.mode === 'deenergized' && state.height > 0.9) {
+        mistake(48, '人員仍在桿上就要求復電。', '先下桿、集合清點人員與工具，確認無人再登桿後才能完成復電程序。', true);
       } else {
         state.finished = true;
         state.moving = 0;
@@ -2737,12 +2854,16 @@ html>body{padding:0}</style>
       isolated: false,
       tested: false,
       covered: 0,
+      clipped: 0,
       grounded: false,
       repaired: false,
       finished: false,
       failed: false,
       moving: 0,
       moveBlocked: false,
+      initialRopePrompted: false,
+      lastMoveDirection: 0,
+      lastMoveAt: 0,
       mistakes: 0,
       busy: null
     });
@@ -2754,7 +2875,11 @@ html>body{padding:0}</style>
     probeTip.visible = false;
     probeLamp.intensity = 0;
     movingBlanket.visible = false;
-    blanketRoll.visible = true;
+    blanketRoll.visible = state.mode === 'live';
+    movingBlanketClamps.forEach(clamp => {
+      clamp.visible = false;
+      clamp.scale.setScalar(1);
+    });
     covers.forEach(cover => { cover.visible = false; });
     groundSet.visible = false;
     hoistGroup.visible = false;
@@ -2776,6 +2901,18 @@ html>body{padding:0}</style>
   const setMoving = value => {
     ensureAudio();
     if (state.failed || state.finished || state.busy) return;
+    if (value !== 0) {
+      const now = performance.now();
+      if (state.lastMoveDirection !== 0 && value !== state.lastMoveDirection && now - state.lastMoveAt < 360 && state.height > 1.42) {
+        mistake(7, '握踏尚未穩定就快速反向移動。', '先讓手掌握住腳踏釘、腳底落在釘面並穩定重心，再改變方向。');
+        state.moving = 0;
+        state.lastMoveDirection = value;
+        state.lastMoveAt = now;
+        return;
+      }
+      state.lastMoveDirection = value;
+      state.lastMoveAt = now;
+    }
     if (value < 0) state.moveBlocked = false;
     state.moving = value;
   };
@@ -2787,20 +2924,41 @@ html>body{padding:0}</style>
       mistake(12, '未穿戴完整防護具就嘗試登桿。', '先完成 PPE 與安全帶檢查。');
       return;
     }
-    if (!state.rope && state.moving > 0) {
+    if (state.mode === 'deenergized' && !state.isolated && state.moving > 0) {
       state.moving = 0;
-      mistake(18, '未掛輔助繩就開始登桿。', '發生滑落，請先按 Q 掛繩。');
+      mistake(14, '尚未完成停電隔離掛牌就開始登桿。', '回到地面完成停電聯絡、隔離與掛牌，再開始前三釘攀登。');
       return;
     }
-    if (state.moving > 0 && state.height >= state.ropeAnchor - 0.22) {
+    if (!state.rope && state.moving > 0 && state.height >= ropeAttachHeight - 0.035) {
+      state.moving = 0;
+      state.moveBlocked = true;
+      if (state.initialRopePrompted) {
+        mistake(12, '越過第三個腳踏釘後仍未固定母繩。', '按 Q 固定母繩並接上制動器，確認輔助繩承載後再往上。');
+      } else {
+        state.initialRopePrompted = true;
+        log('第三個腳踏釘已到位。', '停止上移，按 Q 固定母繩並接上制動器；母繩固定後不隨人員向上移動。');
+        updateUI();
+      }
+      return;
+    }
+    if (state.rope && state.moving > 0 && state.height >= state.ropeAnchor - 0.22) {
       state.moving = 0;
       state.moveBlocked = true;
       mistake(9, '輔助繩已到換掛極限。', '按 Q 將輔助繩移到更高掛點後再繼續。');
       return;
     }
-    climbPhase += state.moving * delta * 6.2;
+    climbPhase += state.moving * delta * 5.4;
     const stepTransfer = 0.72 + Math.abs(Math.sin(climbPhase)) * 0.28;
-    state.height = THREE.MathUtils.clamp(state.height + state.moving * delta * 0.88 * stepTransfer, 0.6, 8.65);
+    state.height = THREE.MathUtils.clamp(state.height + state.moving * delta * 0.78 * stepTransfer, 0.6, 8.65);
+    if (!state.rope && state.moving > 0 && state.height >= ropeAttachHeight) {
+      state.height = ropeAttachHeight;
+      state.moving = 0;
+      state.moveBlocked = true;
+      state.initialRopePrompted = true;
+      log('第三個腳踏釘已踩穩。', '按 Q 固定母繩並接上制動器後，再繼續交叉握踏登桿。');
+      updateUI();
+      return;
+    }
     if (state.moving < 0 && state.height < state.ropeAnchor - 1.35) {
       state.ropeAnchors = [Math.max(0.9, state.height + 0.72), Math.max(1.0, state.height + 1.08)];
       state.activeRope = 1;
@@ -2964,7 +3122,7 @@ html>body{padding:0}</style>
   };
 
   const showLoadError = () => {
-    const root = document.getElementById('taipower-realistic-3d-restored');
+    const root = document.getElementById('taipower-cross-limb-climbing-sim');
     if (!root) return;
     const log = root.querySelector('#tp3-log');
     const main = root.querySelector('#tp3-log-main');
@@ -3008,7 +3166,6 @@ html>body{padding:0}</style>
   }, 600);
 })();
 </script>
-
 
 <script src="https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js"></script>
 <script src="https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js"></script>
