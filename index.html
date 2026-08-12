@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>台電擬真3D配電模擬</title>
+<title>台電擬真3D模擬爬桿作業遊戲</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>:root {
   color-scheme: light dark;
@@ -738,45 +738,45 @@ svg {
 html>body{padding:0}</style>
 </head>
 <body>
-<div id="taipower-cross-limb-climbing-sim">
+<div id="taipower-roadside-special-operations-sim">
   <style>
-    #taipower-cross-limb-climbing-sim {
+    #taipower-roadside-special-operations-sim {
       color: var(--foreground);
       width: 100%;
     }
-    #taipower-cross-limb-climbing-sim .tp3-toolbar,
-    #taipower-cross-limb-climbing-sim .tp3-actions,
-    #taipower-cross-limb-climbing-sim .tp3-climb-controls {
+    #taipower-roadside-special-operations-sim .tp3-toolbar,
+    #taipower-roadside-special-operations-sim .tp3-actions,
+    #taipower-roadside-special-operations-sim .tp3-climb-controls {
       display: flex;
       flex-wrap: wrap;
       align-items: end;
       gap: 8px;
       margin-bottom: 10px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-toolbar .form-label {
+    #taipower-roadside-special-operations-sim .tp3-toolbar .form-label {
       min-width: 136px;
       flex: 1 1 150px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-stats {
+    #taipower-roadside-special-operations-sim .tp3-stats {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 10px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-hp-track {
+    #taipower-roadside-special-operations-sim .tp3-hp-track {
       height: 8px;
       margin-top: 6px;
       background: color-mix(in srgb, var(--muted) 74%, transparent);
       overflow: hidden;
       border-radius: 999px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-hp-fill {
+    #taipower-roadside-special-operations-sim .tp3-hp-fill {
       width: 100%;
       height: 100%;
       background: var(--viz-series-2);
       transition: width 240ms ease, background 240ms ease;
     }
-    #taipower-cross-limb-climbing-sim .tp3-stage {
+    #taipower-roadside-special-operations-sim .tp3-stage {
       position: relative;
       width: 100%;
       height: 620px;
@@ -787,28 +787,28 @@ html>body{padding:0}</style>
       margin-bottom: 10px;
       touch-action: none;
     }
-    #taipower-cross-limb-climbing-sim canvas {
+    #taipower-roadside-special-operations-sim canvas {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       display: block;
     }
-    #taipower-cross-limb-climbing-sim .tp3-webgl {
+    #taipower-roadside-special-operations-sim .tp3-webgl {
       opacity: 0;
     }
-    #taipower-cross-limb-climbing-sim .tp3-webgl.is-ready {
+    #taipower-roadside-special-operations-sim .tp3-webgl.is-ready {
       opacity: 1;
     }
-    #taipower-cross-limb-climbing-sim .tp3-fallback.is-hidden {
+    #taipower-roadside-special-operations-sim .tp3-fallback.is-hidden {
       display: none;
     }
-    #taipower-cross-limb-climbing-sim .tp3-overlay {
+    #taipower-roadside-special-operations-sim .tp3-overlay {
       position: absolute;
       inset: 0;
       pointer-events: none;
     }
-    #taipower-cross-limb-climbing-sim .tp3-objective {
+    #taipower-roadside-special-operations-sim .tp3-objective {
       position: absolute;
       left: 12px;
       top: 12px;
@@ -818,7 +818,7 @@ html>body{padding:0}</style>
       background: color-mix(in srgb, var(--popover) 86%, transparent);
       border-radius: 8px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-reticle {
+    #taipower-roadside-special-operations-sim .tp3-reticle {
       position: absolute;
       left: 50%;
       top: 50%;
@@ -828,25 +828,25 @@ html>body{padding:0}</style>
       border: 1px solid color-mix(in srgb, var(--foreground) 72%, transparent);
       border-radius: 50%;
     }
-    #taipower-cross-limb-climbing-sim .tp3-reticle::before,
-    #taipower-cross-limb-climbing-sim .tp3-reticle::after {
+    #taipower-roadside-special-operations-sim .tp3-reticle::before,
+    #taipower-roadside-special-operations-sim .tp3-reticle::after {
       content: "";
       position: absolute;
       background: color-mix(in srgb, var(--foreground) 72%, transparent);
     }
-    #taipower-cross-limb-climbing-sim .tp3-reticle::before {
+    #taipower-roadside-special-operations-sim .tp3-reticle::before {
       width: 6px;
       height: 1px;
       left: 5px;
       top: 8px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-reticle::after {
+    #taipower-roadside-special-operations-sim .tp3-reticle::after {
       width: 1px;
       height: 6px;
       left: 8px;
       top: 5px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-hint {
+    #taipower-roadside-special-operations-sim .tp3-hint {
       position: absolute;
       left: 50%;
       bottom: 14px;
@@ -859,7 +859,7 @@ html>body{padding:0}</style>
       background: color-mix(in srgb, var(--popover) 88%, transparent);
       border-radius: 8px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-altimeter {
+    #taipower-roadside-special-operations-sim .tp3-altimeter {
       position: absolute;
       right: 12px;
       top: 12px;
@@ -869,14 +869,14 @@ html>body{padding:0}</style>
       border-radius: 999px;
       overflow: hidden;
     }
-    #taipower-cross-limb-climbing-sim .tp3-altimeter-fill {
+    #taipower-roadside-special-operations-sim .tp3-altimeter-fill {
       position: absolute;
       inset: auto 0 0;
       height: 0%;
       background: var(--viz-series-1);
       transition: height 100ms linear;
     }
-    #taipower-cross-limb-climbing-sim .tp3-equipment-list {
+    #taipower-roadside-special-operations-sim .tp3-equipment-list {
       position: absolute;
       right: 32px;
       top: 12px;
@@ -887,17 +887,17 @@ html>body{padding:0}</style>
       border-radius: 8px;
       line-height: 1.45;
     }
-    #taipower-cross-limb-climbing-sim .tp3-flash {
+    #taipower-roadside-special-operations-sim .tp3-flash {
       position: absolute;
       inset: 0;
       opacity: 0;
       background: color-mix(in srgb, var(--destructive) 70%, var(--background));
       transition: opacity 150ms ease;
     }
-    #taipower-cross-limb-climbing-sim .tp3-flash.is-active {
+    #taipower-roadside-special-operations-sim .tp3-flash.is-active {
       opacity: .72;
     }
-    #taipower-cross-limb-climbing-sim .tp3-damage {
+    #taipower-roadside-special-operations-sim .tp3-damage {
       position: absolute;
       left: 50%;
       top: 32%;
@@ -907,27 +907,30 @@ html>body{padding:0}</style>
       font-weight: 500;
       transition: opacity 180ms ease, transform 400ms ease;
     }
-    #taipower-cross-limb-climbing-sim .tp3-damage.is-active {
+    #taipower-roadside-special-operations-sim .tp3-damage.is-active {
       opacity: 1;
       transform: translate(-50%, -86%);
     }
-    #taipower-cross-limb-climbing-sim .tp3-log {
+    #taipower-roadside-special-operations-sim .tp3-log {
       min-height: 44px;
       margin-bottom: 10px;
       padding-left: 12px;
       border-left: 3px solid var(--viz-series-1);
     }
-    #taipower-cross-limb-climbing-sim .tp3-log.is-danger {
+    #taipower-roadside-special-operations-sim .tp3-log.is-danger {
       border-left-color: var(--destructive);
     }
-    #taipower-cross-limb-climbing-sim .tp3-actions .btn,
-    #taipower-cross-limb-climbing-sim .tp3-climb-controls .btn {
+    #taipower-roadside-special-operations-sim .tp3-actions .btn,
+    #taipower-roadside-special-operations-sim .tp3-climb-controls .btn {
       flex: 1 1 130px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-actions .btn[hidden] {
+    #taipower-roadside-special-operations-sim .tp3-actions .btn[hidden] {
       display: none !important;
     }
-    #taipower-cross-limb-climbing-sim .tp3-key {
+    #taipower-roadside-special-operations-sim .tp3-toolbar .form-label[hidden] {
+      display: none !important;
+    }
+    #taipower-roadside-special-operations-sim .tp3-key {
       display: inline-block;
       min-width: 22px;
       padding: 1px 5px;
@@ -936,42 +939,47 @@ html>body{padding:0}</style>
       background: var(--muted);
       border-radius: 4px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-steps {
+    #taipower-roadside-special-operations-sim .tp3-steps {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
       margin-top: 8px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-step {
+    #taipower-roadside-special-operations-sim .tp3-step {
       padding: 4px 7px;
       color: var(--muted-foreground);
       background: color-mix(in srgb, var(--muted) 58%, transparent);
       border-radius: 999px;
     }
-    #taipower-cross-limb-climbing-sim .tp3-step.is-done {
+    #taipower-roadside-special-operations-sim .tp3-step.is-done {
       color: var(--foreground);
       background: color-mix(in srgb, var(--viz-series-2) 28%, transparent);
     }
-    #taipower-cross-limb-climbing-sim .tp3-step.is-current {
+    #taipower-roadside-special-operations-sim .tp3-step.is-current {
       color: var(--primary-foreground);
       background: var(--primary);
     }
     @media (max-width: 620px) {
-      #taipower-cross-limb-climbing-sim .tp3-stage {
+      #taipower-roadside-special-operations-sim .tp3-stage {
         height: 430px;
       }
-      #taipower-cross-limb-climbing-sim .tp3-stats {
+      #taipower-roadside-special-operations-sim .tp3-stats {
         grid-template-columns: 1fr;
       }
-      #taipower-cross-limb-climbing-sim .tp3-altimeter {
+      #taipower-roadside-special-operations-sim .tp3-altimeter {
         height: 120px;
       }
-      #taipower-cross-limb-climbing-sim .tp3-equipment-list {
+      #taipower-roadside-special-operations-sim .tp3-equipment-list {
         display: none;
       }
     }
+    @media (min-width: 621px) and (max-width: 980px) {
+      #taipower-roadside-special-operations-sim .tp3-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
     @media (prefers-reduced-motion: reduce) {
-      #taipower-cross-limb-climbing-sim * {
+      #taipower-roadside-special-operations-sim * {
         transition-duration: 0.01ms !important;
       }
     }
@@ -982,6 +990,9 @@ html>body{padding:0}</style>
       <select id="tp3-mode" class="form-select">
         <option value="deenergized">停電配電設備更換</option>
         <option value="live">活線作業</option>
+        <option value="nest">摘除／移植鳥巢</option>
+        <option value="tree">線路樹木修剪</option>
+        <option value="storm">颱風斷線搶修壓接</option>
       </select>
     </label>
     <label class="form-label" for="tp3-voltage">線路等級
@@ -1008,6 +1019,7 @@ html>body{padding:0}</style>
       <span class="text-muted">生命值</span>
       <span id="tp3-hp" class="viz-stat-value">100 HP</span>
       <div class="tp3-hp-track" aria-hidden="true"><div id="tp3-hp-fill" class="tp3-hp-fill"></div></div>
+      <span id="tp3-hazard" class="text-small">尚無不安全行為</span>
     </div>
     <div class="card viz-stat">
       <span class="text-muted">登桿高度</span>
@@ -1019,15 +1031,20 @@ html>body{padding:0}</style>
       <span id="tp3-music-state" class="viz-stat-value">待命</span>
       <span id="tp3-line-state" class="text-small">線路帶電</span>
     </div>
+    <div class="card viz-stat">
+      <span class="text-muted">現場班組／健康監看</span>
+      <span id="tp3-crew-state" class="viz-stat-value">班長＋4 名同事</span>
+      <span id="tp3-health-state" class="text-small">班長巡視：精神狀況正常</span>
+    </div>
   </div>
 
   <div id="tp3-stage" class="tp3-stage">
     <canvas id="tp3-fallback" class="tp3-fallback" role="img" aria-label="台灣街頭配電電桿與作業員預覽，三維場景載入中"></canvas>
     <canvas id="tp3-canvas" class="tp3-webgl" role="img" aria-label="可操作的台灣街頭三維配電電桿、變壓器與登桿作業員場景"></canvas>
     <div class="tp3-overlay" aria-hidden="true">
-      <div id="tp3-objective" class="tp3-objective">先完成防護具穿戴，再掛輔助繩登桿。</div>
+      <div id="tp3-objective" class="tp3-objective">先逐件穿戴防護具，再設置三角錐與交通桿。</div>
       <div class="tp3-reticle"></div>
-      <div class="tp3-equipment-list">可見設備：11.4／22.8 kV 三相高壓線、低壓四線、通訊線、輕鋼橫擔、斜撐與抱箍、裝腳礙子、熔絲鏈開關、避雷器、桿上變壓器、永久接地銅線及接地銅棒。</div>
+      <div class="tp3-equipment-list">可見設備：三相高壓線、低壓四線、通訊線、橫擔、礙子、熔絲鏈開關、避雷器、桿上變壓器、接地組；地面班組含班長與 4 名同事、繩索工作袋；依任務另有交通錐／交通桿、鳥巢、大樹、斷落導線與壓接套管。</div>
       <div class="tp3-altimeter"><div id="tp3-altimeter-fill" class="tp3-altimeter-fill"></div></div>
       <div id="tp3-hint" class="tp3-hint"><span class="tp3-key">W</span>／↑ 登桿　<span class="tp3-key">Q</span> 換掛輔助繩</div>
       <div id="tp3-flash" class="tp3-flash"></div>
@@ -1048,11 +1065,16 @@ html>body{padding:0}</style>
 
   <div class="tp3-actions" aria-label="作業工具">
     <button class="btn btn-primary" type="button" data-action="ppe">穿戴防護具</button>
+    <button class="btn" type="button" data-action="traffic">設置三角錐／交通桿</button>
     <button class="btn" type="button" data-action="isolate">停電聯絡／隔離掛牌</button>
     <button class="btn" type="button" data-action="test">腰袋取檢電器</button>
     <button class="btn" type="button" data-action="cover">腰袋取絕緣掩蔽具</button>
     <button class="btn" type="button" data-action="ground">掛工作接地組</button>
     <button class="btn" type="button" data-action="repair">絕緣工具維修</button>
+    <button class="btn" type="button" data-action="nest">鳥況檢查／移植鳥巢</button>
+    <button class="btn" type="button" data-action="prune">絕緣長柄鋸修枝</button>
+    <button class="btn" type="button" data-action="splice">套管定位／液壓壓接</button>
+    <button class="btn" type="button" data-action="health">班長健康確認／補水休息</button>
     <button class="btn" type="button" data-action="remove-ground">拆除工作接地</button>
     <button class="btn" type="button" data-action="finish">清點／復電確認</button>
   </div>
@@ -1062,7 +1084,7 @@ html>body{padding:0}</style>
 
 <script>
 (() => {
-  const initialRoot = document.getElementById('taipower-cross-limb-climbing-sim');
+  const initialRoot = document.getElementById('taipower-roadside-special-operations-sim');
   let fallbackObserver = { disconnect() {} };
   if (initialRoot) {
     const fallbackCanvas = initialRoot.querySelector('#tp3-fallback');
@@ -1208,7 +1230,7 @@ html>body{padding:0}</style>
   }
 
   const startTaipowerSimulation = () => {
-  const root = document.getElementById('taipower-cross-limb-climbing-sim');
+  const root = document.getElementById('taipower-roadside-special-operations-sim');
   if (!root) return;
 
   const el = {
@@ -1223,10 +1245,13 @@ html>body{padding:0}</style>
     reset: root.querySelector('#tp3-reset'),
     hp: root.querySelector('#tp3-hp'),
     hpFill: root.querySelector('#tp3-hp-fill'),
+    hazard: root.querySelector('#tp3-hazard'),
     height: root.querySelector('#tp3-height'),
     ropeStatus: root.querySelector('#tp3-rope-status'),
     musicState: root.querySelector('#tp3-music-state'),
     lineState: root.querySelector('#tp3-line-state'),
+    crewState: root.querySelector('#tp3-crew-state'),
+    healthState: root.querySelector('#tp3-health-state'),
     objective: root.querySelector('#tp3-objective'),
     hint: root.querySelector('#tp3-hint'),
     altimeter: root.querySelector('#tp3-altimeter-fill'),
@@ -1322,6 +1347,8 @@ html>body{padding:0}</style>
     skinShade: mat(new THREE.Color(0xaf765b), 0.86, 0.01),
     uniform: mat(new THREE.Color(0x1f4f79), 0.7, 0.04),
     uniformLight: mat(new THREE.Color(0x5687aa), 0.66, 0.04),
+    vestRed: mat(new THREE.Color(0xb3242d), 0.58, 0.08),
+    reflective: new THREE.MeshStandardMaterial({ color: new THREE.Color(0xf1f0dc), roughness: 0.42, metalness: 0.12, emissive: new THREE.Color(0x3b3a2e), emissiveIntensity: 0.12 }),
     eye: mat(new THREE.Color(0x271b15), 0.24, 0.02),
     eyeWhite: new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xf2eee7), roughness: 0.2, clearcoat: 0.55 }),
     lip: mat(new THREE.Color(0x9f5149), 0.72, 0.01),
@@ -1460,6 +1487,86 @@ html>body{padding:0}</style>
   box(0.9, 0.65, 0.8, mats.yellow, -1.5, 7.65, -0.5, truck);
   boom1.castShadow = boom2.castShadow = true;
 
+  const trafficGroup = new THREE.Group();
+  world.add(trafficGroup);
+  const trafficElements = [];
+  const addTrafficCone = (x, z) => {
+    const cone = new THREE.Group();
+    cone.position.set(x, 0.03, z);
+    trafficGroup.add(cone);
+    box(0.58, 0.08, 0.58, mats.rubber, 0, 0.04, 0, cone);
+    const body = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.76, 20), mats.orange);
+    body.position.y = 0.44;
+    body.castShadow = true;
+    cone.add(body);
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.2, 0.13, 20), mats.insulator);
+    band.position.y = 0.36;
+    band.castShadow = true;
+    cone.add(band);
+    trafficElements.push(cone);
+  };
+  const addTrafficPost = (x, z) => {
+    const post = new THREE.Group();
+    post.position.set(x, 0.03, z);
+    trafficGroup.add(post);
+    cylinder(0.3, 0.34, 0.14, mats.rubber, 0, 0.07, 0, 18, post);
+    cylinder(0.065, 0.065, 1.35, mats.orange, 0, 0.76, 0, 14, post);
+    [0.5, 0.86, 1.18].forEach(y => cylinder(0.075, 0.075, 0.12, mats.insulator, 0, y, 0, 14, post));
+    trafficElements.push(post);
+  };
+  [[-5.7, 4.15], [-3.9, 4.05], [-2.1, 3.95], [-0.3, 3.85], [1.5, 3.75], [3.3, 3.65]].forEach(([x, z]) => addTrafficCone(x, z));
+  [[-5.6, 4.95], [-2.0, 4.75], [1.6, 4.55]].forEach(([x, z]) => addTrafficPost(x, z));
+  const trafficBarrier = new THREE.Group();
+  trafficBarrier.position.set(4.55, 0.03, 3.55);
+  trafficBarrier.rotation.y = -0.12;
+  trafficGroup.add(trafficBarrier);
+  [-0.8, 0.8].forEach(x => {
+    cylinder(0.23, 0.28, 0.16, mats.rubber, x, 0.08, 0, 16, trafficBarrier);
+    box(0.12, 1.18, 0.12, mats.metal, x, 0.7, 0, trafficBarrier);
+  });
+  box(2.25, 0.46, 0.12, mats.orange, 0, 0.98, 0, trafficBarrier);
+  [-0.72, 0, 0.72].forEach(x => box(0.28, 0.48, 0.14, mats.insulator, x, 0.98, 0.01, trafficBarrier).rotation.z = -0.42);
+  trafficElements.push(trafficBarrier);
+  trafficElements.forEach(element => {
+    element.visible = false;
+    element.scale.setScalar(0.25);
+  });
+
+  const treeGroup = new THREE.Group();
+  treeGroup.position.set(-4.35, 0, -0.45);
+  world.add(treeGroup);
+  cylinder(0.48, 0.78, 7.5, mats.copper, 0, 3.65, 0, 20, treeGroup);
+  curveTube([
+    new THREE.Vector3(0, 5.4, 0),
+    new THREE.Vector3(-1.25, 7.25, -0.25),
+    new THREE.Vector3(-2.05, 8.35, -0.5)
+  ], 0.22, mats.copper, treeGroup);
+  curveTube([
+    new THREE.Vector3(0.05, 6.2, 0.05),
+    new THREE.Vector3(0.9, 7.7, -0.45),
+    new THREE.Vector3(1.3, 8.55, -0.65)
+  ], 0.2, mats.copper, treeGroup);
+  [[-1.65, 8.45, -0.55], [-0.6, 8.55, -0.25], [0.45, 8.15, -0.5], [1.2, 8.75, -0.6], [-0.25, 9.25, -0.4]].forEach(([x, y, z], index) => {
+    ellipsoid(1.05 + index % 2 * 0.25, 0.8, 0.82, mats.green, x, y, z, treeGroup, 18);
+  });
+  const treeFaultBranch = new THREE.Group();
+  treeGroup.add(treeFaultBranch);
+  curveTube([
+    new THREE.Vector3(0.1, 6.45, 0.12),
+    new THREE.Vector3(1.25, 8.0, 0.1),
+    new THREE.Vector3(2.65, 9.25, 0.18),
+    new THREE.Vector3(4.15, 9.95, 0.2)
+  ], 0.18, mats.copper, treeFaultBranch);
+  [[1.45, 8.25, 0.1], [2.35, 9.05, 0.18], [3.15, 9.55, 0.22], [4.0, 10.02, 0.2], [3.75, 9.35, 0.45]].forEach(([x, y, z], index) => {
+    ellipsoid(0.78 + index % 2 * 0.2, 0.62, 0.72, mats.green, x, y, z, treeFaultBranch, 18);
+  });
+  const treeCutFace = cylinder(0.2, 0.2, 0.08, mats.copper, 0.18, 6.52, 0.12, 18, treeGroup);
+  treeCutFace.rotation.z = -0.58;
+  treeCutFace.visible = false;
+  const treeBranchHomePosition = treeFaultBranch.position.clone();
+  const treeBranchHomeRotation = treeFaultBranch.rotation.clone();
+  treeGroup.visible = false;
+
   const poleGroup = new THREE.Group();
   world.add(poleGroup);
   const pole = cylinder(0.28, 0.48, 11.8, mats.concrete, 0, 5.8, 0, 28, poleGroup);
@@ -1516,7 +1623,7 @@ html>body{padding:0}</style>
     tie.position.set(0, 0.58, 0);
     tie.rotation.x = Math.PI / 2;
     ins.add(tie);
-    addSaggingConductor(x, 9.98, -16, 16, 0.052, mats.wire, world, 0.19);
+    const phaseWire = addSaggingConductor(x, 9.98, -16, 16, 0.052, mats.wire, world, 0.19);
     const blanket = new THREE.Group();
     blanket.position.set(x, 9.98, 0);
     poleGroup.add(blanket);
@@ -1528,7 +1635,7 @@ html>body{padding:0}</style>
     addBlanketClamp(1.55, blanket);
     blanket.visible = false;
     covers.push(blanket);
-    phaseWires.push(i);
+    phaseWires.push(phaseWire);
   });
 
   const lowVoltageXs = [-1.35, -0.45, 0.45, 1.35];
@@ -1760,7 +1867,10 @@ html>body{padding:0}</style>
   const faultLabels = {
     insulator: '裝腳礙子破損',
     hardware: '橫擔鐵件燒損',
-    transformer: '桿上變壓器故障'
+    transformer: '桿上變壓器故障',
+    nest: '桿上鳥巢',
+    tree: '樹枝侵入線路',
+    storm: '颱風造成導線斷落'
   };
   const damagedCeramicMaterial = new THREE.MeshStandardMaterial({ color: palette.danger, roughness: 0.35, metalness: 0.02 });
   const damagedMetalMaterial = new THREE.MeshStandardMaterial({ color: palette.danger, roughness: 0.48, metalness: 0.68 });
@@ -1824,6 +1934,82 @@ html>body{padding:0}</style>
   ], 0.06, mats.orange, groundSet);
   box(0.34, 0.15, 0.26, mats.orange, 1.55, 0.28, 0.8, groundSet);
   groundSet.visible = false;
+
+  const nestGroup = new THREE.Group();
+  nestGroup.position.set(1.08, 8.74, -0.42);
+  poleGroup.add(nestGroup);
+  for (let twigIndex = 0; twigIndex < 22; twigIndex += 1) {
+    const angle = twigIndex * 2.399;
+    const radius = 0.2 + (twigIndex % 5) * 0.055;
+    const twig = cylinder(0.018, 0.025, 0.72, mats.copper, Math.cos(angle) * radius, (twigIndex % 4) * 0.035, Math.sin(angle) * radius, 8, nestGroup);
+    twig.rotation.z = 1.05 + Math.sin(angle) * 0.32;
+    twig.rotation.y = angle;
+  }
+  const nestRim = new THREE.Mesh(new THREE.TorusGeometry(0.44, 0.09, 8, 28), mats.copper);
+  nestRim.rotation.x = Math.PI / 2;
+  nestRim.castShadow = true;
+  nestGroup.add(nestRim);
+  [-0.13, 0, 0.13].forEach((x, index) => ellipsoid(0.09, 0.12, 0.085, mats.insulator, x, 0.09 + index * 0.01, 0.02, nestGroup, 16));
+  const nestHomePosition = nestGroup.position.clone();
+  const nestBasket = new THREE.Group();
+  nestBasket.position.set(-1.65, 0.12, 2.15);
+  world.add(nestBasket);
+  cylinder(0.48, 0.36, 0.42, mats.orange, 0, 0.22, 0, 18, nestBasket);
+  const basketHandle = new THREE.Mesh(new THREE.TorusGeometry(0.43, 0.035, 10, 24, Math.PI), mats.metal);
+  basketHandle.position.y = 0.42;
+  basketHandle.rotation.z = Math.PI;
+  nestBasket.add(basketHandle);
+  nestBasket.visible = false;
+
+  const brokenLineGroup = new THREE.Group();
+  world.add(brokenLineGroup);
+  const brokenLeft = new THREE.Group();
+  const brokenRight = new THREE.Group();
+  brokenLineGroup.add(brokenLeft, brokenRight);
+  curveTube([
+    new THREE.Vector3(-2.15, 9.98, -16),
+    new THREE.Vector3(-2.15, 9.78, -6),
+    new THREE.Vector3(-2.15, 9.4, -2),
+    new THREE.Vector3(-2.15, 8.65, -0.55)
+  ], 0.056, mats.wire, brokenLeft);
+  curveTube([
+    new THREE.Vector3(-2.15, 8.45, 0.62),
+    new THREE.Vector3(-2.15, 9.35, 2.1),
+    new THREE.Vector3(-2.15, 9.78, 6),
+    new THREE.Vector3(-2.15, 9.98, 16)
+  ], 0.056, mats.wire, brokenRight);
+  const stormSleeve = cylinder(0.105, 0.105, 0.78, mats.metal, -2.15, 9.78, 0, 20, world);
+  stormSleeve.rotation.x = Math.PI / 2;
+  stormSleeve.visible = false;
+  const stormInsulation = cylinder(0.15, 0.15, 0.92, mats.cover, -2.15, 9.78, 0, 20, world);
+  stormInsulation.rotation.x = Math.PI / 2;
+  stormInsulation.visible = false;
+  const hydraulicCrimper = new THREE.Group();
+  hydraulicCrimper.position.set(-1.81, 9.78, 0);
+  world.add(hydraulicCrimper);
+  const crimperBody = box(0.48, 0.64, 0.32, mats.orange, 0, 0, 0, hydraulicCrimper);
+  const crimperJawA = box(0.16, 0.24, 0.46, mats.metal, -0.2, 0.24, 0, hydraulicCrimper);
+  const crimperJawB = box(0.16, 0.24, 0.46, mats.metal, 0.2, 0.24, 0, hydraulicCrimper);
+  const crimperHandle = cylinder(0.045, 0.055, 1.05, mats.dark, 0.22, -0.74, 0, 12, hydraulicCrimper);
+  crimperHandle.rotation.z = -0.28;
+  hydraulicCrimper.visible = false;
+
+  const stormGroup = new THREE.Group();
+  world.add(stormGroup);
+  const rainPositions = new Float32Array(360 * 3);
+  for (let rainIndex = 0; rainIndex < 360; rainIndex += 1) {
+    rainPositions[rainIndex * 3] = ((rainIndex * 37) % 300) / 10 - 15;
+    rainPositions[rainIndex * 3 + 1] = ((rainIndex * 67) % 150) / 10;
+    rainPositions[rainIndex * 3 + 2] = ((rainIndex * 43) % 220) / 10 - 11;
+  }
+  const rainGeometry = new THREE.BufferGeometry();
+  rainGeometry.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
+  const rainMaterial = new THREE.PointsMaterial({ color: palette.s1, size: 0.08, transparent: true, opacity: 0.72 });
+  const rain = new THREE.Points(rainGeometry, rainMaterial);
+  stormGroup.add(rain);
+  [[-4, 13.2, -2], [0, 13.8, 1], [4.2, 13.1, -1.3]].forEach(([x, y, z]) => ellipsoid(3.2, 0.72, 1.7, mats.dark, x, y, z, stormGroup, 18));
+  stormGroup.visible = false;
+  brokenLineGroup.visible = false;
 
   const worker = new THREE.Group();
   scene.add(worker);
@@ -1923,6 +2109,7 @@ html>body{padding:0}</style>
   rightShoulderPad.position.x = 0.29;
   rightShoulderPad.rotation.z = 0.2;
   body.add(rightShoulderPad);
+  addPpePart(rightShoulderPad);
 
   const leftLeg = new THREE.Group();
   const rightLeg = new THREE.Group();
@@ -1975,6 +2162,39 @@ html>body{padding:0}</style>
   ppeParts.forEach(part => { part.visible = false; });
   helmet.visible = false;
 
+  const ppeGroundGroup = new THREE.Group();
+  scene.add(ppeGroundGroup);
+  const stagedHelmet = new THREE.Group();
+  ppeGroundGroup.add(stagedHelmet);
+  const stagedHelmetShell = new THREE.Mesh(new THREE.SphereGeometry(0.245, 24, 14, 0, Math.PI * 2, 0, Math.PI / 2), mats.helmet);
+  stagedHelmetShell.scale.set(1, 0.82, 1.06);
+  stagedHelmetShell.castShadow = true;
+  stagedHelmet.add(stagedHelmetShell);
+  cylinder(0.275, 0.275, 0.035, mats.helmet, 0, -0.05, 0.025, 24, stagedHelmet);
+  const stagedGloves = new THREE.Group();
+  ppeGroundGroup.add(stagedGloves);
+  ellipsoid(0.11, 0.16, 0.075, mats.concrete, -0.13, 0, 0, stagedGloves, 18).rotation.z = -0.42;
+  ellipsoid(0.11, 0.16, 0.075, mats.concrete, 0.13, 0, 0, stagedGloves, 18).rotation.z = 0.42;
+  const stagedHarness = new THREE.Group();
+  ppeGroundGroup.add(stagedHarness);
+  const harnessRing = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.035, 10, 28), mats.orange);
+  harnessRing.rotation.x = Math.PI / 2;
+  stagedHarness.add(harnessRing);
+  box(0.055, 0.68, 0.055, mats.orange, -0.18, 0.05, 0, stagedHarness).rotation.z = -0.34;
+  box(0.055, 0.68, 0.055, mats.orange, 0.18, 0.05, 0, stagedHarness).rotation.z = 0.34;
+  const stagedSleeves = new THREE.Group();
+  ppeGroundGroup.add(stagedSleeves);
+  cylinder(0.14, 0.16, 0.62, mats.orange, -0.18, 0, 0, 18, stagedSleeves).rotation.z = -0.18;
+  cylinder(0.14, 0.16, 0.62, mats.orange, 0.18, 0, 0, 18, stagedSleeves).rotation.z = 0.18;
+  const ppeGroundPieces = [stagedHelmet, stagedGloves, stagedHarness, stagedSleeves];
+  const ppeGroundHomes = [
+    new THREE.Vector3(-1.25, 0.32, 1.22),
+    new THREE.Vector3(-0.62, 0.22, 1.25),
+    new THREE.Vector3(0.05, 0.25, 1.35),
+    new THREE.Vector3(0.72, 0.38, 1.3)
+  ];
+  ppeGroundPieces.forEach((piece, index) => piece.position.copy(ppeGroundHomes[index]));
+
   const beltTools = new THREE.Group();
   beltTools.position.set(0, 0.32, 0);
   body.add(beltTools);
@@ -1994,6 +2214,143 @@ html>body{padding:0}</style>
   testerTool.visible = false;
   const wrenchTool = box(0.075, 0.62, 0.085, mats.metal, 0, -0.28, 0, handTool);
   wrenchTool.visible = false;
+  const nestHookTool = new THREE.Group();
+  handTool.add(nestHookTool);
+  const nestHookShaft = cylinder(0.035, 0.045, 2.35, mats.orange, 0, -1.08, 0, 12, nestHookTool);
+  const nestHookHead = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.035, 10, 24, Math.PI * 1.4), mats.metal);
+  nestHookHead.position.set(0.09, -2.28, 0);
+  nestHookHead.rotation.z = -0.45;
+  nestHookTool.add(nestHookHead);
+  nestHookTool.visible = false;
+  const poleSawTool = new THREE.Group();
+  handTool.add(poleSawTool);
+  cylinder(0.045, 0.055, 2.5, mats.orange, 0, -1.12, 0, 12, poleSawTool);
+  const sawBlade = box(0.72, 0.12, 0.045, mats.metal, 0.22, -2.38, 0, poleSawTool);
+  sawBlade.rotation.z = -0.28;
+  for (let tooth = 0; tooth < 6; tooth += 1) {
+    const sawTooth = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.11, 6), mats.metal);
+    sawTooth.position.set(-0.02 + tooth * 0.11, -2.48 - tooth * 0.032, 0);
+    sawTooth.rotation.z = Math.PI;
+    poleSawTool.add(sawTooth);
+  }
+  poleSawTool.visible = false;
+
+  const crewGroup = new THREE.Group();
+  scene.add(crewGroup);
+  const buildCrewMember = (role, position, rotationY = 0) => {
+    const member = new THREE.Group();
+    member.position.copy(position);
+    member.rotation.y = rotationY;
+    crewGroup.add(member);
+
+    const torso = new THREE.Group();
+    torso.position.y = 0.76;
+    member.add(torso);
+    cylinder(0.25, 0.31, 0.72, mats.uniform, 0, 0.3, 0, 24, torso);
+    ellipsoid(0.31, 0.17, 0.22, mats.uniformLight, 0, 0.6, 0, torso, 22);
+    box(0.19, 0.58, 0.045, mats.vestRed, -0.13, 0.31, 0.225, torso);
+    box(0.19, 0.58, 0.045, mats.vestRed, 0.13, 0.31, 0.225, torso);
+    box(0.55, 0.075, 0.052, mats.reflective, 0, 0.39, 0.25, torso);
+    box(0.55, 0.075, 0.052, mats.reflective, 0, 0.13, 0.25, torso);
+    box(0.53, 0.56, 0.04, mats.vestRed, 0, 0.3, -0.22, torso);
+    box(0.54, 0.075, 0.048, mats.reflective, 0, 0.39, -0.245, torso);
+    box(0.54, 0.075, 0.048, mats.reflective, 0, 0.13, -0.245, torso);
+
+    const head = new THREE.Group();
+    head.position.set(0, 1.53, 0);
+    member.add(head);
+    cylinder(0.085, 0.1, 0.13, mats.skinShade, 0, -0.13, 0, 16, head);
+    ellipsoid(0.18, 0.22, 0.18, mats.skin, 0, 0.03, 0, head, 24);
+    [-0.06, 0.06].forEach(x => {
+      ellipsoid(0.035, 0.019, 0.012, mats.eyeWhite, x, 0.065, 0.17, head, 14);
+      ellipsoid(0.014, 0.015, 0.011, mats.eye, x, 0.065, 0.182, head, 12);
+    });
+    const crewNose = new THREE.Mesh(new THREE.ConeGeometry(0.026, 0.07, 12), mats.skinShade);
+    crewNose.position.set(0, 0.015, 0.19);
+    crewNose.rotation.x = Math.PI / 2;
+    head.add(crewNose);
+    box(0.075, 0.012, 0.012, mats.lip, 0, -0.055, 0.178, head);
+    const crewHelmet = new THREE.Mesh(new THREE.SphereGeometry(0.225, 22, 13, 0, Math.PI * 2, 0, Math.PI / 2), mats.helmet);
+    crewHelmet.scale.set(1, 0.78, 1.05);
+    crewHelmet.position.y = 0.18;
+    crewHelmet.castShadow = true;
+    head.add(crewHelmet);
+    cylinder(0.25, 0.25, 0.032, mats.helmet, 0, 0.14, 0.025, 24, head);
+    if (role === 'supervisor') box(0.16, 0.045, 0.025, mats.reflective, 0, 0.235, 0.19, head);
+
+    const makeArm = side => {
+      const arm = new THREE.Group();
+      arm.position.set(side * 0.34, 1.32, 0);
+      member.add(arm);
+      cylinder(0.085, 0.105, 0.42, mats.uniform, 0, -0.2, 0, 18, arm);
+      ellipsoid(0.095, 0.1, 0.09, mats.uniform, 0, -0.42, 0, arm, 16);
+      cylinder(0.065, 0.082, 0.34, mats.uniform, 0, -0.59, 0, 18, arm);
+      ellipsoid(0.075, 0.1, 0.065, mats.skin, 0, -0.81, 0.035, arm, 16);
+      arm.rotation.z = side * -0.16;
+      return arm;
+    };
+    const leftArm = makeArm(-1);
+    const rightArm = makeArm(1);
+
+    [-0.15, 0.15].forEach(x => {
+      cylinder(0.105, 0.13, 0.55, mats.uniform, x, 0.49, 0, 20, member);
+      cylinder(0.09, 0.105, 0.46, mats.uniform, x, 0.18, 0, 20, member);
+      ellipsoid(0.13, 0.085, 0.24, mats.sole, x, -0.06, 0.09, member, 20);
+      cylinder(0.11, 0.12, 0.18, mats.sole, x, 0.08, 0, 18, member);
+    });
+    return { role, member, torso, head, leftArm, rightArm };
+  };
+
+  const supervisor = buildCrewMember('supervisor', new THREE.Vector3(-2.5, 0.08, 0.42), 0.72);
+  const toolMate = buildCrewMember('tool', new THREE.Vector3(2.35, 0.08, 0.32), -0.68);
+  const groundCrew = [
+    buildCrewMember('spotter', new THREE.Vector3(-4.15, 0.08, -1.15), 0.92),
+    buildCrewMember('traffic', new THREE.Vector3(4.2, 0.08, -1.05), -0.98),
+    buildCrewMember('assistant', new THREE.Vector3(3.65, 0.08, 1.35), -1.16)
+  ];
+
+  const crewToolBag = new THREE.Group();
+  scene.add(crewToolBag);
+  box(0.62, 0.62, 0.42, mats.orange, 0, 0, 0, crewToolBag);
+  box(0.54, 0.08, 0.45, mats.reflective, 0, 0.15, 0, crewToolBag);
+  const bagHandle = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.035, 10, 24, Math.PI), mats.dark);
+  bagHandle.position.y = 0.36;
+  bagHandle.rotation.z = Math.PI;
+  crewToolBag.add(bagHandle);
+  crewToolBag.position.set(1.38, 0.42, 0.72);
+  const crewHoistRope = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: palette.s3 }));
+  scene.add(crewHoistRope);
+  const updateCrewHoist = time => {
+    const hoisting = state.ppe && state.height > 2.3 && !state.finished;
+    const targetY = hoisting ? Math.min(7.65, Math.max(1.15, state.height - 0.85)) : 0.42;
+    crewToolBag.position.y += (targetY - crewToolBag.position.y) * 0.08;
+    crewToolBag.position.x = hoisting ? 1.1 : 1.38;
+    const pull = hoisting ? Math.sin(time * 0.008) * 0.34 : 0;
+    toolMate.rightArm.rotation.x += ((-0.62 + pull) - toolMate.rightArm.rotation.x) * 0.18;
+    toolMate.leftArm.rotation.x += ((-0.88 - pull) - toolMate.leftArm.rotation.x) * 0.18;
+    crewHoistRope.visible = state.ppe;
+    crewHoistRope.geometry.setFromPoints([
+      new THREE.Vector3(2.25, 1.18, 0.42),
+      new THREE.Vector3(1.1, crewToolBag.position.y + 0.45, 0.72),
+      new THREE.Vector3(0.42, Math.max(1.25, state.height + 0.25), 0.72)
+    ]);
+  };
+
+  const updateCrew = time => {
+    const correcting = time < supervisorCorrectUntil;
+    const checking = time < supervisorCheckUntil;
+    const pointTarget = correcting ? -1.35 : checking ? -0.92 : -0.3;
+    supervisor.rightArm.rotation.x += (pointTarget - supervisor.rightArm.rotation.x) * 0.2;
+    supervisor.rightArm.rotation.z += ((correcting ? -0.5 : -0.16) - supervisor.rightArm.rotation.z) * 0.18;
+    supervisor.leftArm.rotation.x += ((checking ? -0.7 : -0.15) - supervisor.leftArm.rotation.x) * 0.18;
+    supervisor.head.rotation.y = Math.sin(time * 0.0015) * (checking ? 0.3 : 0.08);
+    supervisor.torso.rotation.y = correcting ? Math.sin(time * 0.012) * 0.12 : 0;
+    groundCrew.forEach((mate, index) => {
+      mate.head.rotation.y = Math.sin(time * 0.0012 + index) * 0.14;
+      mate.rightArm.rotation.x += ((-0.12 + Math.sin(time * 0.0018 + index) * 0.06) - mate.rightArm.rotation.x) * 0.08;
+    });
+    updateCrewHoist(time);
+  };
 
   const probeShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.052, 1, 12), mats.orange);
   probeShaft.castShadow = true;
@@ -2044,6 +2401,9 @@ html>body{padding:0}</style>
   let nextBeat = 0;
   let beat = 0;
   let tensionUntil = 0;
+  let supervisorCorrectUntil = 0;
+  let supervisorCheckUntil = 0;
+  let nextHealthPatrolAt = 0;
 
   const playTone = (frequency, duration, gain, type = 'triangle') => {
     if (!audioCtx || !musicEnabled) return;
@@ -2061,15 +2421,23 @@ html>body{padding:0}</style>
 
   const scheduleMusic = () => {
     if (!audioCtx || !musicEnabled || audioCtx.currentTime < nextBeat) return;
-    const tense = Date.now() < tensionUntil || state.hp <= 35;
-    const tempo = state.hp <= 35 ? 166 : tense ? 148 : 108;
-    const scale = tense ? [110, 116.54, 138.59, 155.56] : [110, 130.81, 146.83, 164.81];
-    const note = scale[beat % scale.length] * (beat % 8 === 6 ? 2 : 1);
-    playTone(note, tense ? 0.16 : 0.24, tense ? 0.035 : 0.022, beat % 4 === 0 ? 'sawtooth' : 'triangle');
-    if (beat % 4 === 0) playTone(55, 0.18, 0.04, 'sine');
-    if (tense && beat % 2 === 1) playTone(note * 1.414, 0.08, 0.012, 'square');
+    const recentError = Date.now() < tensionUntil;
+    const urgency = state.hp <= 25 ? 3 : state.hp <= 50 ? 2 : recentError ? 1 : 0;
+    const tempo = [112, 150, 180, 206][urgency];
+    const scales = [
+      [110, 130.81, 146.83, 164.81],
+      [110, 116.54, 138.59, 155.56],
+      [98, 103.83, 116.54, 138.59],
+      [82.41, 87.31, 103.83, 116.54]
+    ];
+    const note = scales[urgency][beat % 4] * (beat % 8 === 6 ? 2 : 1);
+    playTone(note, urgency ? 0.13 : 0.24, 0.024 + urgency * 0.006, beat % 4 === 0 ? 'sawtooth' : 'triangle');
+    if (beat % 4 === 0) playTone(urgency >= 2 ? 46.25 : 55, 0.2, 0.045 + urgency * 0.008, 'sine');
+    if (urgency >= 1 && beat % 2 === 1) playTone(note * 1.414, 0.07, 0.012 + urgency * 0.004, 'square');
+    if (urgency >= 2) playTone(220 + (beat % 2) * 73, 0.035, 0.018, 'square');
+    if (urgency === 3 && beat % 2 === 0) playTone(880, 0.025, 0.014, 'sawtooth');
     beat += 1;
-    nextBeat = audioCtx.currentTime + 60 / tempo / 2;
+    nextBeat = audioCtx.currentTime + 60 / tempo / (urgency >= 2 ? 2.5 : 2);
   };
 
   const toggleAudio = () => {
@@ -2103,6 +2471,7 @@ html>body{padding:0}</style>
     hp: 100,
     height: 0.6,
     ppe: false,
+    traffic: false,
     rope: false,
     ropeAnchor: 0.9,
     ropeAnchors: [0.9, 0.9],
@@ -2115,6 +2484,9 @@ html>body{padding:0}</style>
     clipped: 0,
     grounded: false,
     repaired: false,
+    nestRemoved: false,
+    pruned: false,
+    spliced: false,
     finished: false,
     failed: false,
     moving: 0,
@@ -2122,6 +2494,9 @@ html>body{padding:0}</style>
     initialRopePrompted: false,
     lastMoveDirection: 0,
     lastMoveAt: 0,
+    lastHazard: '',
+    heatLoad: 18,
+    heatWarningGiven: false,
     mistakes: 0,
     busy: null
   };
@@ -2130,6 +2505,7 @@ html>body{padding:0}</style>
   const rehookHeights = [4.05, 5.7, 7.15, 8.35];
 
   const lineEnergized = () => state.mode === 'live' || !state.isolated;
+  const isOutageMode = () => state.mode !== 'live';
   const atWorkZone = () => state.height >= 7.15;
 
   const log = (main, detail = '', danger = false) => {
@@ -2138,27 +2514,39 @@ html>body{padding:0}</style>
     el.log.classList.toggle('is-danger', danger);
   };
 
-  const getSteps = () => state.mode === 'live'
-    ? [
-        ['ppe', 'PPE'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'], ['test', '檢電'],
-        ['cover', '三相掩蔽夾固'], ['repair', '活線維修'], ['finish', '完工']
-      ]
-    : [
-        ['ppe', 'PPE'], ['isolate', '停電隔離掛牌'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'],
-        ['test', '工作點檢電'], ['ground', '工作接地'], ['repair', '停電維修'],
-        ['remove-ground', '拆接地'], ['descend', '下桿清點'], ['finish', '復電']
-      ];
+  const getSteps = () => {
+    if (state.mode === 'live') return [
+      ['ppe', 'PPE'], ['traffic', '交通維護'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'], ['test', '檢電'],
+      ['cover', '三相掩蔽夾固'], ['repair', '活線維修'], ['finish', '完工']
+    ];
+    const scenarioStep = state.mode === 'nest'
+      ? ['nest', '鳥況確認／移巢']
+      : state.mode === 'tree'
+        ? ['prune', '絕緣長柄鋸修枝']
+        : state.mode === 'storm'
+          ? ['splice', '套管定位／液壓壓接']
+          : ['repair', '停電設備維修'];
+    return [
+      ['ppe', 'PPE'], ['traffic', '交通維護'], ['isolate', '停電隔離掛牌'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'],
+      ['test', '工作點檢電'], ['ground', '工作接地'], scenarioStep,
+      ['remove-ground', '拆接地'], ['descend', '下桿清點'], ['finish', '復電']
+    ];
+  };
 
   const isDone = key => ({
     ppe: state.ppe,
+    traffic: state.traffic,
     isolate: state.isolated,
     'climb-start': state.height >= ropeAttachHeight - 0.04,
     rope: state.rope,
     climb: atWorkZone(),
     test: state.tested,
     ground: state.grounded || (key === 'ground' && state.repaired),
-    cover: state.mode === 'deenergized' || (state.covered >= 3 && state.clipped >= 3),
+    cover: state.mode !== 'live' || (state.covered >= 3 && state.clipped >= 3),
     repair: state.repaired,
+    nest: state.nestRemoved,
+    prune: state.pruned,
+    splice: state.spliced,
     'remove-ground': state.repaired && !state.grounded,
     descend: state.repaired && !state.grounded && state.height <= 0.9,
     finish: state.finished
@@ -2214,9 +2602,11 @@ html>body{padding:0}</style>
     if (state.failed || state.finished) return;
     state.mistakes += 1;
     state.hp = Math.max(0, state.hp - damage);
+    state.lastHazard = `${main} ${detail}`.trim();
     tensionUntil = Date.now() + (severe ? 16000 : 9000);
+    supervisorCorrectUntil = performance.now() + (severe ? 4200 : 3100);
     playTone(severe ? 58 : 82, 0.7, 0.08, 'sawtooth');
-    el.damage.textContent = `-${damage} HP`;
+    el.damage.textContent = `-${damage} HP｜${main}`;
     el.damage.classList.remove('is-active');
     void el.damage.offsetWidth;
     el.damage.classList.add('is-active');
@@ -2224,7 +2614,7 @@ html>body{padding:0}</style>
     el.flash.classList.add('is-active');
     window.setTimeout(() => el.flash.classList.remove('is-active'), severe ? 420 : 180);
     if (severe || damage >= 35) buildArc();
-    log(main, detail, true);
+    log(`班長喊停並指正：${main}`, `${detail} 地面班長已面向登桿人員，以手勢要求停止並逐項指正不安全動作。`, true);
     if (state.hp <= 0) {
       state.failed = true;
       state.moving = 0;
@@ -2280,6 +2670,77 @@ html>body{padding:0}</style>
   };
 
   const smoothStep = value => value * value * (3 - 2 * value);
+
+  const beginPpeWear = () => {
+    state.busy = 'ppe';
+    state.moving = 0;
+    ppeGroundPieces.forEach((piece, index) => {
+      piece.visible = true;
+      piece.position.copy(ppeGroundHomes[index]);
+      piece.scale.setScalar(1);
+    });
+    actionAnim = {
+      type: 'ppe',
+      start: performance.now(),
+      duration: 5200,
+      fitted: [false, false, false, false]
+    };
+    log('開始逐件穿戴防護具。', '安全帽與面罩、絕緣手套、全身式安全帶、絕緣袖套與安全鞋會依序從地面裝具區穿戴。');
+    updateUI();
+  };
+
+  const beginTrafficSetup = () => {
+    state.busy = 'traffic';
+    state.moving = 0;
+    trafficElements.forEach(element => {
+      element.visible = false;
+      element.scale.setScalar(0.25);
+    });
+    actionAnim = {
+      type: 'traffic',
+      start: performance.now(),
+      duration: 4600,
+      deployed: trafficElements.map(() => false)
+    };
+    log('開始設置路側交通維護措施。', '由來車方向依序布設反光三角錐、交通桿及橙白拒馬，形成漸變警示與工作緩衝區。');
+    updateUI();
+  };
+
+  const beginNestRemoval = () => {
+    state.busy = 'nest';
+    state.moving = 0;
+    nestHookTool.visible = true;
+    nestBasket.visible = true;
+    actionAnim = { type: 'nest', start: performance.now(), duration: 5600, lifted: false };
+    log('先觀察鳥巢內是否有蛋或幼鳥，再使用絕緣長柄工具移巢。', '本情境偵測到鳥蛋，鳥巢會完整移入地面籃筐，模擬交由動保單位處理。');
+    updateUI();
+  };
+
+  const beginTreePrune = () => {
+    state.busy = 'prune';
+    state.moving = 0;
+    poleSawTool.visible = true;
+    actionAnim = { type: 'prune', start: performance.now(), duration: 6200, cut: false };
+    log('使用絕緣長柄鋸由枝條外端逐步卸重修剪。', '保持枝葉倒落方向離開導線與人員；鋸切前再次確認工作接地與交通警戒。');
+    updateUI();
+  };
+
+  const beginStormSplice = () => {
+    state.busy = 'splice';
+    state.moving = 0;
+    hydraulicCrimper.visible = true;
+    stormSleeve.visible = true;
+    stormInsulation.visible = false;
+    actionAnim = {
+      type: 'splice',
+      start: performance.now(),
+      duration: 7600,
+      aligned: false,
+      crimped: [false, false, false, false]
+    };
+    log('開始處理颱風斷落導線。', '先以牽引工具對正導線，再將鋁製壓接套管置中，依標記順序完成四次液壓壓接，最後補齊絕緣防水層。');
+    updateUI();
+  };
 
   const setProbeBetween = (start, end) => {
     const delta = new THREE.Vector3().subVectors(end, start);
@@ -2391,7 +2852,26 @@ html>body{padding:0}</style>
     movingBlanket.visible = false;
     blanketRoll.visible = state.mode === 'live';
     wrenchTool.visible = false;
+    nestHookTool.visible = false;
+    poleSawTool.visible = false;
+    hydraulicCrimper.visible = false;
     state.busy = null;
+    if (completed.type === 'ppe') {
+      state.ppe = true;
+      helmet.visible = true;
+      ppeParts.forEach(part => { part.visible = true; });
+      beltTools.visible = true;
+      ppeGroundPieces.forEach(piece => { piece.visible = false; });
+      log('防護具已逐件穿戴完成。', '下一步在路側設置反光三角錐、交通桿與拒馬，建立來車警示、漸變及工作緩衝區。');
+    }
+    if (completed.type === 'traffic') {
+      state.traffic = true;
+      trafficElements.forEach(element => {
+        element.visible = true;
+        element.scale.setScalar(1);
+      });
+      log('交通維護措施設置完成。', '三角錐、反光交通桿與拒馬已把人員、車輛及電桿工作區和來車動線分隔。');
+    }
     if (completed.type === 'test') {
       state.tested = true;
       log(
@@ -2426,12 +2906,134 @@ html>body{padding:0}</style>
       const next = state.mode === 'deenergized' ? '下一步拆除工作接地，再保持繩索防護下桿、集合清點後復電。' : '維持掩蔽與安全位置，進行工具清點及完工確認。';
       log(`${faultLabels[completed.fault]}已完成舊件移出、新件送入、復位與固定。`, next);
     }
+    if (completed.type === 'nest') {
+      state.nestRemoved = true;
+      state.repaired = true;
+      nestGroup.position.set(-1.65, 0.58, 2.15);
+      nestGroup.rotation.set(0, 0, 0);
+      log('鳥巢已完整移入地面籃筐。', '因巢內有鳥蛋，本情境採完整移植與動保交接；下一步拆除工作接地並下桿清點。');
+    }
+    if (completed.type === 'prune') {
+      state.pruned = true;
+      state.repaired = true;
+      treeCutFace.visible = true;
+      treeFaultBranch.visible = false;
+      log('妨礙線路安全距離的枝葉已分段卸重並移除。', '確認沒有殘枝掛在線路上；下一步拆除工作接地並保持繩索防護下桿。');
+    }
+    if (completed.type === 'splice') {
+      state.spliced = true;
+      state.repaired = true;
+      brokenLineGroup.visible = false;
+      phaseWires[0].visible = true;
+      stormSleeve.visible = true;
+      stormInsulation.visible = true;
+      log('斷線已完成套管置中、四點液壓壓接與絕緣防水復原。', '壓接痕跡與套管位置已確認；下一步拆除工作接地、下桿清點後再復電。');
+    }
     updateUI();
   };
 
   const updateActionAnimation = time => {
     if (!actionAnim) return;
     const progress = THREE.MathUtils.clamp((time - actionAnim.start) / actionAnim.duration, 0, 1);
+    if (actionAnim.type === 'ppe') {
+      const targets = [
+        new THREE.Vector3(0, state.height + 1.31, 0.44),
+        new THREE.Vector3(0, state.height + 0.82, 0.62),
+        new THREE.Vector3(0, state.height + 0.55, 0.44),
+        new THREE.Vector3(0, state.height + 0.78, 0.44)
+      ];
+      ppeGroundPieces.forEach((piece, index) => {
+        const local = THREE.MathUtils.clamp((progress - index * 0.25) / 0.25, 0, 1);
+        if (local > 0 && local < 1) {
+          const eased = smoothStep(local);
+          piece.visible = true;
+          piece.position.copy(ppeGroundHomes[index]).lerp(targets[index], eased);
+          piece.position.y += Math.sin(local * Math.PI) * 0.34;
+          piece.rotation.y = Math.sin(local * Math.PI) * 0.55;
+        }
+        if (local >= 1 && !actionAnim.fitted[index]) {
+          actionAnim.fitted[index] = true;
+          piece.visible = false;
+          if (index === 0) {
+            helmet.visible = true;
+            ppeParts.slice(0, 7).forEach(part => { part.visible = true; });
+          } else if (index === 1) {
+            ppeParts.slice(7, 15).forEach(part => { part.visible = true; });
+          } else {
+            ppeParts.forEach(part => { part.visible = true; });
+            if (index === 2) beltTools.visible = true;
+          }
+          playTone(240 + index * 45, 0.1, 0.022, 'triangle');
+        }
+      });
+    }
+    if (actionAnim.type === 'traffic') {
+      const scaled = progress * trafficElements.length;
+      trafficElements.forEach((element, index) => {
+        const local = THREE.MathUtils.clamp(scaled - index, 0, 1);
+        if (local > 0) element.visible = true;
+        const scale = 0.25 + smoothStep(local) * 0.75;
+        element.scale.setScalar(scale);
+        if (local >= 0.92 && !actionAnim.deployed[index]) {
+          actionAnim.deployed[index] = true;
+          playTone(175 + index * 9, 0.06, 0.012, 'square');
+        }
+      });
+    }
+    if (actionAnim.type === 'nest') {
+      const lift = smoothStep(THREE.MathUtils.clamp((progress - 0.24) / 0.58, 0, 1));
+      const nestTarget = new THREE.Vector3(-1.65, 0.58, 2.15);
+      nestGroup.position.copy(nestHomePosition).lerp(nestTarget, lift);
+      nestGroup.position.y += Math.sin(lift * Math.PI) * 1.25;
+      nestGroup.rotation.z = -Math.sin(lift * Math.PI) * 0.42;
+      nestHookTool.rotation.z = Math.sin(progress * Math.PI * 4) * 0.08;
+      if (lift > 0.52 && !actionAnim.lifted) {
+        actionAnim.lifted = true;
+        playTone(262, 0.14, 0.025, 'triangle');
+        log('鳥巢已脫離橫擔，正在保持水平向地面籃筐移送。', '避免巢材中的金屬線碰觸其他導體，也避免翻覆傷及蛋或幼鳥。');
+      }
+    }
+    if (actionAnim.type === 'prune') {
+      poleSawTool.rotation.z = Math.sin(progress * Math.PI * 14) * 0.11;
+      if (progress > 0.48 && !actionAnim.cut) {
+        actionAnim.cut = true;
+        treeCutFace.visible = true;
+        playTone(126, 0.2, 0.035, 'sawtooth');
+        log('枝條鋸切完成，已控制倒落方向。', '枝葉正在朝遠離導線與作業員的一側落下。');
+      }
+      const fall = smoothStep(THREE.MathUtils.clamp((progress - 0.48) / 0.52, 0, 1));
+      treeFaultBranch.position.set(treeBranchHomePosition.x - fall * 1.7, treeBranchHomePosition.y - fall * 7.1, treeBranchHomePosition.z + fall * 1.8);
+      treeFaultBranch.rotation.set(treeBranchHomeRotation.x, treeBranchHomeRotation.y, treeBranchHomeRotation.z - fall * 1.42);
+    }
+    if (actionAnim.type === 'splice') {
+      const align = smoothStep(THREE.MathUtils.clamp(progress / 0.24, 0, 1));
+      brokenLeft.position.set(0, align * 0.56, align * 0.14);
+      brokenRight.position.set(0, align * 0.72, -align * 0.16);
+      if (progress > 0.24 && !actionAnim.aligned) {
+        actionAnim.aligned = true;
+        brokenLineGroup.visible = false;
+        phaseWires[0].visible = true;
+        stormSleeve.visible = true;
+        playTone(188, 0.14, 0.026, 'triangle');
+        log('導線端部已對正，壓接套管置於標記中心。', '液壓鉗將依套管標線由中央向外分四次壓接。');
+      }
+      if (progress >= 0.26) {
+        const crimpProgress = THREE.MathUtils.clamp((progress - 0.26) / 0.58, 0, 0.999);
+        const crimpIndex = Math.min(3, Math.floor(crimpProgress * 4));
+        const crimpLocal = crimpProgress * 4 - crimpIndex;
+        const press = Math.sin(crimpLocal * Math.PI);
+        const marks = [-0.27, -0.09, 0.09, 0.27];
+        hydraulicCrimper.position.set(-1.81, 9.78, marks[crimpIndex]);
+        crimperJawA.position.x = -0.2 + press * 0.12;
+        crimperJawB.position.x = 0.2 - press * 0.12;
+        if (press > 0.92 && !actionAnim.crimped[crimpIndex]) {
+          actionAnim.crimped[crimpIndex] = true;
+          playTone(112 + crimpIndex * 12, 0.12, 0.03, 'square');
+          log(`第 ${crimpIndex + 1}/4 道液壓壓接完成。`, '確認壓痕位置與套管標線後再移至下一壓接點。');
+        }
+      }
+      stormInsulation.visible = progress > 0.86;
+    }
     if (actionAnim.type === 'test') {
       const phasePosition = Math.min(2.999, progress * 3);
       const phase = Math.min(2, Math.floor(phasePosition));
@@ -2606,6 +3208,25 @@ html>body{padding:0}</style>
       rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.02, 0.22);
       leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.96, 0.22);
     }
+    if (state.busy === 'ppe' && actionAnim) {
+      const progress = THREE.MathUtils.clamp((time - actionAnim.start) / actionAnim.duration, 0, 1);
+      const local = (progress * 4) % 1;
+      const reach = Math.sin(local * Math.PI);
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -0.55 - reach * 0.85, 0.3);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.45 - reach * 0.72, 0.3);
+      body.rotation.x = THREE.MathUtils.lerp(body.rotation.x, reach * 0.11, 0.2);
+    }
+    if (state.busy === 'traffic') {
+      const carry = Math.sin(time * 0.006) * 0.12;
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -0.82 + carry, 0.25);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.72 - carry, 0.25);
+    }
+    if (state.busy === 'nest' || state.busy === 'prune' || state.busy === 'splice') {
+      const working = Math.sin(time * (state.busy === 'splice' ? 0.012 : 0.008)) * 0.12;
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.28 + working, 0.3);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -1.02 - working * 0.5, 0.3);
+      body.rotation.y = THREE.MathUtils.lerp(body.rotation.y, state.busy === 'prune' ? 0.22 : -0.12, 0.18);
+    }
     if (state.busy === 'rope' && actionAnim) {
       const progress = THREE.MathUtils.clamp((time - actionAnim.start) / actionAnim.duration, 0, 1);
       const reach = Math.sin(progress * Math.PI);
@@ -2639,13 +3260,19 @@ html>body{padding:0}</style>
   const objectiveText = () => {
     if (state.failed) return '任務失敗：生命值歸零。';
     if (state.finished) return `任務完成：剩餘 ${state.hp} HP，失誤 ${state.mistakes} 次。`;
+    if (state.busy === 'ppe') return '防護具穿戴中：由地面裝具區依序戴安全帽面罩、手套、全身式安全帶與袖套。';
+    if (state.busy === 'traffic') return '交通維護布設中：由來車方向依序放置三角錐、交通桿與拒馬。';
     if (state.busy === 'test') return '檢電動作中：抽出檢電器，逐相接近、停留確認、收回。';
     if (state.busy === 'cover') return `絕緣毯裝設中：包覆第 ${state.covered + 1} 相，並逐一扣合兩只大型絕緣夾。`;
     if (state.busy === 'rope') return '雙輔助繩交替換掛：一條保持承載，另一條放鬆後向上套妥。';
     if (state.busy === 'repair') return `${faultLabels[state.fault]}更換中：舊件移出、新件送入並復位固定。`;
+    if (state.busy === 'nest') return '鳥巢處理中：確認鳥蛋／幼鳥，使用絕緣長柄工具完整移至地面籃筐。';
+    if (state.busy === 'prune') return '樹木修剪中：以絕緣長柄鋸分段卸重，控制枝條朝遠離導線方向落下。';
+    if (state.busy === 'splice') return '颱風斷線搶修中：導線對正、套管置中、四點液壓壓接並恢復絕緣防水。';
     const step = currentStep();
     const messages = {
       ppe: '穿戴安全帽、護目／面罩、絕緣手套與袖套、安全帶及安全鞋。',
+      traffic: '設置反光三角錐、交通桿與拒馬，建立來車警示、漸變及工作緩衝區。',
       isolate: '先在地面完成停電隔離、上鎖掛牌與工作許可。',
       'climb-start': '先以右手／左腳、左手／右腳交叉順序攀過前三個腳踏釘；腳底必須落在釘面。',
       rope: '通過第三個腳踏釘後按 Q：固定母繩、接上制動器，再開始雙輔助繩交替上套。',
@@ -2654,6 +3281,9 @@ html>body{padding:0}</style>
       ground: '確認隔離且檢電無電後，掛設工作接地組。',
       cover: `逐相掩蔽並以大型絕緣夾夾固：${state.covered}/3 相、${state.clipped}/3 組`,
       repair: `依情境更換${faultLabels[state.fault]}。`,
+      nest: '先確認鳥蛋或幼鳥，再用絕緣長柄工具完整移巢至地面籃筐。',
+      prune: '使用絕緣長柄鋸分段修除遮蔽導線的枝葉，控制倒落方向。',
+      splice: '對正斷線端、置中壓接套管，依標線完成四點液壓壓接與絕緣防水復原。',
       'remove-ground': '維修完成後拆除工作接地組。',
       descend: '保持交叉握踏與繩索防護下桿；回到地面後集合清點人員與工具。',
       finish: state.mode === 'live' ? '完成工具清點與完工確認。' : '下桿或確認安全後執行復電。'
@@ -2665,7 +3295,14 @@ html>body{padding:0}</style>
     const expected = currentStep();
     el.actions.forEach(button => {
       const action = button.dataset.action;
-      button.hidden = action === 'cover' && state.mode === 'deenergized';
+      const equipmentMode = state.mode === 'live' || state.mode === 'deenergized';
+      button.hidden =
+        (action === 'cover' && state.mode !== 'live') ||
+        ((action === 'isolate' || action === 'ground' || action === 'remove-ground') && state.mode === 'live') ||
+        (action === 'repair' && !equipmentMode) ||
+        (action === 'nest' && state.mode !== 'nest') ||
+        (action === 'prune' && state.mode !== 'tree') ||
+        (action === 'splice' && state.mode !== 'storm');
       button.classList.toggle('btn-primary', action === expected);
       if (action === 'cover') button.textContent = `絕緣毯包覆夾固 ${state.covered}/3`;
       if (action === 'repair') button.textContent = state.fault === 'insulator' ? '更換破損礙子' : state.fault === 'hardware' ? '更換燒損鐵件' : '吊換桿上變壓器';
@@ -2679,23 +3316,45 @@ html>body{padding:0}</style>
   const updateUI = () => {
     el.hp.textContent = `${state.hp} HP`;
     el.hpFill.style.width = `${state.hp}%`;
-    el.hpFill.style.background = state.hp <= 35 ? 'var(--destructive)' : state.hp <= 65 ? 'var(--viz-series-3)' : 'var(--viz-series-2)';
+    el.hpFill.style.background = state.hp <= 50 ? 'var(--destructive)' : state.hp <= 70 ? 'var(--viz-series-3)' : 'var(--viz-series-2)';
+    el.hazard.textContent = state.lastHazard ? `扣血原因：${state.lastHazard}` : '尚無不安全行為';
+    el.hazard.classList.toggle('text-destructive', Boolean(state.lastHazard));
     el.height.textContent = `${state.height.toFixed(1)} m`;
     el.altimeter.style.height = `${Math.min(100, state.height / 9.2 * 100)}%`;
     el.ropeStatus.textContent = state.rope
       ? `母繩固定；A ${state.ropeAnchors[0].toFixed(1)} m／B ${state.ropeAnchors[1].toFixed(1)} m，${state.activeRope === 0 ? 'A' : 'B'} 承載`
       : state.height < ropeAttachHeight - 0.04 ? '前三釘交叉攀登；尚未掛繩' : '第三釘到位：按 Q 固定母繩';
-    const tense = Date.now() < tensionUntil || state.hp <= 35;
-    el.musicState.textContent = !musicEnabled ? '音樂關閉' : tense ? '高張力節奏' : '搶修節奏';
+    const tense = Date.now() < tensionUntil || state.hp <= 50;
+    el.musicState.textContent = !musicEnabled
+      ? '音樂關閉'
+      : state.hp <= 25
+        ? '危急節奏 206 BPM'
+        : state.hp <= 50
+          ? '高壓節奏 180 BPM'
+          : tense
+            ? '失誤警戒節奏 150 BPM'
+            : '搶修行動節奏 112 BPM';
+    el.crewState.textContent = '班長＋4 名同事';
+    el.healthState.textContent = performance.now() < supervisorCorrectUntil
+      ? '班長喊停：正在指正不安全動作'
+      : performance.now() < supervisorCheckUntil
+        ? '班長健康巡視：確認意識、頭暈與補水'
+        : state.heatLoad >= 80
+          ? '熱危害警訊：應立即停工、補水與休息'
+          : state.heatLoad >= 60
+            ? '班長加強巡視：熱負荷偏高'
+            : '班長巡視：精神狀況正常';
+    el.healthState.classList.toggle('text-destructive', state.heatLoad >= 80 || performance.now() < supervisorCorrectUntil);
     el.lineState.textContent = lineEnergized() ? `線路帶電 ${state.voltage.toFixed(1)} kV` : '已隔離、線路停電';
     el.objective.textContent = objectiveText();
     el.hint.textContent = state.finished ? '任務完成' : state.failed ? '請重新開始' : state.busy ? '連續動作進行中' : !state.rope && state.height >= ropeAttachHeight - 0.04 ? '第三個腳踏釘到位，按 Q 固定母繩' : state.rope && state.ropeAnchor - state.height < 0.45 ? '承載繩即將到限，按 Q 交替上套' : 'W／↑ 右手配左腳、左手配右腳　S／↓ 下桿　Q 換掛';
     el.up.disabled = state.failed || state.finished || Boolean(state.busy);
     el.down.disabled = state.failed || state.finished || Boolean(state.busy);
     el.rope.disabled = state.failed || state.finished || Boolean(state.busy) || !state.ppe;
-    el.mode.disabled = state.height > 0.75 || state.ppe;
-    el.voltage.disabled = state.height > 0.75;
-    el.fault.disabled = state.height > 0.75 || state.ppe;
+    el.mode.disabled = state.height > 0.75 || state.ppe || Boolean(state.busy);
+    el.voltage.disabled = state.height > 0.75 || Boolean(state.busy);
+    el.fault.disabled = state.height > 0.75 || state.ppe || Boolean(state.busy) || !['live', 'deenergized'].includes(state.mode);
+    el.fault.closest('.form-label').hidden = !['live', 'deenergized'].includes(state.mode);
     updateSteps();
     updateActionButtons();
     updateRopeGeometry();
@@ -2726,15 +3385,28 @@ html>body{padding:0}</style>
   const performAction = action => {
     ensureAudio();
     if (state.failed || state.finished || state.busy) return;
+    if (action !== 'health' && state.heatLoad >= 86) {
+      state.heatWarningGiven = true;
+      mistake(14, '出現熱危害與身體不適警訊仍繼續作業', '班長已觀察到步態不穩與反應變慢；應先停止攀登或工具操作，接受健康確認、補水與休息。');
+      return;
+    }
     if (action === 'ppe') {
       if (state.ppe) {
         log('防護具已完成檢查。', '安全帽、面罩、絕緣手套與袖套、安全帶、安全鞋及腰掛工具均就位。');
         return;
       }
-      state.ppe = true;
-      helmet.visible = true;
-      ppeParts.forEach(part => { part.visible = true; });
-      log('防護具穿戴完成。', '安全帽與面罩、高壓絕緣手套和袖套、皮革保護手套、肩部防護、全身式安全帶、絕緣安全鞋及腰掛工具均已呈現。');
+      beginPpeWear();
+    }
+    if (action === 'traffic') {
+      if (!state.ppe) {
+        mistake(8, '未穿戴防護具就進入車道布設交通維護。', '來車風險與搬運風險未受控制；先完成逐件穿戴 PPE。');
+      } else if (state.height > 1.15) {
+        mistake(10, '人員已在桿上才補做交通維護。', '先下桿回到地面，再由來車方向布設三角錐、交通桿與拒馬。');
+      } else if (state.traffic) {
+        log('交通維護措施已設置。', '三角錐、交通桿與拒馬保持在路側警示及工作緩衝位置。');
+      } else {
+        beginTrafficSetup();
+      }
     }
     if (action === 'isolate') {
       if (state.mode === 'live') {
@@ -2743,6 +3415,8 @@ html>body{padding:0}</style>
         mistake(6, '人在桿上時才想到隔離電源。', '先下桿回到地面，依工作許可完成隔離與上鎖掛牌。');
       } else if (!state.ppe) {
         mistake(8, '未完成防護具與工作前檢查。', '先完成 PPE，再執行隔離。');
+      } else if (!state.traffic) {
+        mistake(8, '尚未設置路側交通維護措施。', '先以三角錐、交通桿及拒馬分隔來車與工作區，再執行停電聯絡。');
       } else {
         state.isolated = true;
         log('饋線已隔離並完成上鎖掛牌。', '線路仍須在工作位置檢電，確認無電後才能掛工作接地。');
@@ -2758,7 +3432,7 @@ html>body{padding:0}</style>
       }
     }
     if (action === 'cover') {
-      if (state.mode === 'deenergized') {
+      if (state.mode !== 'live') {
         log('停電作業分支不裝設絕緣毯。', '本任務改依隔離掛牌、工作位置檢電、工作接地、維修、拆接地、下桿清點與復電確認進行。');
       } else if (!atWorkZone()) {
         mistake(4, '距離工作區太遠，無法裝設掩蔽。', '先手動登桿到變壓器附近。');
@@ -2793,13 +3467,40 @@ html>body{padding:0}</style>
         mistake(state.voltage > 20 ? 70 : 48, '未檢電就接觸設備。', '發生電擊與電弧風險，音樂進入高張力狀態。', true);
       } else if (state.mode === 'live' && (state.covered < 3 || state.clipped < 3)) {
         mistake(state.voltage > 20 ? 64 : 42, '活線導線掩蔽或夾固不完整。', `目前完成 ${state.covered}/3 相、夾固 ${state.clipped}/3 組，絕緣毯可能鬆脫。`, true);
-      } else if (state.mode === 'deenergized' && !state.grounded) {
+      } else if (isOutageMode() && !state.grounded) {
         mistake(32, '停電作業尚未完成工作接地。', '可能遭受誤送電或感應／逆送電危害。', true);
       } else if (state.fault === 'transformer' && state.mode === 'live') {
         mistake(12, '桿上變壓器整機吊換不能在本活線情境直接進行。', '請重新開始並選擇停電搶修，完成隔離、檢電與工作接地後再吊換。');
       } else {
         beginEquipmentRepair();
       }
+    }
+    if (action === 'nest' || action === 'prune' || action === 'splice') {
+      const requiredMode = action === 'nest' ? 'nest' : action === 'prune' ? 'tree' : 'storm';
+      if (state.mode !== requiredMode) {
+        mistake(4, '目前任務沒有這項作業。', '請依目前作業模式使用對應工具。');
+      } else if (!atWorkZone()) {
+        mistake(6, '尚未到達高處工作位置就操作專用工具。', '先完成交叉登桿與連續繩索防護。');
+      } else if (!state.tested) {
+        mistake(state.voltage > 20 ? 72 : 50, '未在工作位置檢電就接近故障線路。', '停電指令不代表工作點一定無電，可能造成電擊或電弧。', true);
+      } else if (lineEnergized()) {
+        mistake(100, '在線路仍帶電時執行鳥巢、樹修或斷線壓接。', '工具、枝條、巢材或壓接套管可能形成帶電接觸路徑。', true);
+      } else if (!state.grounded) {
+        mistake(38, '停電作業未掛工作接地就開始接觸線路周邊物件。', '誤送電、感應電或逆送電防護尚未建立。', true);
+      } else if (action === 'nest') {
+        beginNestRemoval();
+      } else if (action === 'prune') {
+        beginTreePrune();
+      } else {
+        beginStormSplice();
+      }
+    }
+    if (action === 'health') {
+      state.moving = 0;
+      supervisorCheckUntil = performance.now() + 4300;
+      state.heatLoad = Math.max(16, state.heatLoad - 48);
+      state.heatWarningGiven = false;
+      log('班長暫停作業並完成健康確認', '班長以手勢要求暫停，確認精神反應、頭暈／噁心等不適徵象，安排補水與陰涼處休息後再評估。');
     }
     if (action === 'remove-ground') {
       if (state.mode === 'live') {
@@ -2819,9 +3520,9 @@ html>body{padding:0}</style>
     if (action === 'finish') {
       if (!state.repaired) {
         mistake(18, '故障尚未修復就要求完工。', '依序完成檢電、防護與維修。');
-      } else if (state.mode === 'deenergized' && state.grounded) {
+      } else if (isOutageMode() && state.grounded) {
         mistake(100, '帶著工作接地組執行復電！', '造成直接短路與嚴重弧光事故。', true);
-      } else if (state.mode === 'deenergized' && state.height > 0.9) {
+      } else if (isOutageMode() && state.height > 0.9) {
         mistake(48, '人員仍在桿上就要求復電。', '先下桿、集合清點人員與工具，確認無人再登桿後才能完成復電程序。', true);
       } else {
         state.finished = true;
@@ -2836,15 +3537,17 @@ html>body{padding:0}</style>
 
   const reset = () => {
     const randomFaults = el.mode.value === 'live' ? ['insulator', 'hardware'] : ['insulator', 'hardware', 'transformer'];
-    const selectedFault = el.fault.value === 'random'
+    const scenarioFault = ['nest', 'tree', 'storm'].includes(el.mode.value) ? el.mode.value : null;
+    const selectedFault = scenarioFault || (el.fault.value === 'random'
       ? randomFaults[Math.floor(Math.random() * randomFaults.length)]
-      : el.fault.value;
+      : el.fault.value);
     Object.assign(state, {
       mode: el.mode.value,
       voltage: Number(el.voltage.value),
       hp: 100,
       height: 0.6,
       ppe: false,
+      traffic: false,
       rope: false,
       ropeAnchor: 0.9,
       ropeAnchors: [0.9, 0.9],
@@ -2857,6 +3560,9 @@ html>body{padding:0}</style>
       clipped: 0,
       grounded: false,
       repaired: false,
+      nestRemoved: false,
+      pruned: false,
+      spliced: false,
       finished: false,
       failed: false,
       moving: 0,
@@ -2864,6 +3570,9 @@ html>body{padding:0}</style>
       initialRopePrompted: false,
       lastMoveDirection: 0,
       lastMoveAt: 0,
+      lastHazard: '',
+      heatLoad: 18,
+      heatWarningGiven: false,
       mistakes: 0,
       busy: null
     });
@@ -2871,11 +3580,27 @@ html>body{padding:0}</style>
     climbPhase = 0;
     helmet.visible = false;
     ppeParts.forEach(part => { part.visible = false; });
+    beltTools.visible = false;
+    ppeGroundPieces.forEach((piece, index) => {
+      piece.visible = true;
+      piece.position.copy(ppeGroundHomes[index]);
+      piece.rotation.set(0, 0, 0);
+      piece.scale.setScalar(1);
+    });
+    trafficElements.forEach(element => {
+      element.visible = false;
+      element.scale.setScalar(0.25);
+    });
     probeShaft.visible = false;
     probeTip.visible = false;
     probeLamp.intensity = 0;
     movingBlanket.visible = false;
     blanketRoll.visible = state.mode === 'live';
+    nestHookTool.visible = false;
+    poleSawTool.visible = false;
+    hydraulicCrimper.visible = false;
+    crimperJawA.position.x = -0.2;
+    crimperJawB.position.x = 0.2;
     movingBlanketClamps.forEach(clamp => {
       clamp.visible = false;
       clamp.scale.setScalar(1);
@@ -2883,6 +3608,28 @@ html>body{padding:0}</style>
     covers.forEach(cover => { cover.visible = false; });
     groundSet.visible = false;
     hoistGroup.visible = false;
+    nestGroup.visible = state.mode === 'nest';
+    nestGroup.position.copy(nestHomePosition);
+    nestGroup.rotation.set(0, 0, 0);
+    nestBasket.visible = state.mode === 'nest';
+    treeGroup.visible = state.mode === 'tree';
+    treeFaultBranch.visible = true;
+    treeFaultBranch.position.copy(treeBranchHomePosition);
+    treeFaultBranch.rotation.copy(treeBranchHomeRotation);
+    treeCutFace.visible = false;
+    stormGroup.visible = state.mode === 'storm';
+    brokenLineGroup.visible = state.mode === 'storm';
+    brokenLeft.position.set(0, 0, 0);
+    brokenRight.position.set(0, 0, 0);
+    stormSleeve.visible = false;
+    stormInsulation.visible = false;
+    phaseWires.forEach(wire => { wire.visible = true; });
+    if (state.mode === 'storm') phaseWires[0].visible = false;
+    const activeSky = state.mode === 'storm' ? new THREE.Color(0x657887) : skyColor;
+    scene.background = activeSky;
+    scene.fog.color.copy(activeSky);
+    sun.intensity = state.mode === 'storm' ? 1.2 : 2.75;
+    hemi.intensity = state.mode === 'storm' ? 1.05 : 1.65;
     applyFaultVisuals(false);
     leftKnee.rotation.set(0, 0, 0);
     rightKnee.rotation.set(0, 0, 0);
@@ -2891,10 +3638,21 @@ html>body{padding:0}</style>
     body.position.set(0, 0, 0);
     body.rotation.set(0, 0, 0);
     tensionUntil = 0;
-    log(
-      `本局故障：${faultLabels[state.fault]}。先完成全身防護具與腰帶工具檢查。`,
-      state.mode === 'live' ? '活線模式：工作接地是致命錯誤；檢電後必須完成三相絕緣掩蔽。' : '停電模式：隔離掛牌、工作位置檢電、確認無電後掛工作接地。'
-    );
+    supervisorCorrectUntil = 0;
+    supervisorCheckUntil = performance.now() + 2600;
+    nextHealthPatrolAt = performance.now() + 18000;
+    crewToolBag.position.set(1.38, 0.42, 0.72);
+    crewHoistRope.visible = false;
+    const modeDetail = state.mode === 'live'
+      ? '活線模式：先完成交通維護；工作接地是致命錯誤，檢電後必須完成三相絕緣掩蔽。'
+      : state.mode === 'nest'
+        ? '鳥巢模式：停電、檢電與工作接地後，先查有無蛋或幼鳥，再完整移植。'
+        : state.mode === 'tree'
+          ? '樹修模式：枝葉覆蓋高低壓線；停電、檢電與接地後，以絕緣長柄鋸控制倒落方向。'
+          : state.mode === 'storm'
+            ? '颱風模式：中相導線已斷落；停電、檢電與接地後，才可對正導線並液壓壓接。'
+            : '停電模式：先完成交通維護，再隔離掛牌、工作位置檢電並掛工作接地。';
+    log(`本局任務：${faultLabels[state.fault]}。防護具已放在地面裝具區。`, modeDetail);
     updateUI();
   };
 
@@ -2924,7 +3682,18 @@ html>body{padding:0}</style>
       mistake(12, '未穿戴完整防護具就嘗試登桿。', '先完成 PPE 與安全帶檢查。');
       return;
     }
-    if (state.mode === 'deenergized' && !state.isolated && state.moving > 0) {
+    if (!state.traffic && state.moving > 0) {
+      state.moving = 0;
+      mistake(16, '路側尚未設置交通維護就開始登桿。', '來車可能侵入工作區撞擊人員、工具或電桿；先設置三角錐、交通桿與拒馬。');
+      return;
+    }
+    if (state.heatLoad >= 86) {
+      state.moving = 0;
+      state.heatWarningGiven = true;
+      mistake(14, '熱危害警訊下仍嘗試繼續攀登', '班長觀察到動作遲緩與身體晃動並立即喊停；先執行健康確認、補水及休息。');
+      return;
+    }
+    if (isOutageMode() && !state.isolated && state.moving > 0) {
       state.moving = 0;
       mistake(14, '尚未完成停電隔離掛牌就開始登桿。', '回到地面完成停電聯絡、隔離與掛牌，再開始前三釘攀登。');
       return;
@@ -3064,6 +3833,7 @@ html>body{padding:0}</style>
 
   let lastTime = performance.now();
   let lastRenderTime = 0;
+  let lastStatusUpdate = 0;
   let sceneVisible = true;
   const visibilityObserver = window.IntersectionObserver
     ? new IntersectionObserver(entries => {
@@ -3084,9 +3854,37 @@ html>body{padding:0}</style>
     lastRenderTime = time;
     const delta = Math.min(0.05, (time - lastTime) / 1000);
     lastTime = time;
+    if (state.ppe && !state.finished && !state.failed) {
+      state.heatLoad = Math.min(100, state.heatLoad + delta * (state.height > 2.2 ? 0.78 : 0.22));
+      if (state.heatLoad >= 68 && time >= nextHealthPatrolAt) {
+        supervisorCheckUntil = time + 3600;
+        nextHealthPatrolAt = time + 20000;
+      }
+    }
     onMoveFrame(delta);
     updateWorker(time);
     updateActionAnimation(time);
+    updateCrew(time);
+    if (state.heatLoad >= 80 && !state.busy && time >= arcUntil) {
+      body.rotation.z += Math.sin(time * 0.007) * 0.005;
+    }
+    if (stormGroup.visible) {
+      const positions = rainGeometry.attributes.position.array;
+      for (let rainIndex = 0; rainIndex < positions.length; rainIndex += 3) {
+        positions[rainIndex] += delta * 2.8;
+        positions[rainIndex + 1] -= delta * 11.5;
+        if (positions[rainIndex + 1] < 0.08) {
+          positions[rainIndex + 1] += 15;
+          positions[rainIndex] -= 4.2;
+        }
+      }
+      rainGeometry.attributes.position.needsUpdate = true;
+      if (!state.spliced && state.busy !== 'splice') {
+        brokenLeft.rotation.z = Math.sin(time * 0.004) * 0.018;
+        brokenRight.rotation.z = -Math.sin(time * 0.0045) * 0.018;
+      }
+    }
+    if (treeGroup.visible && state.busy !== 'prune') treeGroup.rotation.z = Math.sin(time * 0.0014) * 0.008;
     const workerView = viewMode === 'worker';
     const equipmentView = viewMode === 'equipment';
     const targetY = workerView ? state.height + 0.28 : equipmentView ? 7.85 : Math.max(4.7, state.height + 1.15);
@@ -3107,7 +3905,10 @@ html>body{padding:0}</style>
       arcGroup.visible = false;
       arcLight.intensity = 0;
     }
-    if (musicEnabled && Math.floor(time / 400) !== Math.floor((time - delta * 1000) / 400)) updateUI();
+    if (time - lastStatusUpdate > 420) {
+      lastStatusUpdate = time;
+      updateUI();
+    }
     renderer.render(scene, camera);
     if (!webglReady) {
       webglReady = true;
@@ -3122,7 +3923,7 @@ html>body{padding:0}</style>
   };
 
   const showLoadError = () => {
-    const root = document.getElementById('taipower-cross-limb-climbing-sim');
+    const root = document.getElementById('taipower-roadside-special-operations-sim');
     if (!root) return;
     const log = root.querySelector('#tp3-log');
     const main = root.querySelector('#tp3-log-main');
@@ -3166,246 +3967,5 @@ html>body{padding:0}</style>
   }, 600);
 })();
 </script>
-
-<script src="https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js"></script>
-<script src="https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js"></script>
-<script>
-(() => {
-  if (window.FloatingUIDOM == null) {
-    return;
-  }
-  const { autoUpdate, computePosition, flip, offset, shift, size } =
-    window.FloatingUIDOM;
-  const tooltipPlacements = new Set(["top", "right", "bottom", "left"]);
-  const tooltipId = `codex-visualization-tooltip-${
-    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
-  }`;
-  const tooltipGap = 5;
-  const hoverDelay = 700;
-  const skipDelay = 300;
-  let activeTrigger = null;
-  let pendingTrigger = null;
-  let tooltip = null;
-  let openTimeout = null;
-  let autoUpdateCleanup = null;
-  let positionRequest = 0;
-  let skipDelayUntil = 0;
-
-  const getTrigger = (target) =>
-    target?.nodeType === Node.ELEMENT_NODE
-      ? target.closest("[data-tooltip]")
-      : null;
-  const containsTarget = (trigger, target) =>
-    target?.nodeType != null && trigger.contains(target);
-  const getContent = (trigger) =>
-    trigger.getAttribute("data-tooltip")?.trim() ?? "";
-  const getPlacement = (trigger) => {
-    const placement = trigger.getAttribute("data-tooltip-placement");
-    return tooltipPlacements.has(placement) ? placement : "top";
-  };
-  const getTooltip = () => {
-    if (tooltip == null) {
-      tooltip = document.createElement("div");
-      tooltip.id = tooltipId;
-      tooltip.className = "tooltip";
-      tooltip.setAttribute("role", "tooltip");
-    }
-    return tooltip;
-  };
-  const setDescribedBy = (trigger, described) => {
-    const ids = new Set(
-      (trigger.getAttribute("aria-describedby") ?? "")
-        .split(/\s+/)
-        .filter(Boolean),
-    );
-    if (described) {
-      ids.add(tooltipId);
-    } else {
-      ids.delete(tooltipId);
-    }
-    if (ids.size === 0) {
-      trigger.removeAttribute("aria-describedby");
-    } else {
-      trigger.setAttribute("aria-describedby", [...ids].join(" "));
-    }
-  };
-  const clearOpenTimeout = () => {
-    if (openTimeout != null) {
-      window.clearTimeout(openTimeout);
-      openTimeout = null;
-    }
-    pendingTrigger = null;
-  };
-  const closeTooltip = (activateSkipDelay = true) => {
-    clearOpenTimeout();
-    positionRequest += 1;
-    autoUpdateCleanup?.();
-    autoUpdateCleanup = null;
-    if (activeTrigger == null) {
-      return;
-    }
-    setDescribedBy(activeTrigger, false);
-    activeTrigger = null;
-    tooltip?.remove();
-    if (activateSkipDelay) {
-      skipDelayUntil = Date.now() + skipDelay;
-    }
-  };
-  const updatePosition = (trigger, floating) => {
-    const request = ++positionRequest;
-    void computePosition(trigger, floating, {
-      middleware: [
-        offset(tooltipGap),
-        flip({ padding: tooltipGap }),
-        shift({ padding: tooltipGap }),
-        size({
-          padding: tooltipGap,
-          apply({ availableHeight, availableWidth, elements }) {
-            elements.floating.style.setProperty(
-              "--tooltip-available-width",
-              `${Math.max(0, availableWidth)}px`,
-            );
-            elements.floating.style.setProperty(
-              "--tooltip-available-height",
-              `${Math.max(0, availableHeight)}px`,
-            );
-          },
-        }),
-      ],
-      placement: getPlacement(trigger),
-      strategy: "fixed",
-    })
-      .then(({ x, y }) => {
-        if (activeTrigger !== trigger || request !== positionRequest) {
-          return;
-        }
-        const scale = window.devicePixelRatio || 1;
-        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
-        floating.style.visibility = "visible";
-      })
-      .catch(() => {
-        if (activeTrigger === trigger && request === positionRequest) {
-          closeTooltip(false);
-        }
-      });
-  };
-  const openTooltip = (trigger) => {
-    const content = getContent(trigger);
-    if (!trigger.isConnected || content.length === 0) {
-      return;
-    }
-    clearOpenTimeout();
-    if (activeTrigger === trigger) {
-      return;
-    }
-    closeTooltip();
-    const floating = getTooltip();
-    floating.textContent = content;
-    floating.style.visibility = "hidden";
-    floating.style.transform = "translate(0, 0)";
-    document.body.appendChild(floating);
-    activeTrigger = trigger;
-    setDescribedBy(trigger, true);
-    autoUpdateCleanup = autoUpdate(trigger, floating, () => {
-      updatePosition(trigger, floating);
-    });
-  };
-  const requestOpen = (trigger, immediate = false) => {
-    if (
-      getContent(trigger).length === 0 ||
-      activeTrigger === trigger ||
-      pendingTrigger === trigger
-    ) {
-      return;
-    }
-    clearOpenTimeout();
-    pendingTrigger = trigger;
-    const delay =
-      immediate || activeTrigger != null || Date.now() < skipDelayUntil
-        ? 0
-        : hoverDelay;
-    if (delay === 0) {
-      openTooltip(trigger);
-      return;
-    }
-    openTimeout = window.setTimeout(() => {
-      openTimeout = null;
-      pendingTrigger = null;
-      openTooltip(trigger);
-    }, delay);
-  };
-  const handlePointerOpen = (event) => {
-    if (event.pointerType === "touch") {
-      return;
-    }
-    const trigger = getTrigger(event.target);
-    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
-      return;
-    }
-    requestOpen(trigger);
-  };
-  const handleLeave = (event) => {
-    const trigger = getTrigger(event.target);
-    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
-      return;
-    }
-    if (activeTrigger === trigger || pendingTrigger === trigger) {
-      closeTooltip();
-    }
-  };
-  const handleFocusIn = (event) => {
-    const trigger = getTrigger(event.target);
-    if (trigger?.matches(":focus-visible")) {
-      requestOpen(trigger, true);
-    }
-  };
-  const handleKeyDown = (event) => {
-    if (event.key === "Escape") {
-      closeTooltip();
-    }
-  };
-  const handleContextMenu = (event) => {
-    const trigger = getTrigger(event.target);
-    if (activeTrigger === trigger || pendingTrigger === trigger) {
-      closeTooltip();
-    }
-  };
-  const destroy = () => {
-    closeTooltip(false);
-    document.removeEventListener("pointerover", handlePointerOpen);
-    document.removeEventListener("pointerout", handleLeave);
-    document.removeEventListener("focusin", handleFocusIn);
-    document.removeEventListener("focusout", handleLeave);
-    document.removeEventListener("keydown", handleKeyDown);
-    document.removeEventListener("contextmenu", handleContextMenu);
-    tooltip = null;
-  };
-
-  document.addEventListener("pointerover", handlePointerOpen);
-  document.addEventListener("pointerout", handleLeave);
-  document.addEventListener("focusin", handleFocusIn);
-  document.addEventListener("focusout", handleLeave);
-  document.addEventListener("keydown", handleKeyDown);
-  document.addEventListener("contextmenu", handleContextMenu);
-  window.addEventListener("pagehide", destroy, { once: true });
-})();
-</script>
-<script id="codex-visualization-lucide" async src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"></script>
-<script>
-(() => {
-  const initialize = () => {
-    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
-  };
-  if (globalThis.lucide != null) {
-    initialize();
-    return;
-  }
-  document
-    .getElementById("codex-visualization-lucide")
-    ?.addEventListener("load", initialize, { once: true });
-})();
-</script>
-
-
 </body>
 </html>
