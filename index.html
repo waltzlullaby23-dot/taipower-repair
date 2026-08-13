@@ -4,8 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>台電擬真3D模擬爬桿作業遊戲</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<title>台電配電作業模擬</title>
 <style>:root {
   color-scheme: light dark;
   background-color: var(--background) !important;
@@ -734,49 +733,48 @@ svg {
   color: var(--destructive);
 }
 
-
-html>body{padding:0}</style>
+html,body{margin:0;padding:0}body{padding:12px;background:var(--background);color:var(--foreground);box-sizing:border-box}</style>
 </head>
 <body>
-<div id="taipower-roadside-special-operations-sim">
+﻿<div id="taipower-handline-grounding-sim">
   <style>
-    #taipower-roadside-special-operations-sim {
+    #taipower-handline-grounding-sim {
       color: var(--foreground);
       width: 100%;
     }
-    #taipower-roadside-special-operations-sim .tp3-toolbar,
-    #taipower-roadside-special-operations-sim .tp3-actions,
-    #taipower-roadside-special-operations-sim .tp3-climb-controls {
+    #taipower-handline-grounding-sim .tp3-toolbar,
+    #taipower-handline-grounding-sim .tp3-actions,
+    #taipower-handline-grounding-sim .tp3-climb-controls {
       display: flex;
       flex-wrap: wrap;
       align-items: end;
       gap: 8px;
       margin-bottom: 10px;
     }
-    #taipower-roadside-special-operations-sim .tp3-toolbar .form-label {
+    #taipower-handline-grounding-sim .tp3-toolbar .form-label {
       min-width: 136px;
       flex: 1 1 150px;
     }
-    #taipower-roadside-special-operations-sim .tp3-stats {
+    #taipower-handline-grounding-sim .tp3-stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 10px;
     }
-    #taipower-roadside-special-operations-sim .tp3-hp-track {
+    #taipower-handline-grounding-sim .tp3-hp-track {
       height: 8px;
       margin-top: 6px;
       background: color-mix(in srgb, var(--muted) 74%, transparent);
       overflow: hidden;
       border-radius: 999px;
     }
-    #taipower-roadside-special-operations-sim .tp3-hp-fill {
+    #taipower-handline-grounding-sim .tp3-hp-fill {
       width: 100%;
       height: 100%;
       background: var(--viz-series-2);
       transition: width 240ms ease, background 240ms ease;
     }
-    #taipower-roadside-special-operations-sim .tp3-stage {
+    #taipower-handline-grounding-sim .tp3-stage {
       position: relative;
       width: 100%;
       height: 620px;
@@ -787,28 +785,28 @@ html>body{padding:0}</style>
       margin-bottom: 10px;
       touch-action: none;
     }
-    #taipower-roadside-special-operations-sim canvas {
+    #taipower-handline-grounding-sim canvas {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       display: block;
     }
-    #taipower-roadside-special-operations-sim .tp3-webgl {
+    #taipower-handline-grounding-sim .tp3-webgl {
       opacity: 0;
     }
-    #taipower-roadside-special-operations-sim .tp3-webgl.is-ready {
+    #taipower-handline-grounding-sim .tp3-webgl.is-ready {
       opacity: 1;
     }
-    #taipower-roadside-special-operations-sim .tp3-fallback.is-hidden {
+    #taipower-handline-grounding-sim .tp3-fallback.is-hidden {
       display: none;
     }
-    #taipower-roadside-special-operations-sim .tp3-overlay {
+    #taipower-handline-grounding-sim .tp3-overlay {
       position: absolute;
       inset: 0;
       pointer-events: none;
     }
-    #taipower-roadside-special-operations-sim .tp3-objective {
+    #taipower-handline-grounding-sim .tp3-objective {
       position: absolute;
       left: 12px;
       top: 12px;
@@ -818,7 +816,7 @@ html>body{padding:0}</style>
       background: color-mix(in srgb, var(--popover) 86%, transparent);
       border-radius: 8px;
     }
-    #taipower-roadside-special-operations-sim .tp3-reticle {
+    #taipower-handline-grounding-sim .tp3-reticle {
       position: absolute;
       left: 50%;
       top: 50%;
@@ -828,25 +826,25 @@ html>body{padding:0}</style>
       border: 1px solid color-mix(in srgb, var(--foreground) 72%, transparent);
       border-radius: 50%;
     }
-    #taipower-roadside-special-operations-sim .tp3-reticle::before,
-    #taipower-roadside-special-operations-sim .tp3-reticle::after {
+    #taipower-handline-grounding-sim .tp3-reticle::before,
+    #taipower-handline-grounding-sim .tp3-reticle::after {
       content: "";
       position: absolute;
       background: color-mix(in srgb, var(--foreground) 72%, transparent);
     }
-    #taipower-roadside-special-operations-sim .tp3-reticle::before {
+    #taipower-handline-grounding-sim .tp3-reticle::before {
       width: 6px;
       height: 1px;
       left: 5px;
       top: 8px;
     }
-    #taipower-roadside-special-operations-sim .tp3-reticle::after {
+    #taipower-handline-grounding-sim .tp3-reticle::after {
       width: 1px;
       height: 6px;
       left: 8px;
       top: 5px;
     }
-    #taipower-roadside-special-operations-sim .tp3-hint {
+    #taipower-handline-grounding-sim .tp3-hint {
       position: absolute;
       left: 50%;
       bottom: 14px;
@@ -859,7 +857,7 @@ html>body{padding:0}</style>
       background: color-mix(in srgb, var(--popover) 88%, transparent);
       border-radius: 8px;
     }
-    #taipower-roadside-special-operations-sim .tp3-altimeter {
+    #taipower-handline-grounding-sim .tp3-altimeter {
       position: absolute;
       right: 12px;
       top: 12px;
@@ -869,14 +867,14 @@ html>body{padding:0}</style>
       border-radius: 999px;
       overflow: hidden;
     }
-    #taipower-roadside-special-operations-sim .tp3-altimeter-fill {
+    #taipower-handline-grounding-sim .tp3-altimeter-fill {
       position: absolute;
       inset: auto 0 0;
       height: 0%;
       background: var(--viz-series-1);
       transition: height 100ms linear;
     }
-    #taipower-roadside-special-operations-sim .tp3-equipment-list {
+    #taipower-handline-grounding-sim .tp3-equipment-list {
       position: absolute;
       right: 32px;
       top: 12px;
@@ -887,17 +885,17 @@ html>body{padding:0}</style>
       border-radius: 8px;
       line-height: 1.45;
     }
-    #taipower-roadside-special-operations-sim .tp3-flash {
+    #taipower-handline-grounding-sim .tp3-flash {
       position: absolute;
       inset: 0;
       opacity: 0;
       background: color-mix(in srgb, var(--destructive) 70%, var(--background));
       transition: opacity 150ms ease;
     }
-    #taipower-roadside-special-operations-sim .tp3-flash.is-active {
+    #taipower-handline-grounding-sim .tp3-flash.is-active {
       opacity: .72;
     }
-    #taipower-roadside-special-operations-sim .tp3-damage {
+    #taipower-handline-grounding-sim .tp3-damage {
       position: absolute;
       left: 50%;
       top: 32%;
@@ -907,30 +905,30 @@ html>body{padding:0}</style>
       font-weight: 500;
       transition: opacity 180ms ease, transform 400ms ease;
     }
-    #taipower-roadside-special-operations-sim .tp3-damage.is-active {
+    #taipower-handline-grounding-sim .tp3-damage.is-active {
       opacity: 1;
       transform: translate(-50%, -86%);
     }
-    #taipower-roadside-special-operations-sim .tp3-log {
+    #taipower-handline-grounding-sim .tp3-log {
       min-height: 44px;
       margin-bottom: 10px;
       padding-left: 12px;
       border-left: 3px solid var(--viz-series-1);
     }
-    #taipower-roadside-special-operations-sim .tp3-log.is-danger {
+    #taipower-handline-grounding-sim .tp3-log.is-danger {
       border-left-color: var(--destructive);
     }
-    #taipower-roadside-special-operations-sim .tp3-actions .btn,
-    #taipower-roadside-special-operations-sim .tp3-climb-controls .btn {
+    #taipower-handline-grounding-sim .tp3-actions .btn,
+    #taipower-handline-grounding-sim .tp3-climb-controls .btn {
       flex: 1 1 130px;
     }
-    #taipower-roadside-special-operations-sim .tp3-actions .btn[hidden] {
+    #taipower-handline-grounding-sim .tp3-actions .btn[hidden] {
       display: none !important;
     }
-    #taipower-roadside-special-operations-sim .tp3-toolbar .form-label[hidden] {
+    #taipower-handline-grounding-sim .tp3-toolbar .form-label[hidden] {
       display: none !important;
     }
-    #taipower-roadside-special-operations-sim .tp3-key {
+    #taipower-handline-grounding-sim .tp3-key {
       display: inline-block;
       min-width: 22px;
       padding: 1px 5px;
@@ -939,47 +937,47 @@ html>body{padding:0}</style>
       background: var(--muted);
       border-radius: 4px;
     }
-    #taipower-roadside-special-operations-sim .tp3-steps {
+    #taipower-handline-grounding-sim .tp3-steps {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
       margin-top: 8px;
     }
-    #taipower-roadside-special-operations-sim .tp3-step {
+    #taipower-handline-grounding-sim .tp3-step {
       padding: 4px 7px;
       color: var(--muted-foreground);
       background: color-mix(in srgb, var(--muted) 58%, transparent);
       border-radius: 999px;
     }
-    #taipower-roadside-special-operations-sim .tp3-step.is-done {
+    #taipower-handline-grounding-sim .tp3-step.is-done {
       color: var(--foreground);
       background: color-mix(in srgb, var(--viz-series-2) 28%, transparent);
     }
-    #taipower-roadside-special-operations-sim .tp3-step.is-current {
+    #taipower-handline-grounding-sim .tp3-step.is-current {
       color: var(--primary-foreground);
       background: var(--primary);
     }
     @media (max-width: 620px) {
-      #taipower-roadside-special-operations-sim .tp3-stage {
+      #taipower-handline-grounding-sim .tp3-stage {
         height: 430px;
       }
-      #taipower-roadside-special-operations-sim .tp3-stats {
+      #taipower-handline-grounding-sim .tp3-stats {
         grid-template-columns: 1fr;
       }
-      #taipower-roadside-special-operations-sim .tp3-altimeter {
+      #taipower-handline-grounding-sim .tp3-altimeter {
         height: 120px;
       }
-      #taipower-roadside-special-operations-sim .tp3-equipment-list {
+      #taipower-handline-grounding-sim .tp3-equipment-list {
         display: none;
       }
     }
     @media (min-width: 621px) and (max-width: 980px) {
-      #taipower-roadside-special-operations-sim .tp3-stats {
+      #taipower-handline-grounding-sim .tp3-stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
     @media (prefers-reduced-motion: reduce) {
-      #taipower-roadside-special-operations-sim * {
+      #taipower-handline-grounding-sim * {
         transition-duration: 0.01ms !important;
       }
     }
@@ -1067,6 +1065,9 @@ html>body{padding:0}</style>
     <button class="btn btn-primary" type="button" data-action="ppe">穿戴防護具</button>
     <button class="btn" type="button" data-action="traffic">設置三角錐／交通桿</button>
     <button class="btn" type="button" data-action="isolate">停電聯絡／隔離掛牌</button>
+    <button class="btn" type="button" data-action="handline">帶通繩上桿／固定滑車</button>
+    <button class="btn" type="button" data-action="insulating-ppe">穿戴絕緣肩套與手套</button>
+    <button class="btn" type="button" data-action="bag">地面同事升降工作袋</button>
     <button class="btn" type="button" data-action="test">腰袋取檢電器</button>
     <button class="btn" type="button" data-action="cover">腰袋取絕緣掩蔽具</button>
     <button class="btn" type="button" data-action="ground">掛工作接地組</button>
@@ -1084,7 +1085,7 @@ html>body{padding:0}</style>
 
 <script>
 (() => {
-  const initialRoot = document.getElementById('taipower-roadside-special-operations-sim');
+  const initialRoot = document.getElementById('taipower-handline-grounding-sim');
   let fallbackObserver = { disconnect() {} };
   if (initialRoot) {
     const fallbackCanvas = initialRoot.querySelector('#tp3-fallback');
@@ -1230,7 +1231,7 @@ html>body{padding:0}</style>
   }
 
   const startTaipowerSimulation = () => {
-  const root = document.getElementById('taipower-roadside-special-operations-sim');
+  const root = document.getElementById('taipower-handline-grounding-sim');
   if (!root) return;
 
   const el = {
@@ -1646,6 +1647,17 @@ html>body{padding:0}</style>
     secondaryInsulator.position.y = 5.91;
     cylinder(0.12, 0.12, 0.045, mats.insulator, x, 6.02, 0.08, 18, poleGroup);
     addSaggingConductor(x, 6.12, -16, 16, i === 1 ? 0.045 : 0.038, i === 1 ? mats.blue : mats.wire, world, 0.27);
+    const secondaryBlanket = new THREE.Group();
+    secondaryBlanket.position.set(x, 6.12, 0);
+    poleGroup.add(secondaryBlanket);
+    beamBetween(new THREE.Vector3(0, 0, -2.25), new THREE.Vector3(0, 0, 2.35), 0.1, mats.cover, secondaryBlanket);
+    box(0.72, 0.07, 3.9, mats.cover, 0, 0.03, 0.08, secondaryBlanket);
+    box(0.07, 0.78, 3.9, mats.cover, -0.32, -0.38, 0.08, secondaryBlanket).rotation.z = -0.08;
+    box(0.07, 0.78, 3.9, mats.cover, 0.32, -0.38, 0.08, secondaryBlanket).rotation.z = 0.08;
+    addBlanketClamp(-1.2, secondaryBlanket);
+    addBlanketClamp(1.28, secondaryBlanket);
+    secondaryBlanket.visible = false;
+    covers.push(secondaryBlanket);
   });
   curveTube([
     new THREE.Vector3(-1.35, 6.08, 1.4),
@@ -1870,7 +1882,8 @@ html>body{padding:0}</style>
     transformer: '桿上變壓器故障',
     nest: '桿上鳥巢',
     tree: '樹枝侵入線路',
-    storm: '颱風造成導線斷落'
+    storm: '颱風造成導線斷落',
+    cover: '高低壓七線活電掩蔽'
   };
   const damagedCeramicMaterial = new THREE.MeshStandardMaterial({ color: palette.danger, roughness: 0.35, metalness: 0.02 });
   const damagedMetalMaterial = new THREE.MeshStandardMaterial({ color: palette.danger, roughness: 0.48, metalness: 0.68 });
@@ -2045,6 +2058,7 @@ html>body{padding:0}</style>
   [-0.13, 0.13].forEach(x => ellipsoid(0.052, 0.04, 0.022, mats.skinShade, x, 1.11, 0.16, fallbackCore, 16));
 
   const ppeParts = [];
+  const insulatingPpeParts = [];
   const addPpePart = mesh => {
     ppeParts.push(mesh);
     return mesh;
@@ -2094,9 +2108,10 @@ html>body{padding:0}</style>
     }
   });
   [leftArm, rightArm].forEach(arm => {
-    addPpePart(cylinder(0.135, 0.155, 0.48, mats.orange, 0, -0.29, 0, 20, arm));
-    addPpePart(ellipsoid(0.105, 0.145, 0.085, mats.concrete, 0, -0.74, 0.035, arm, 22));
-    addPpePart(cylinder(0.142, 0.142, 0.055, mats.helmet, 0, -0.42, 0, 20, arm));
+    const insulatingSleeve = addPpePart(cylinder(0.135, 0.155, 0.48, mats.orange, 0, -0.29, 0, 20, arm));
+    const insulatingGlove = addPpePart(ellipsoid(0.105, 0.145, 0.085, mats.concrete, 0, -0.74, 0.035, arm, 22));
+    const insulatingCuff = addPpePart(cylinder(0.142, 0.142, 0.055, mats.helmet, 0, -0.42, 0, 20, arm));
+    insulatingPpeParts.push(insulatingSleeve, insulatingGlove, insulatingCuff);
   });
   leftArm.rotation.z = -0.3;
   rightArm.rotation.z = 0.3;
@@ -2110,6 +2125,7 @@ html>body{padding:0}</style>
   rightShoulderPad.rotation.z = 0.2;
   body.add(rightShoulderPad);
   addPpePart(rightShoulderPad);
+  insulatingPpeParts.push(leftShoulderPad, rightShoulderPad);
 
   const leftLeg = new THREE.Group();
   const rightLeg = new THREE.Group();
@@ -2161,6 +2177,7 @@ html>body{padding:0}</style>
 
   ppeParts.forEach(part => { part.visible = false; });
   helmet.visible = false;
+  const setInsulatingPpeVisible = visible => insulatingPpeParts.forEach(part => { part.visible = visible; });
 
   const ppeGroundGroup = new THREE.Group();
   scene.add(ppeGroundGroup);
@@ -2317,22 +2334,53 @@ html>body{padding:0}</style>
   bagHandle.position.y = 0.36;
   bagHandle.rotation.z = Math.PI;
   crewToolBag.add(bagHandle);
+  const bagToolContents = new THREE.Group();
+  crewToolBag.add(bagToolContents);
+  cylinder(0.04, 0.05, 0.7, mats.orange, -0.16, 0.52, 0, 12, bagToolContents).rotation.z = -0.22;
+  box(0.11, 0.62, 0.09, mats.metal, 0.15, 0.5, 0, bagToolContents).rotation.z = 0.18;
+  const bagRemovedContents = new THREE.Group();
+  crewToolBag.add(bagRemovedContents);
+  box(0.32, 0.42, 0.24, mats.dark, 0, 0.48, 0, bagRemovedContents).rotation.z = -0.28;
+  cylinder(0.09, 0.11, 0.54, mats.insulator, 0.15, 0.58, 0, 16, bagRemovedContents).rotation.z = 0.38;
+  bagRemovedContents.visible = false;
   crewToolBag.position.set(1.38, 0.42, 0.72);
+
+  const handlineRigGroup = new THREE.Group();
+  handlineRigGroup.position.set(0.55, 8.12, 0.5);
+  poleGroup.add(handlineRigGroup);
+  const handlineTie = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.035, 10, 28), mats.orange);
+  handlineTie.rotation.x = Math.PI / 2;
+  handlineRigGroup.add(handlineTie);
+  const handlinePulley = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.055, 12, 28), mats.metal);
+  handlinePulley.position.set(0.35, -0.08, 0.18);
+  handlinePulley.rotation.y = Math.PI / 2;
+  handlineRigGroup.add(handlinePulley);
+  box(0.12, 0.48, 0.14, mats.metal, 0.18, 0.12, 0.18, handlineRigGroup).rotation.z = -0.42;
+  handlineRigGroup.visible = false;
+
+  const handlineCarryCoil = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.035, 10, 36), mats.orange);
+  handlineCarryCoil.rotation.y = Math.PI / 2;
+  handlineCarryCoil.visible = false;
+  scene.add(handlineCarryCoil);
   const crewHoistRope = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: palette.s3 }));
   scene.add(crewHoistRope);
   const updateCrewHoist = time => {
-    const hoisting = state.ppe && state.height > 2.3 && !state.finished;
-    const targetY = hoisting ? Math.min(7.65, Math.max(1.15, state.height - 0.85)) : 0.42;
-    crewToolBag.position.y += (targetY - crewToolBag.position.y) * 0.08;
-    crewToolBag.position.x = hoisting ? 1.1 : 1.38;
-    const pull = hoisting ? Math.sin(time * 0.008) * 0.34 : 0;
+    const bagHighY = Math.min(7.55, Math.max(1.15, state.height - 0.52));
+    const targetY = state.bagAtWorker ? bagHighY : 0.42;
+    if (state.busy !== 'bag') crewToolBag.position.y += (targetY - crewToolBag.position.y) * 0.08;
+    crewToolBag.position.x = state.bagAtWorker || state.busy === 'bag' ? 1.05 : 1.38;
+    const hauling = state.busy === 'bag';
+    const pull = hauling ? Math.sin(time * 0.012) * 0.48 : 0;
     toolMate.rightArm.rotation.x += ((-0.62 + pull) - toolMate.rightArm.rotation.x) * 0.18;
     toolMate.leftArm.rotation.x += ((-0.88 - pull) - toolMate.leftArm.rotation.x) * 0.18;
-    crewHoistRope.visible = state.ppe;
+    handlineRigGroup.visible = state.handlineRigged;
+    handlineCarryCoil.visible = state.ppe && !state.handlineRigged;
+    handlineCarryCoil.position.set(0.52, state.height + 0.28, 0.55);
+    crewHoistRope.visible = state.handlineRigged;
     crewHoistRope.geometry.setFromPoints([
       new THREE.Vector3(2.25, 1.18, 0.42),
-      new THREE.Vector3(1.1, crewToolBag.position.y + 0.45, 0.72),
-      new THREE.Vector3(0.42, Math.max(1.25, state.height + 0.25), 0.72)
+      new THREE.Vector3(0.9, 8.04, 0.68),
+      new THREE.Vector3(1.05, crewToolBag.position.y + 0.48, 0.72)
     ]);
   };
 
@@ -2471,8 +2519,13 @@ html>body{padding:0}</style>
     hp: 100,
     height: 0.6,
     ppe: false,
+    insulationPpeOn: false,
     traffic: false,
     rope: false,
+    handlineRigged: false,
+    bagAtWorker: false,
+    bagReturned: false,
+    removedPartBagged: false,
     ropeAnchor: 0.9,
     ropeAnchors: [0.9, 0.9],
     activeRope: 0,
@@ -2516,8 +2569,9 @@ html>body{padding:0}</style>
 
   const getSteps = () => {
     if (state.mode === 'live') return [
-      ['ppe', 'PPE'], ['traffic', '交通維護'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'], ['test', '檢電'],
-      ['cover', '三相掩蔽夾固'], ['repair', '活線維修'], ['finish', '完工']
+      ['ppe', 'PPE／絕緣護具'], ['traffic', '交通維護'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'],
+      ['handline', '固定通繩滑車'], ['bag-up', '工具袋上送'], ['test', '逐線檢電'],
+      ['cover', '高低壓七線掩蔽'], ['bag-down', '工作袋下降'], ['descend', '下桿清點'], ['finish', '完工']
     ];
     const scenarioStep = state.mode === 'nest'
       ? ['nest', '鳥況確認／移巢']
@@ -2528,8 +2582,8 @@ html>body{padding:0}</style>
           : ['repair', '停電設備維修'];
     return [
       ['ppe', 'PPE'], ['traffic', '交通維護'], ['isolate', '停電隔離掛牌'], ['climb-start', '前三釘'], ['rope', '固定母繩'], ['climb', '交叉登桿'],
-      ['test', '工作點檢電'], ['ground', '工作接地'], scenarioStep,
-      ['remove-ground', '拆接地'], ['descend', '下桿清點'], ['finish', '復電']
+      ['handline', '固定通繩滑車'], ['bag-up', '工具袋上送'], ['ground-ppe', '穿肩套／手套'], ['test', '工作點檢電'], ['ground', '工作接地'], scenarioStep,
+      ['bag-down', '舊件裝袋下降'], ['remove-ground-ppe', '再穿肩套／手套'], ['remove-ground', '拆接地'], ['descend', '下桿清點'], ['finish', '復電']
     ];
   };
 
@@ -2540,9 +2594,14 @@ html>body{padding:0}</style>
     'climb-start': state.height >= ropeAttachHeight - 0.04,
     rope: state.rope,
     climb: atWorkZone(),
+    handline: state.handlineRigged,
+    'bag-up': state.bagAtWorker || state.bagReturned,
+    'bag-down': state.bagReturned,
+    'ground-ppe': state.grounded || state.insulationPpeOn,
+    'remove-ground-ppe': !state.grounded || state.insulationPpeOn,
     test: state.tested,
     ground: state.grounded || (key === 'ground' && state.repaired),
-    cover: state.mode !== 'live' || (state.covered >= 3 && state.clipped >= 3),
+    cover: state.mode !== 'live' || (state.covered >= covers.length && state.clipped >= covers.length),
     repair: state.repaired,
     nest: state.nestRemoved,
     prune: state.pruned,
@@ -2685,7 +2744,7 @@ html>body{padding:0}</style>
       duration: 5200,
       fitted: [false, false, false, false]
     };
-    log('開始逐件穿戴防護具。', '安全帽與面罩、絕緣手套、全身式安全帶、絕緣袖套與安全鞋會依序從地面裝具區穿戴。');
+    log('開始逐件穿戴基礎防護具。', state.mode === 'live' ? '安全帽面罩、安全帶、安全鞋、絕緣肩套與手套依序穿戴；活電作業期間絕緣護具全程不脫除。' : '安全帽面罩、安全帶與安全鞋依序穿戴；絕緣肩套與手套由通繩工作袋送上，在檢電掛接地前再穿戴。');
     updateUI();
   };
 
@@ -2703,6 +2762,62 @@ html>body{padding:0}</style>
       deployed: trafficElements.map(() => false)
     };
     log('開始設置路側交通維護措施。', '由來車方向依序布設反光三角錐、交通桿及橙白拒馬，形成漸變警示與工作緩衝區。');
+    updateUI();
+  };
+
+  const beginHandlineRig = () => {
+    state.busy = 'handline';
+    state.moving = 0;
+    handlineCarryCoil.visible = true;
+    actionAnim = { type: 'handline', start: performance.now(), duration: 4200, tied: false };
+    log('登桿人員取下隨身攜帶的通繩。', '先把通繩與滑車可靠固定在電桿工作位置，確認結點與滑輪後，地面同事才能升降工作袋。');
+    updateUI();
+  };
+
+  const beginInsulatingPpeWear = () => {
+    state.busy = 'insulating-ppe';
+    state.moving = 0;
+    actionAnim = { type: 'insulating-ppe', start: performance.now(), duration: 2600, fitted: false };
+    log('穿戴絕緣肩套與絕緣手套。', state.grounded ? '拆除工作接地前重新穿戴，並確認外觀、等級與袖口重疊。' : '停電作業在檢電及掛工作接地前穿戴；活電作業則全程保持穿戴。');
+    updateUI();
+  };
+
+  const beginBagTransfer = () => {
+    const goingUp = !state.bagAtWorker && !state.bagReturned;
+    state.busy = 'bag';
+    state.moving = 0;
+    bagToolContents.visible = goingUp;
+    bagRemovedContents.visible = !goingUp && state.removedPartBagged;
+    actionAnim = {
+      type: 'bag',
+      start: performance.now(),
+      duration: 4800,
+      goingUp,
+      fromY: crewToolBag.position.y,
+      toY: goingUp ? Math.min(7.55, Math.max(1.15, state.height - 0.52)) : 0.42
+    };
+    log(
+      goingUp ? '地面同事以固定通繩將工作袋拉上。' : '拆下的零件已裝入工作袋，地面同事控制通繩下降。',
+      goingUp ? '袋內放置本階段所需工具與材料；地面同事雙手交替拉繩，桿上人員在工作位置接袋。' : '桿上人員先封妥袋口並接上通繩，地面同事緩慢放繩，避免舊件墜落或碰撞。'
+    );
+    updateUI();
+  };
+
+  const beginGrounding = () => {
+    state.busy = 'ground';
+    state.moving = 0;
+    groundSet.visible = true;
+    groundSet.scale.setScalar(0.2);
+    actionAnim = { type: 'ground', start: performance.now(), duration: 4200, conductorConnected: false, doffed: false };
+    log('穿戴絕緣肩套與手套開始掛工作接地。', '先完成接地端，再以絕緣工具依序連接導線端；確認接地組完整後才脫下肩套與手套。');
+    updateUI();
+  };
+
+  const beginGroundRemoval = () => {
+    state.busy = 'remove-ground';
+    state.moving = 0;
+    actionAnim = { type: 'remove-ground', start: performance.now(), duration: 3600, released: false };
+    log('已重新穿戴絕緣肩套與手套，開始拆除工作接地。', '以絕緣工具先解除導線端，再處理接地端；全程由班長監看。');
     updateUI();
   };
 
@@ -2860,6 +2975,8 @@ html>body{padding:0}</style>
       state.ppe = true;
       helmet.visible = true;
       ppeParts.forEach(part => { part.visible = true; });
+      state.insulationPpeOn = state.mode === 'live';
+      setInsulatingPpeVisible(state.insulationPpeOn);
       beltTools.visible = true;
       ppeGroundPieces.forEach(piece => { piece.visible = false; });
       log('防護具已逐件穿戴完成。', '下一步在路側設置反光三角錐、交通桿與拒馬，建立來車警示、漸變及工作緩衝區。');
@@ -2872,6 +2989,43 @@ html>body{padding:0}</style>
       });
       log('交通維護措施設置完成。', '三角錐、反光交通桿與拒馬已把人員、車輛及電桿工作區和來車動線分隔。');
     }
+    if (completed.type === 'handline') {
+      state.handlineRigged = true;
+      handlineRigGroup.visible = true;
+      handlineCarryCoil.visible = false;
+      log('通繩與滑車已在桿上固定並完成試拉。', '通繩一端連接工作袋，另一端由地面同事控制；工具及拆卸零件都必須透過工作袋升降。');
+    }
+    if (completed.type === 'insulating-ppe') {
+      state.insulationPpeOn = true;
+      setInsulatingPpeVisible(true);
+      log('絕緣肩套與手套已穿戴完成。', state.mode === 'live' ? '活電作業期間不得脫除；下一步逐線檢電並完成全部高、低壓線掩蔽。' : state.grounded ? '現在可依程序拆除工作接地。' : '現在可進行檢電並掛設工作接地。');
+    }
+    if (completed.type === 'bag') {
+      if (completed.goingUp) {
+        state.bagAtWorker = true;
+        state.bagReturned = false;
+        log('工作袋已送達桿上作業位置。', '桿上人員取用本階段工具與材料；袋體仍保持接在通繩上，不以徒手拋接。');
+      } else {
+        state.bagAtWorker = false;
+        state.bagReturned = true;
+        bagToolContents.visible = false;
+        log(state.removedPartBagged ? '舊零件已隨工作袋安全降至地面。' : '工作袋與剩餘工具已降至地面。', '地面同事接住工作袋並清點內容，通繩仍留在桿上待作業員下桿前解除。');
+      }
+    }
+    if (completed.type === 'ground') {
+      state.grounded = true;
+      groundSet.visible = true;
+      groundSet.scale.setScalar(1);
+      state.insulationPpeOn = false;
+      setInsulatingPpeVisible(false);
+      log('工作接地組已掛妥，作業員完成脫除絕緣肩套與手套。', '接地組連續性確認後，護具收入腰側潔淨護具袋，以利停電設備作業；拆接地前必須重新穿戴。');
+    }
+    if (completed.type === 'remove-ground') {
+      state.grounded = false;
+      groundSet.visible = false;
+      groundSet.scale.setScalar(1);
+      log('穿戴絕緣肩套與手套完成工作接地拆除。', '確認人員、工具、工作袋及通繩狀態後，保持繩索防護下桿，再進入復電程序。');
+    }
     if (completed.type === 'test') {
       state.tested = true;
       log(
@@ -2883,9 +3037,10 @@ html>body{padding:0}</style>
       state.covered += 1;
       state.clipped += 1;
       covers[completed.index].visible = true;
+      if (state.covered >= covers.length) state.repaired = true;
       log(
         '絕緣毯已完成展開、包覆，兩只大型絕緣夾均已扣合。',
-        `已完成 ${state.covered}/3 相、夾固 ${state.clipped}/3 組；每一相都需形成不鬆脫的連續保護區。`
+        `已完成 ${state.covered}/${covers.length} 條、夾固 ${state.clipped}/${covers.length} 組；高壓三線與低壓四線都要形成不鬆脫的連續保護區。`
       );
     }
     if (completed.type === 'rope') {
@@ -2901,6 +3056,8 @@ html>body{padding:0}</style>
     }
     if (completed.type === 'repair') {
       state.repaired = true;
+      state.removedPartBagged = true;
+      bagRemovedContents.visible = true;
       applyFaultVisuals(true);
       hoistGroup.visible = false;
       const next = state.mode === 'deenergized' ? '下一步拆除工作接地，再保持繩索防護下桿、集合清點後復電。' : '維持掩蔽與安全位置，進行工具清點及完工確認。';
@@ -2923,6 +3080,8 @@ html>body{padding:0}</style>
     if (completed.type === 'splice') {
       state.spliced = true;
       state.repaired = true;
+      state.removedPartBagged = true;
+      bagRemovedContents.visible = true;
       brokenLineGroup.visible = false;
       phaseWires[0].visible = true;
       stormSleeve.visible = true;
@@ -2979,6 +3138,71 @@ html>body{padding:0}</style>
           playTone(175 + index * 9, 0.06, 0.012, 'square');
         }
       });
+    }
+    if (actionAnim.type === 'handline') {
+      const eased = smoothStep(progress);
+      const start = new THREE.Vector3(0.52, state.height + 0.28, 0.55);
+      const target = new THREE.Vector3(0.9, 8.04, 0.68);
+      handlineCarryCoil.position.copy(start).lerp(target, eased);
+      handlineCarryCoil.position.y += Math.sin(progress * Math.PI) * 0.42;
+      handlineCarryCoil.rotation.z = progress * Math.PI * 1.5;
+      handlineRigGroup.visible = progress > 0.48;
+      handlineRigGroup.scale.setScalar(0.25 + smoothStep(THREE.MathUtils.clamp((progress - 0.48) / 0.3, 0, 1)) * 0.75);
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.18 + Math.sin(progress * Math.PI * 5) * 0.16, 0.24);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.88 - Math.sin(progress * Math.PI * 5) * 0.12, 0.24);
+      if (progress > 0.72 && !actionAnim.tied) {
+        actionAnim.tied = true;
+        playTone(238, 0.12, 0.024, 'triangle');
+        log('通繩已繞桿固定並掛入滑車。', '桿上人員拉動兩端確認運行順暢，地面同事接手控制繩尾。');
+      }
+    }
+    if (actionAnim.type === 'insulating-ppe') {
+      const reach = Math.sin(progress * Math.PI);
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -0.9 - reach * 0.5, 0.28);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.82 - reach * 0.42, 0.28);
+      if (progress > 0.48 && !actionAnim.fitted) {
+        actionAnim.fitted = true;
+        setInsulatingPpeVisible(true);
+        playTone(286, 0.12, 0.025, 'triangle');
+      }
+    }
+    if (actionAnim.type === 'bag') {
+      const eased = smoothStep(progress);
+      crewToolBag.position.y = THREE.MathUtils.lerp(actionAnim.fromY, actionAnim.toY, eased);
+      crewToolBag.position.x = THREE.MathUtils.lerp(actionAnim.goingUp ? 1.38 : 1.05, actionAnim.goingUp ? 1.05 : 1.38, eased);
+      crewToolBag.rotation.z = Math.sin(progress * Math.PI * 6) * 0.035;
+      crewToolBag.rotation.y = Math.sin(progress * Math.PI * 4) * 0.045;
+      if (progress > 0.52 && !actionAnim.midpoint) {
+        actionAnim.midpoint = true;
+        playTone(actionAnim.goingUp ? 220 : 174, 0.1, 0.02, 'triangle');
+      }
+    }
+    if (actionAnim.type === 'ground') {
+      const eased = smoothStep(progress);
+      groundSet.scale.setScalar(0.2 + eased * 0.8);
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.08 + Math.sin(progress * Math.PI * 5) * 0.18, 0.25);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.82 - Math.sin(progress * Math.PI * 5) * 0.12, 0.25);
+      if (progress > 0.5 && !actionAnim.conductorConnected) {
+        actionAnim.conductorConnected = true;
+        playTone(208, 0.12, 0.024, 'triangle');
+        log('接地端完成，導線端依序連接中。', '保持絕緣肩套與手套穿戴，以絕緣工具完成三相導線端連接。');
+      }
+      if (progress > 0.83 && !actionAnim.doffed) {
+        actionAnim.doffed = true;
+        setInsulatingPpeVisible(false);
+        playTone(164, 0.1, 0.018, 'sine');
+      }
+    }
+    if (actionAnim.type === 'remove-ground') {
+      const eased = smoothStep(progress);
+      groundSet.scale.setScalar(Math.max(0.18, 1 - eased * 0.82));
+      rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, -1.14 + Math.sin(progress * Math.PI * 4) * 0.14, 0.25);
+      leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, -0.9 - Math.sin(progress * Math.PI * 4) * 0.1, 0.25);
+      if (progress > 0.58 && !actionAnim.released) {
+        actionAnim.released = true;
+        playTone(196, 0.12, 0.022, 'triangle');
+        log('三相導線端已解除，正在拆除接地端。', '絕緣肩套與手套保持穿戴，接地組由地面同事配合收妥。');
+      }
     }
     if (actionAnim.type === 'nest') {
       const lift = smoothStep(THREE.MathUtils.clamp((progress - 0.24) / 0.58, 0, 1));
@@ -3058,7 +3282,10 @@ html>body{padding:0}</style>
     if (actionAnim.type === 'cover') {
       const eased = smoothStep(progress);
       const start = new THREE.Vector3(0.38, state.height + 0.36, 1.08);
-      const target = new THREE.Vector3(phaseXs[actionAnim.index], 9.98, 0.18);
+      const isPrimaryCover = actionAnim.index < phaseXs.length;
+      const target = isPrimaryCover
+        ? new THREE.Vector3(phaseXs[actionAnim.index], 9.98, 0.18)
+        : new THREE.Vector3(lowVoltageXs[actionAnim.index - phaseXs.length], 6.12, 0.18);
       movingBlanket.position.copy(start).lerp(target, eased);
       movingBlanket.position.y += Math.sin(progress * Math.PI) * 0.62;
       movingBlanket.scale.set(0.16 + eased * 0.84, 0.35 + eased * 0.65, 0.3 + eased * 0.7);
@@ -3129,8 +3356,9 @@ html>body{padding:0}</style>
           tank.material = tankNormalMaterial;
           transformerScorch.visible = false;
         }
+        bagRemovedContents.visible = fault !== 'transformer';
         playTone(196, 0.16, 0.025, 'triangle');
-        log(`舊${fault === 'insulator' ? '礙子' : fault === 'hardware' ? '鐵件' : '變壓器'}已移出。`, '新設備由通繩／吊索送入，對準原安裝位置後進行復位與固定。');
+        log(`舊${fault === 'insulator' ? '礙子' : fault === 'hardware' ? '鐵件' : '變壓器'}已移出。`, fault === 'transformer' ? '大型變壓器由專用吊具下降；新設備送入並復位固定。' : '拆下的舊件已放入通繩工作袋；新件送入並復位固定，完工後由地面同事把袋子拉下。');
       }
     }
     if (progress >= 1) finishActionAnimation();
@@ -3260,11 +3488,14 @@ html>body{padding:0}</style>
   const objectiveText = () => {
     if (state.failed) return '任務失敗：生命值歸零。';
     if (state.finished) return `任務完成：剩餘 ${state.hp} HP，失誤 ${state.mistakes} 次。`;
-    if (state.busy === 'ppe') return '防護具穿戴中：由地面裝具區依序戴安全帽面罩、手套、全身式安全帶與袖套。';
+    if (state.busy === 'ppe') return state.mode === 'live' ? '活電防護具穿戴中：安全帽面罩、安全帶、安全鞋、絕緣肩套與手套逐件穿戴。' : '停電作業基礎 PPE 穿戴中：安全帽面罩、安全帶與安全鞋逐件穿戴。';
     if (state.busy === 'traffic') return '交通維護布設中：由來車方向依序放置三角錐、交通桿與拒馬。';
     if (state.busy === 'test') return '檢電動作中：抽出檢電器，逐相接近、停留確認、收回。';
-    if (state.busy === 'cover') return `絕緣毯裝設中：包覆第 ${state.covered + 1} 相，並逐一扣合兩只大型絕緣夾。`;
+    if (state.busy === 'cover') return `絕緣毯裝設中：包覆第 ${state.covered + 1}/${covers.length} 條線，並逐一扣合兩只大型絕緣夾。`;
     if (state.busy === 'rope') return '雙輔助繩交替換掛：一條保持承載，另一條放鬆後向上套妥。';
+    if (state.busy === 'handline') return '通繩設置中：把隨身通繩固定在電桿工作位置並裝上滑車。';
+    if (state.busy === 'bag') return actionAnim?.goingUp ? '地面同事雙手交替拉繩，將裝有工具材料的工作袋送上。' : '舊件已裝袋，地面同事控制通繩把工作袋緩慢降下。';
+    if (state.busy === 'insulating-ppe') return '絕緣肩套與手套穿戴中：確認袖口重疊、外觀與耐壓等級。';
     if (state.busy === 'repair') return `${faultLabels[state.fault]}更換中：舊件移出、新件送入並復位固定。`;
     if (state.busy === 'nest') return '鳥巢處理中：確認鳥蛋／幼鳥，使用絕緣長柄工具完整移至地面籃筐。';
     if (state.busy === 'prune') return '樹木修剪中：以絕緣長柄鋸分段卸重，控制枝條朝遠離導線方向落下。';
@@ -3277,9 +3508,14 @@ html>body{padding:0}</style>
       'climb-start': '先以右手／左腳、左手／右腳交叉順序攀過前三個腳踏釘；腳底必須落在釘面。',
       rope: '通過第三個腳踏釘後按 Q：固定母繩、接上制動器，再開始雙輔助繩交替上套。',
       climb: '按住 W／↑，右手配左腳、左手配右腳交叉上移；母繩保持固定，接近承載繩上限時按 Q 換掛。',
-      test: '到變壓器工作區，從腰袋取檢電器確認線路狀態。',
-      ground: '確認隔離且檢電無電後，掛設工作接地組。',
-      cover: `逐相掩蔽並以大型絕緣夾夾固：${state.covered}/3 相、${state.clipped}/3 組`,
+      handline: '把隨身攜帶的通繩綁固在電桿工作位置，裝上滑車並交由地面同事控繩。',
+      'bag-up': '地面同事用通繩把裝有檢電器、工具與材料的工作袋拉到桿上。',
+      'bag-down': state.removedPartBagged ? '把拆下的舊件放入工作袋封妥，再由地面同事用通繩降下。' : '把剩餘工具放回工作袋，由地面同事用通繩降下。',
+      'ground-ppe': '停電作業在檢電及掛接地前穿戴絕緣肩套與絕緣手套。',
+      'remove-ground-ppe': '拆除工作接地前重新穿戴絕緣肩套與絕緣手套。',
+      test: '從通繩工作袋取檢電器，在工作位置確認線路狀態。',
+      ground: '確認隔離且檢電無電、肩套與手套穿妥後，掛設工作接地組。',
+      cover: `高壓三線與低壓四線逐條掩蔽夾固：${state.covered}/${covers.length} 條、${state.clipped}/${covers.length} 組`,
       repair: `依情境更換${faultLabels[state.fault]}。`,
       nest: '先確認鳥蛋或幼鳥，再用絕緣長柄工具完整移巢至地面籃筐。',
       prune: '使用絕緣長柄鋸分段修除遮蔽導線的枝葉，控制倒落方向。',
@@ -3293,18 +3529,27 @@ html>body{padding:0}</style>
 
   const updateActionButtons = () => {
     const expected = currentStep();
+    const expectedAction = expected === 'ground-ppe' || expected === 'remove-ground-ppe'
+      ? 'insulating-ppe'
+      : expected === 'bag-up' || expected === 'bag-down'
+        ? 'bag'
+        : expected;
     el.actions.forEach(button => {
       const action = button.dataset.action;
-      const equipmentMode = state.mode === 'live' || state.mode === 'deenergized';
+      const equipmentMode = state.mode === 'deenergized';
       button.hidden =
         (action === 'cover' && state.mode !== 'live') ||
         ((action === 'isolate' || action === 'ground' || action === 'remove-ground') && state.mode === 'live') ||
+        (action === 'insulating-ppe' && state.mode === 'live') ||
         (action === 'repair' && !equipmentMode) ||
         (action === 'nest' && state.mode !== 'nest') ||
         (action === 'prune' && state.mode !== 'tree') ||
         (action === 'splice' && state.mode !== 'storm');
-      button.classList.toggle('btn-primary', action === expected);
-      if (action === 'cover') button.textContent = `絕緣毯包覆夾固 ${state.covered}/3`;
+      button.classList.toggle('btn-primary', action === expectedAction);
+      if (action === 'cover') button.textContent = `高低壓逐線絕緣毯 ${state.covered}/${covers.length}`;
+      if (action === 'handline') button.textContent = state.handlineRigged ? '通繩／滑車已固定' : '帶通繩上桿／固定滑車';
+      if (action === 'insulating-ppe') button.textContent = state.insulationPpeOn ? '肩套／手套已穿戴' : state.grounded ? '再穿肩套／手套拆接地' : '穿肩套／手套掛接地';
+      if (action === 'bag') button.textContent = state.bagReturned ? '工作袋已回地面' : state.bagAtWorker ? '舊件裝袋／通繩下降' : '工具袋通繩上送';
       if (action === 'repair') button.textContent = state.fault === 'insulator' ? '更換破損礙子' : state.fault === 'hardware' ? '更換燒損鐵件' : '吊換桿上變壓器';
       if (action === 'finish') button.textContent = state.mode === 'live' ? '完工確認' : '復電／完工確認';
       button.disabled = state.failed || state.finished || Boolean(state.busy);
@@ -3334,7 +3579,7 @@ html>body{padding:0}</style>
           : tense
             ? '失誤警戒節奏 150 BPM'
             : '搶修行動節奏 112 BPM';
-    el.crewState.textContent = '班長＋4 名同事';
+    el.crewState.textContent = `班長＋4｜${state.handlineRigged ? (state.bagAtWorker ? '工作袋在桿上' : state.bagReturned ? '工作袋已下降' : '通繩待拉袋') : '通繩未固定'}｜${state.insulationPpeOn ? '肩套手套穿戴中' : '肩套手套已脫／待穿'}`;
     el.healthState.textContent = performance.now() < supervisorCorrectUntil
       ? '班長喊停：正在指正不安全動作'
       : performance.now() < supervisorCheckUntil
@@ -3353,8 +3598,8 @@ html>body{padding:0}</style>
     el.rope.disabled = state.failed || state.finished || Boolean(state.busy) || !state.ppe;
     el.mode.disabled = state.height > 0.75 || state.ppe || Boolean(state.busy);
     el.voltage.disabled = state.height > 0.75 || Boolean(state.busy);
-    el.fault.disabled = state.height > 0.75 || state.ppe || Boolean(state.busy) || !['live', 'deenergized'].includes(state.mode);
-    el.fault.closest('.form-label').hidden = !['live', 'deenergized'].includes(state.mode);
+    el.fault.disabled = state.height > 0.75 || state.ppe || Boolean(state.busy) || state.mode !== 'deenergized';
+    el.fault.closest('.form-label').hidden = state.mode !== 'deenergized';
     updateSteps();
     updateActionButtons();
     updateRopeGeometry();
@@ -3392,7 +3637,7 @@ html>body{padding:0}</style>
     }
     if (action === 'ppe') {
       if (state.ppe) {
-        log('防護具已完成檢查。', '安全帽、面罩、絕緣手套與袖套、安全帶、安全鞋及腰掛工具均就位。');
+        log('基礎防護具已完成檢查。', state.insulationPpeOn ? '安全帽、面罩、安全帶、安全鞋、絕緣肩套與手套均就位。' : '安全帽、面罩、安全帶及安全鞋均就位；停電作業須在檢電掛接地前另穿絕緣肩套與手套。');
         return;
       }
       beginPpeWear();
@@ -3422,11 +3667,48 @@ html>body{padding:0}</style>
         log('饋線已隔離並完成上鎖掛牌。', '線路仍須在工作位置檢電，確認無電後才能掛工作接地。');
       }
     }
+    if (action === 'handline') {
+      if (!atWorkZone() || !state.rope) {
+        mistake(8, '尚未到達工作位置或繩索防墜未就位就設置通繩。', '先完成交叉登桿並保持輔助繩承載，再把隨身通繩固定在電桿上。');
+      } else if (state.handlineRigged) {
+        log('通繩與滑車已固定。', '地面同事控制繩尾，工作袋仍在地面等待上送。');
+      } else {
+        beginHandlineRig();
+      }
+    }
+    if (action === 'insulating-ppe') {
+      if (state.mode === 'live') {
+        log('活電作業的絕緣肩套與手套必須全程穿戴。', '這套護具已在初始 PPE 穿戴完成，直到活電作業與掩蔽撤離完成前不得脫除。');
+      } else if (!atWorkZone() || !state.handlineRigged) {
+        mistake(6, '未在穩定工作位置就嘗試穿戴絕緣肩套與手套。', '先完成登桿、繩索防墜及通繩固定，再由工作袋取出絕緣護具。');
+      } else if (!state.bagAtWorker) {
+        mistake(6, '絕緣肩套與手套仍在地面工作袋。', '先由地面同事使用通繩把工作袋拉上。');
+      } else if (state.insulationPpeOn) {
+        log('絕緣肩套與手套已穿戴。', state.grounded ? '可依程序拆除工作接地。' : '可進行檢電與掛工作接地。');
+      } else {
+        beginInsulatingPpeWear();
+      }
+    }
+    if (action === 'bag') {
+      if (!state.handlineRigged) {
+        mistake(10, '未先把通繩與滑車固定在電桿上就拉工作袋。', '工作袋可能失控墜落；登桿人員先帶通繩上去、綁妥並試拉。');
+      } else if (state.bagReturned) {
+        log('工作袋已回到地面並完成內容清點。', '通繩仍由地面同事控制，待桿上人員完成下桿前解除。');
+      } else if (state.bagAtWorker && !(state.repaired || (state.mode === 'live' && state.covered >= covers.length))) {
+        mistake(9, '工作尚未完成就把工具袋放回地面。', '保留所需工具與材料在桿上；拆下的舊件必須先放入袋內封妥。');
+      } else {
+        beginBagTransfer();
+      }
+    }
     if (action === 'test') {
       if (!atWorkZone()) {
         mistake(4, '尚未到達變壓器工作區。', '繼續登桿至約 7.2 m，並保持輔助繩掛妥。');
       } else if (!state.ppe || !state.rope) {
         mistake(18, '在高處未具完整墜落與絕緣防護。', '先處理輔助繩與 PPE。');
+      } else if (!state.handlineRigged || !state.bagAtWorker) {
+        mistake(8, '檢電器尚未透過通繩工作袋送到桿上。', '先固定通繩滑車，再由地面同事把裝有檢電器的工作袋拉上。');
+      } else if (!state.insulationPpeOn) {
+        mistake(22, '未穿絕緣肩套與手套就取檢電器接近線路。', '停電仍須視為可能帶電；檢電及掛接地前穿妥絕緣肩套與手套。', true);
       } else {
         beginVoltageTest();
       }
@@ -3438,12 +3720,14 @@ html>body{padding:0}</style>
         mistake(4, '距離工作區太遠，無法裝設掩蔽。', '先手動登桿到變壓器附近。');
       } else if (!state.tested) {
         mistake(12, '未先檢電就接近高壓導線。', '先從腰袋取檢電器確認線路狀態。');
+      } else if (!state.insulationPpeOn) {
+        mistake(42, '活電掩蔽過程中脫除絕緣肩套或手套。', '活電作業必須全程保持完整絕緣護具，並逐條完成掩蔽與夾固。', true);
       } else {
-        const required = 3;
+        const required = covers.length;
         if (state.covered < required) {
           beginBlanketCover(Math.min(covers.length - 1, state.covered));
         } else {
-          log('必要掩蔽已完成。', '保持覆蓋位置與工作姿勢，避免跨越未防護區。');
+          log('高壓三線與低壓四線的必要掩蔽已完成。', '七條線均以絕緣毯包覆並用大型絕緣夾固定；活電作業期間肩套與手套繼續穿戴。');
         }
       }
     }
@@ -3454,23 +3738,23 @@ html>body{padding:0}</style>
         mistake(100, '工作接地誤掛在帶電高壓導體上！', '形成相間／對地短路與強烈弧光，屬致命程序錯誤。', true);
       } else if (!state.tested) {
         mistake(35, '未檢電確認無電就嘗試掛接地。', '停電不等於無電，必須先在工作位置檢電。', true);
+      } else if (!state.insulationPpeOn) {
+        mistake(35, '未穿絕緣肩套與手套就嘗試掛工作接地。', '接地前仍應把線路視為可能帶電；先穿妥絕緣肩套與手套。', true);
       } else {
-        state.grounded = true;
-        groundSet.visible = true;
-        log('工作接地組已掛設。', '三相臨時接地線、桿後接地引線、接地夾與地下接地銅棒均已呈現並確認連續。');
+        beginGrounding();
       }
     }
     if (action === 'repair') {
-      if (!atWorkZone()) {
+      if (state.mode === 'live') {
+        mistake(28, '嘗試在活電模式更換損壞零件。', '礙子、燒損鐵件與變壓器更換均改列停電作業；須隔離、檢電並掛工作接地。', true);
+      } else if (!atWorkZone()) {
         mistake(5, '尚未到達故障跳線。', '繼續登桿至變壓器工作區。');
       } else if (!state.tested) {
         mistake(state.voltage > 20 ? 70 : 48, '未檢電就接觸設備。', '發生電擊與電弧風險，音樂進入高張力狀態。', true);
-      } else if (state.mode === 'live' && (state.covered < 3 || state.clipped < 3)) {
-        mistake(state.voltage > 20 ? 64 : 42, '活線導線掩蔽或夾固不完整。', `目前完成 ${state.covered}/3 相、夾固 ${state.clipped}/3 組，絕緣毯可能鬆脫。`, true);
       } else if (isOutageMode() && !state.grounded) {
         mistake(32, '停電作業尚未完成工作接地。', '可能遭受誤送電或感應／逆送電危害。', true);
-      } else if (state.fault === 'transformer' && state.mode === 'live') {
-        mistake(12, '桿上變壓器整機吊換不能在本活線情境直接進行。', '請重新開始並選擇停電搶修，完成隔離、檢電與工作接地後再吊換。');
+      } else if (!state.bagAtWorker) {
+        mistake(9, '更換零件所需工具與新件未透過通繩工作袋送上。', '先由地面同事把工作袋拉至桿上，再進行停電設備更換。');
       } else {
         beginEquipmentRepair();
       }
@@ -3487,6 +3771,8 @@ html>body{padding:0}</style>
         mistake(100, '在線路仍帶電時執行鳥巢、樹修或斷線壓接。', '工具、枝條、巢材或壓接套管可能形成帶電接觸路徑。', true);
       } else if (!state.grounded) {
         mistake(38, '停電作業未掛工作接地就開始接觸線路周邊物件。', '誤送電、感應電或逆送電防護尚未建立。', true);
+      } else if (!state.bagAtWorker) {
+        mistake(9, '專用工具與材料未透過通繩工作袋送上。', '先固定通繩滑車，再由地面同事把工具袋拉到桿上工作位置。');
       } else if (action === 'nest') {
         beginNestRemoval();
       } else if (action === 'prune') {
@@ -3507,22 +3793,26 @@ html>body{padding:0}</style>
         mistake(6, '活線流程沒有正常工作接地步驟。', '正常活線流程依靠絕緣防護、專用器具及安全距離。');
       } else if (!state.grounded) {
         mistake(4, '目前沒有已掛設的工作接地。', '檢查工具與流程狀態。');
+      } else if (!state.bagReturned) {
+        mistake(10, '工具袋與拆卸零件仍在桿上就準備拆接地。', '先將舊件裝入工作袋並由地面同事用通繩降下，完成工具材料清點。');
+      } else if (!state.insulationPpeOn) {
+        mistake(35, '未重新穿戴絕緣肩套與手套就拆除工作接地。', '拆接地時線路將失去等電位保護；先從工作袋取回並穿妥絕緣肩套與手套。', true);
       } else if (!state.repaired) {
         mistake(14, '維修尚未完成就提前拆除工作接地。', '工作區失去誤送電防護。');
         state.grounded = false;
         groundSet.visible = false;
       } else {
-        state.grounded = false;
-        groundSet.visible = false;
-        log('工作接地組已拆除。', '確認人員、工具與掩蔽物狀態後，才可進入復電程序。');
+        beginGroundRemoval();
       }
     }
     if (action === 'finish') {
       if (!state.repaired) {
         mistake(18, '故障尚未修復就要求完工。', '依序完成檢電、防護與維修。');
+      } else if (!state.bagReturned) {
+        mistake(14, '工作袋、工具或拆卸零件尚未送回地面。', '先用固定通繩把工作袋降下並完成清點。');
       } else if (isOutageMode() && state.grounded) {
         mistake(100, '帶著工作接地組執行復電！', '造成直接短路與嚴重弧光事故。', true);
-      } else if (isOutageMode() && state.height > 0.9) {
+      } else if (state.height > 0.9) {
         mistake(48, '人員仍在桿上就要求復電。', '先下桿、集合清點人員與工具，確認無人再登桿後才能完成復電程序。', true);
       } else {
         state.finished = true;
@@ -3538,7 +3828,7 @@ html>body{padding:0}</style>
   const reset = () => {
     const randomFaults = el.mode.value === 'live' ? ['insulator', 'hardware'] : ['insulator', 'hardware', 'transformer'];
     const scenarioFault = ['nest', 'tree', 'storm'].includes(el.mode.value) ? el.mode.value : null;
-    const selectedFault = scenarioFault || (el.fault.value === 'random'
+    const selectedFault = el.mode.value === 'live' ? 'cover' : scenarioFault || (el.fault.value === 'random'
       ? randomFaults[Math.floor(Math.random() * randomFaults.length)]
       : el.fault.value);
     Object.assign(state, {
@@ -3547,8 +3837,13 @@ html>body{padding:0}</style>
       hp: 100,
       height: 0.6,
       ppe: false,
+      insulationPpeOn: false,
       traffic: false,
       rope: false,
+      handlineRigged: false,
+      bagAtWorker: false,
+      bagReturned: false,
+      removedPartBagged: false,
       ropeAnchor: 0.9,
       ropeAnchors: [0.9, 0.9],
       activeRope: 0,
@@ -3580,6 +3875,7 @@ html>body{padding:0}</style>
     climbPhase = 0;
     helmet.visible = false;
     ppeParts.forEach(part => { part.visible = false; });
+    setInsulatingPpeVisible(false);
     beltTools.visible = false;
     ppeGroundPieces.forEach((piece, index) => {
       piece.visible = true;
@@ -3607,6 +3903,7 @@ html>body{padding:0}</style>
     });
     covers.forEach(cover => { cover.visible = false; });
     groundSet.visible = false;
+    groundSet.scale.setScalar(1);
     hoistGroup.visible = false;
     nestGroup.visible = state.mode === 'nest';
     nestGroup.position.copy(nestHomePosition);
@@ -3642,9 +3939,15 @@ html>body{padding:0}</style>
     supervisorCheckUntil = performance.now() + 2600;
     nextHealthPatrolAt = performance.now() + 18000;
     crewToolBag.position.set(1.38, 0.42, 0.72);
+    crewToolBag.rotation.set(0, 0, 0);
+    bagToolContents.visible = true;
+    bagRemovedContents.visible = false;
+    handlineRigGroup.visible = false;
+    handlineRigGroup.scale.setScalar(1);
+    handlineCarryCoil.visible = false;
     crewHoistRope.visible = false;
     const modeDetail = state.mode === 'live'
-      ? '活線模式：先完成交通維護；工作接地是致命錯誤，檢電後必須完成三相絕緣掩蔽。'
+      ? '活線模式：絕緣肩套與手套全程穿戴；通繩送上工具後，檢電並將高壓三線、低壓四線全部以絕緣毯掩蔽夾固。'
       : state.mode === 'nest'
         ? '鳥巢模式：停電、檢電與工作接地後，先查有無蛋或幼鳥，再完整移植。'
         : state.mode === 'tree'
@@ -3918,12 +4221,46 @@ html>body{padding:0}</style>
     }
   };
 
+  root.tp3Debug = {
+    state,
+    sync: updateUI,
+    showBasePpe() {
+      state.ppe = true;
+      helmet.visible = true;
+      ppeParts.forEach(part => { part.visible = true; });
+      setInsulatingPpeVisible(state.insulationPpeOn);
+      beltTools.visible = true;
+      ppeGroundPieces.forEach(piece => { piece.visible = false; });
+    },
+    showGrounded() {
+      state.grounded = true;
+      state.insulationPpeOn = false;
+      groundSet.visible = true;
+      groundSet.scale.setScalar(1);
+      setInsulatingPpeVisible(false);
+    },
+    showBag(atWorker, removed = false) {
+      state.handlineRigged = true;
+      state.bagAtWorker = atWorker;
+      state.bagReturned = !atWorker;
+      state.removedPartBagged = removed;
+      crewToolBag.position.set(atWorker ? 1.05 : 1.38, atWorker ? Math.min(7.55, state.height - 0.52) : 0.42, 0.72);
+      bagToolContents.visible = !removed;
+      bagRemovedContents.visible = removed;
+    },
+    showCovers(count = covers.length) {
+      state.covered = Math.min(count, covers.length);
+      state.clipped = state.covered;
+      covers.forEach((cover, index) => { cover.visible = index < state.covered; });
+      if (state.covered >= covers.length) state.repaired = true;
+    }
+  };
   reset();
   requestAnimationFrame(animate);
   };
 
   const showLoadError = () => {
-    const root = document.getElementById('taipower-roadside-special-operations-sim');
+    const root = document.getElementById('taipower-handline-grounding-sim');
     if (!root) return;
     const log = root.querySelector('#tp3-log');
     const main = root.querySelector('#tp3-log-main');
@@ -3967,5 +4304,6 @@ html>body{padding:0}</style>
   }, 600);
 })();
 </script>
+
 </body>
 </html>
